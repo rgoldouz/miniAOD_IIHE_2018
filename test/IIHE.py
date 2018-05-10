@@ -63,6 +63,8 @@ if options.DataProcessing == "mc2017":
   globalTag = "94X_mc2017_realistic_v10"
 if options.DataProcessing == "data2017":
   globalTag = "92X_dataRun2_Jun23ReReco_PixelCommissioning"
+if options.DataProcessing == "data2018":
+  globalTag = "101X_dataRun2_Prompt_v9"
 if options.DataProcessing == "dataLegacy2016":
   globalTag = "80X_dataRun2_2016LegacyRepro_v4"
 ##########################################################################################
@@ -100,8 +102,8 @@ process.source = cms.Source("PoolSource",
 #process.source.fileNames.append( path )
 #process.source.fileNames.append( "file:03Feb2017data.root" )
 #process.source.fileNames.append( "file:TW_80_miniAOD.root" )
-#process.source.fileNames.append( "file:2017data.root" )
-process.source.fileNames.append( "file:legacyData.root" )
+process.source.fileNames.append( "file:2018data.root" )
+#process.source.fileNames.append( "file:legacyData.root" )
 ###
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
@@ -144,16 +146,6 @@ for idmod in my_id_modules:
 
 
 
-#Electron energy scale and smearing
-process.load("Configuration.StandardSequences.Services_cff")
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-                                                    calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(81),
-                                                    engineName = cms.untracked.string("TRandom3")),
-                                                  )
-process.load("EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi")
-process.calibratedPatElectrons.isMC = cms.bool("mc" in options.DataProcessing)
-process.calibratedPatElectrons.electrons = cms.InputTag("slimmedElectrons")
-process.calibratedPatElectrons.isSynchronization = cms.bool(False)
 ##########################################################################################
 #                            MY analysis input!                              ####
 ##########################################################################################
@@ -236,23 +228,12 @@ process.IIHEAnalysis.includeAutoAcceptEventModule                = cms.untracked
 #    fileName = cms.untracked.string("EDM.root")
 #    )
 
-
-if options.DataProcessing == "dataLegacy2016":
-    process.IIHEAnalysis.calibratedElectronCollection    = cms.InputTag("slimmedElectrons")
-    process.IIHEAnalysis.triggerObjectStandAloneCollection= cms.InputTag("selectedPatTrigger")
-    process.p1 = cms.Path(
-        process.rerunMvaIsolationSequence *
-        process.NewTauIDsEmbedded *
-        process.egmGsfElectronIDSequence * 
-        process.IIHEAnalysis
-        )
-else:
-    process.p1 = cms.Path(
-        process.rerunMvaIsolationSequence *
-        process.NewTauIDsEmbedded *
-        process.calibratedPatElectrons *
-        process.egmGsfElectronIDSequence *
-        process.IIHEAnalysis
-        )
+process.IIHEAnalysis.calibratedElectronCollection    = cms.InputTag("slimmedElectrons")
+process.p1 = cms.Path(
+    process.rerunMvaIsolationSequence *
+    process.NewTauIDsEmbedded *
+    process.egmGsfElectronIDSequence * 
+    process.IIHEAnalysis
+    )
 #process.outpath = cms.EndPath(process.out)
 
