@@ -676,10 +676,10 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     store("EBHits_iphi"    , elementId.iphi() ) ;
     store("EBHits_RecoFlag", (*EBIt).recoFlag() ) ;
 
-    store("EBHits_kSaturated"           , (*EBIt).checkFlag(EcalRecHit::kSaturated           )) ;
-    store("EBHits_kLeadingEdgeRecovered", (*EBIt).checkFlag(EcalRecHit::kLeadingEdgeRecovered)) ;
-    store("EBHits_kNeighboursRecovered" , (*EBIt).checkFlag(EcalRecHit::kNeighboursRecovered )) ;
-    store("EBHits_kWeird"               , (*EBIt).checkFlag(EcalRecHit::kWeird               )) ;
+    store("EBHits_kSaturated"           , int((*EBIt).checkFlag(EcalRecHit::kSaturated           ))) ;
+    store("EBHits_kLeadingEdgeRecovered", int((*EBIt).checkFlag(EcalRecHit::kLeadingEdgeRecovered))) ;
+    store("EBHits_kNeighboursRecovered" , int((*EBIt).checkFlag(EcalRecHit::kNeighboursRecovered ))) ;
+    store("EBHits_kWeird"               , int((*EBIt).checkFlag(EcalRecHit::kWeird               ))) ;
   }
 
 
@@ -696,10 +696,10 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     store("EEHits_iphi"    , elementId.iphi() ) ;
     store("EEHits_RecoFlag", (*EEIt).recoFlag() ) ;
 
-    store("EEHits_kSaturated"           , (*EEIt).checkFlag(EcalRecHit::kSaturated           )) ;
-    store("EEHits_kLeadingEdgeRecovered", (*EEIt).checkFlag(EcalRecHit::kLeadingEdgeRecovered)) ;
-    store("EEHits_kNeighboursRecovered" , (*EEIt).checkFlag(EcalRecHit::kNeighboursRecovered )) ;
-    store("EEHits_kWeird"               , (*EEIt).checkFlag(EcalRecHit::kWeird               )) ;
+    store("EEHits_kSaturated"           , int((*EEIt).checkFlag(EcalRecHit::kSaturated           ))) ;
+    store("EEHits_kLeadingEdgeRecovered", int((*EEIt).checkFlag(EcalRecHit::kLeadingEdgeRecovered))) ;
+    store("EEHits_kNeighboursRecovered" , int((*EEIt).checkFlag(EcalRecHit::kNeighboursRecovered ))) ;
+    store("EEHits_kWeird"               , int((*EEIt).checkFlag(EcalRecHit::kWeird               ))) ;
   }
   store("EHits_isSaturated", int(isSaturated));
 
