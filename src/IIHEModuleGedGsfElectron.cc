@@ -686,7 +686,7 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
   int nEERecHits = 0 ;
   for(EcalRecHitCollection::const_iterator EEIt = theEndcapEcalRecHits->begin() ; EEIt!=theEndcapEcalRecHits->end() ; ++EEIt){
     if((*EEIt).checkFlag(EcalRecHit::kSaturated)) isSaturated = true;
-    if( (*EEIt).energy() < 200.0 ) continue ;
+    if( (*EEIt).energy() < 50.0 ) continue ;
     nEERecHits++ ;
     EBDetId elementId = EEIt->id() ;
     store("EEHits_rawId"   , elementId.rawId()) ;
