@@ -8,7 +8,8 @@
 class IIHEMuonTrackVariableBase{
 public:
   IIHEMuonTrackVariableBase(std::string, std::string, int) ;
-  ~IIHEMuonTrackVariableBase(){} ;
+  virtual ~IIHEMuonTrackVariableBase() = default;
+//  ~IIHEMuonTrackVariableBase(){} ;
   
   const std::string       Name(){ return       name_ ; }
   const std::string BranchName(){ return branchName_ ; }
@@ -27,7 +28,8 @@ private:
 class IIHEMuonTrackVariableInt: IIHEMuonTrackVariableBase{
 public:
   IIHEMuonTrackVariableInt(std::string, std::string) ;
-  ~IIHEMuonTrackVariableInt(){} ;
+//  ~IIHEMuonTrackVariableInt(){} ;
+  virtual ~IIHEMuonTrackVariableInt() = default;
   void reset(){ value_ = -999 ; }
   void fill(int value){ value_ = value ; }
   void store(IIHEAnalysis*) ;
@@ -38,7 +40,8 @@ private:
 class IIHEMuonTrackVariableFloat: IIHEMuonTrackVariableBase{
 public:
   IIHEMuonTrackVariableFloat(std::string, std::string) ;
-  ~IIHEMuonTrackVariableFloat(){} ;
+  virtual ~IIHEMuonTrackVariableFloat() = default;
+//  ~IIHEMuonTrackVariableFloat(){} ;
   void reset(){ value_ = -999.0 ; }
   void fill(float value){ value_ = value ; }
   void store(IIHEAnalysis*) ;

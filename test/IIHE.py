@@ -64,7 +64,8 @@ if options.DataProcessing == "mc2017":
 if options.DataProcessing == "data2017":
   globalTag = "92X_dataRun2_Jun23ReReco_PixelCommissioning"
 if options.DataProcessing == "data2018":
-  globalTag = "101X_dataRun2_Prompt_v9"
+#  globalTag = "101X_dataRun2_Prompt_v9"
+   globalTag = "102X_dataRun2_Prompt_v11"
 if options.DataProcessing == "dataLegacy2016":
   globalTag = "80X_dataRun2_2016LegacyRepro_v4"
 ##########################################################################################
@@ -102,8 +103,9 @@ process.source = cms.Source("PoolSource",
 #process.source.fileNames.append( path )
 #process.source.fileNames.append( "file:03Feb2017data.root" )
 #process.source.fileNames.append( "file:TW_80_miniAOD.root" )
-process.source.fileNames.append( "file:2018data.root" )
+#process.source.fileNames.append( "file:2018data.root" )
 #process.source.fileNames.append( "file:legacyData.root" )
+process.source.fileNames.append( "file:RunA_numEvent1000.root" )
 ###
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
@@ -212,7 +214,7 @@ process.IIHEAnalysis.includeMuonModule           = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
-process.IIHEAnalysis.includeL1Module            = cms.untracked.bool(True)
+#process.IIHEAnalysis.includeL1Module            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule        = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in options.DataProcessing)
 #process.IIHEAnalysis.includeDataModule            = cms.untracked.bool("data" in options.DataProcessing)

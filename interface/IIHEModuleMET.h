@@ -7,7 +7,8 @@
 class IIHEMETVariableBase{
 public:
   IIHEMETVariableBase(std::string, std::string, int) ;
-  ~IIHEMETVariableBase(){} ;
+  virtual ~IIHEMETVariableBase() = default;
+//  ~IIHEMETVariableBase(){} ;
 
   const std::string       Name(){ return       name_ ; }
   const std::string BranchName(){ return branchName_ ; }
@@ -26,7 +27,8 @@ private:
 class IIHEMETVariableInt: IIHEMETVariableBase{
 public:
   IIHEMETVariableInt(std::string, std::string) ;
-  ~IIHEMETVariableInt(){} ;
+//  ~IIHEMETVariableInt(){} ;
+  virtual ~IIHEMETVariableInt() = default;
   void reset(){ value_ = -999 ; }
   void fill(int value){ value_ = value ; }
   void store(IIHEAnalysis*) ;
@@ -37,7 +39,8 @@ private:
 class IIHEMETVariableFloat: IIHEMETVariableBase{
 public:
   IIHEMETVariableFloat(std::string, std::string) ;
-  ~IIHEMETVariableFloat(){} ;
+//  ~IIHEMETVariableFloat(){} ;
+  virtual ~IIHEMETVariableFloat() = default;
   void reset(){ value_ = -999.0 ; }
   void fill(float value){ value_ = value ; }
   void store(IIHEAnalysis*) ;

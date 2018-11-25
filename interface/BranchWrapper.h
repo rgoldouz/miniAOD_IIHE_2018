@@ -12,7 +12,7 @@
 class BranchWrapperBase{
   public:
     BranchWrapperBase(std::string) ;
-    ~BranchWrapperBase() ;
+//    ~BranchWrapperBase() ;
     virtual void beginEvent() ;
     virtual void endEvent() ;
     std::string name(){ return name_; } ;
@@ -22,6 +22,7 @@ class BranchWrapperBase{
     void fill(){ is_filled_ = true ; touch() ; } ;
     void unfill(){ is_filled_ = false ; } ;
     virtual int config(TTree*){return -1; } ;
+    virtual ~BranchWrapperBase() = default;
   private:
     std::string name_ ;
     bool is_filled_ ;

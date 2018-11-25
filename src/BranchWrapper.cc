@@ -9,7 +9,7 @@ BranchWrapperBase::BranchWrapperBase(std::string name){
   is_filled_  = false ;
   is_touched_ = false ;
 }
-BranchWrapperBase::~BranchWrapperBase(){}
+//BranchWrapperBase::~BranchWrapperBase(){}
 void BranchWrapperBase::beginEvent(){
   is_filled_ = false ;
 }

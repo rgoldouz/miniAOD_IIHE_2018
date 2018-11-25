@@ -666,7 +666,7 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
   bool isSaturated = false;
   for(EcalRecHitCollection::const_iterator EBIt = theBarrelEcalRecHits->begin() ; EBIt!=theBarrelEcalRecHits->end() ; ++EBIt){
     if((*EBIt).checkFlag(EcalRecHit::kSaturated)) isSaturated = true;
-    if( (*EBIt).energy() < 200.0 ) continue ;
+    if( (*EBIt).energy() < 50.0 ) continue ;
     nEBRecHits++ ;
     EBDetId elementId = EBIt->id() ;
     store("EBHits_rawId"   , elementId.rawId()) ;
