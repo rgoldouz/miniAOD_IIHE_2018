@@ -17,11 +17,12 @@ using namespace reco;
 using namespace edm ;
 
 IIHEModuleTrigger::IIHEModuleTrigger(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC): IIHEModule(iConfig){
-//  hlTriggerResultsTag_ = iConfig.getParameter<edm::InputTag>("TriggerResults") ;
   nEvents_ = 0 ;
   nWasRun_ = 0 ;
   nAccept_ = 0 ;
   nErrors_ = 0 ;
+
+  isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
 
   triggerBitsLabel_       = iConfig.getParameter<edm::InputTag>("triggerResultsCollectionHLT") ;
   triggerObjectsLabel_    = iConfig.getParameter<edm::InputTag>("triggerObjectStandAloneCollection") ;
@@ -115,6 +116,7 @@ void IIHEModuleTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup&
   // Trigger information
   //MET filter 
   // get hold of TriggerResults
+
   edm::Handle<TriggerResults> HLTR ;
   edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
   edm::Handle<pat::PackedTriggerPrescales> triggerPrescales;
@@ -124,18 +126,24 @@ void IIHEModuleTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByToken(triggerPrescales_, triggerPrescales);
 
   edm::Handle<TriggerResults> triggerResultsCollection_ ;
-  iEvent.getByToken(triggerResultsToken_, triggerResultsCollection_);
+  if (isPatTrigger) {
+    edm::Handle<TriggerResults> triggerResultsCollection_ ;
+    iEvent.getByToken(triggerResultsToken_, triggerResultsCollection_);
+  }
 
   edm::Handle<TriggerResults> triggerResultsCollectionRECO_ ;
   iEvent.getByToken(triggerResultsTokenRECO_, triggerResultsCollectionRECO_);
 
   // Now fill the values
   IIHEAnalysis* analysis = parent_ ;
-  for(unsigned int i=0 ; i<HLTriggersPAT_.size() ; i++){
-    HLTrigger* hlt = HLTriggersPAT_.at(i) ;
-    hlt->status(triggerResultsCollection_) ;
-    hlt->store(analysis) ;
-  } 
+
+  if(isPatTrigger){  
+    for(unsigned int i=0 ; i<HLTriggersPAT_.size() ; i++){
+      HLTrigger* hlt = HLTriggersPAT_.at(i) ;
+      hlt->status(triggerResultsCollection_) ;
+      hlt->store(analysis) ;
+    } 
+  }
 
   for(unsigned int i=0 ; i<HLTriggersRECO_.size() ; i++){
     HLTrigger* hlt = HLTriggersRECO_.at(i) ;
@@ -145,24 +153,27 @@ void IIHEModuleTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
   for(unsigned int i=0 ; i<HLTriggers_.size() ; i++){
     HLTrigger* hlt = HLTriggers_.at(i) ;
+//cout<<hlt->triggerName()<<endl;
     hlt->fullStatus(iEvent, iSetup, hltConfig_, HLTR, triggerObjects, triggerPrescales ,analysis) ;
     hlt->store(analysis) ;
   }
+
   nEvents_++ ;
 }
 
 void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup){
   IIHEAnalysis* analysis = parent_ ;
   if(changed_){
-    hltConfigPAT_.init(iRun, iSetup, triggerResultsLabel_.process(), changed_);
-    HLTNamesFromConfigPAT_ = hltConfigPAT_.triggerNames() ;
-    for(unsigned int i=0 ; i<HLTNamesFromConfigPAT_.size() ; ++i){
-      std::string namePAT = HLTNamesFromConfigPAT_.at(i) ;
-      HLTrigger* hltPAT = new HLTrigger(namePAT, hltConfigPAT_) ;
-      HLTriggersPAT_.push_back(hltPAT) ;
-      hltPAT->createBranches(analysis) ;
+    if(isPatTrigger){    
+      hltConfigPAT_.init(iRun, iSetup, triggerResultsLabel_.process(), changed_);
+      HLTNamesFromConfigPAT_ = hltConfigPAT_.triggerNames() ;
+      for(unsigned int i=0 ; i<HLTNamesFromConfigPAT_.size() ; ++i){
+        std::string namePAT = HLTNamesFromConfigPAT_.at(i) ;
+        HLTrigger* hltPAT = new HLTrigger(namePAT, hltConfigPAT_) ;
+        HLTriggersPAT_.push_back(hltPAT) ;
+        hltPAT->createBranches(analysis) ;
+      }
     }
-
     hltConfigRECO_.init(iRun, iSetup, triggerResultsLabelRECO_.process(), changed_);
     HLTNamesFromConfigRECO_ = hltConfigRECO_.triggerNames() ;
     for(unsigned int i=0 ; i<HLTNamesFromConfigRECO_.size() ; ++i){
@@ -213,9 +224,17 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
             }
           }
         }
+       
+
+         if(savedHLTriggers_.size()>0){
+            if (! (std::find(savedHLTriggers_.begin(), savedHLTriggers_.end(), hlt->name().substr(0, hlt->name().find("_v"))) != savedHLTriggers_.end())) addThisTrigger=false;
+         }
+ 
+        if(addThisTrigger==false) {
+          delete hlt;
+          continue ;}
+//        hlt->savePrescale();
         
-        if(addThisTrigger==false) continue ;
-        hlt->savePrescale();
         addHLTrigger(hlt) ;
       }
       
@@ -245,6 +264,8 @@ void IIHEModuleTrigger::endEvent(){}
 
 
 // ------------ method called once each job just after ending the event loop  ------------
-void IIHEModuleTrigger::endJob(){}
+void IIHEModuleTrigger::endJob(){
+if (isMC_){isPatTrigger = true;} 
+}
 
 DEFINE_FWK_MODULE(IIHEModuleTrigger);

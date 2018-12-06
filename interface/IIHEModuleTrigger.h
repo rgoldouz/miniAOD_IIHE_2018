@@ -34,6 +34,8 @@ private:
   std::vector<HLTrigger*> HLTriggersPAT_ ;
   std::vector<HLTrigger*> HLTriggersRECO_ ;
   bool changed_ = true ;
+  bool isPatTrigger = false;
+  bool isMC_;
 
   HLTConfigProvider hltConfig_ ;
   HLTConfigProvider hltConfigPAT_ ;
@@ -44,7 +46,9 @@ private:
   std::vector<std::string> HLTNamesFromConfigRECO_ ;
   std::vector<std::string> triggerNamesFromPSet_ ;
   std::vector<std::string> savedHLTriggers_ ; 
-  void clearHLTrigger(){HLTriggers_.clear();} ;
+  void clearHLTrigger(){
+  for (std::vector< HLTrigger* >::iterator it = HLTriggers_.begin() ; it != HLTriggers_.end(); ++it) { delete (*it); } 
+  HLTriggers_.clear();} ;
 
 
   edm::InputTag  triggerBitsLabel_;

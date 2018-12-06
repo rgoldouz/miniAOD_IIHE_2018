@@ -65,7 +65,8 @@ if options.DataProcessing == "data2017":
   globalTag = "92X_dataRun2_Jun23ReReco_PixelCommissioning"
 if options.DataProcessing == "data2018":
 #  globalTag = "101X_dataRun2_Prompt_v9"
-   globalTag = "102X_dataRun2_Prompt_v11"
+#   globalTag = "102X_dataRun2_Prompt_v11"
+  globalTag = "102X_dataRun2_Sep2018Rereco_v1"
 if options.DataProcessing == "dataLegacy2016":
   globalTag = "80X_dataRun2_2016LegacyRepro_v4"
 ##########################################################################################
@@ -83,8 +84,8 @@ process.load('Configuration.StandardSequences.Services_cff')
 
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 2000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 ##########################################################################################
@@ -99,13 +100,17 @@ if options.DataFormat == "data":
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(),
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
+#    lumisToProcess = cms.untracked.VLuminosityBlockRange('319639:max'),
+#    skipEvents=cms.untracked.uint32(12000)
+#    lumisToProcess = cms.untracked.VLuminosityBlockRange('319639:460'),
 )
 #process.source.fileNames.append( path )
 #process.source.fileNames.append( "file:03Feb2017data.root" )
 #process.source.fileNames.append( "file:TW_80_miniAOD.root" )
 #process.source.fileNames.append( "file:2018data.root" )
 #process.source.fileNames.append( "file:legacyData.root" )
-process.source.fileNames.append( "file:RunA_numEvent1000.root" )
+#process.source.fileNames.append( "file:RunA_numEvent1000.root" )
+process.source.fileNames.append( "file:RunC_17Sep_numEvent20001.root" )
 ###
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:

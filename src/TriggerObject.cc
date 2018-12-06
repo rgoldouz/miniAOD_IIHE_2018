@@ -237,7 +237,7 @@ int HLTrigger::nSubstringInString(const std::string& str, const std::string& sub
 int HLTrigger::fullStatus(const edm::Event& iEvent, edm::EventSetup const& iSetup, HLTConfigProvider const& hltConfig, Handle<TriggerResults> const& triggerResults, edm::Handle<pat::TriggerObjectStandAloneCollection> trigEvent, edm::Handle<pat::PackedTriggerPrescales> prescale ,IIHEAnalysis* analysis){
   if(searchStatus_==searchedForAndFound && index_>=0){
     touched_  = true ;
-    accept_   = triggerResults->accept(index_) ;
+    accept_   = int(triggerResults->accept(index_)) ;
     prescale_ = prescale->getPrescaleForIndex(index_);
     if (saveFilters_){
       for(unsigned i=0 ; i<filters_.size() ; ++i){
@@ -250,7 +250,7 @@ int HLTrigger::fullStatus(const edm::Event& iEvent, edm::EventSetup const& iSetu
 }
 
 int HLTrigger::status(Handle<TriggerResults> const& triggerResults){
-  accept_   = triggerResults->accept(index_) ;
+  accept_   = int(triggerResults->accept(index_)) ;
   return 0 ;
 }
 

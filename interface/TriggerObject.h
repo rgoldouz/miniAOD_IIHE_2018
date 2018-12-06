@@ -161,6 +161,7 @@ public:
   void saveFilters(){saveFilters_=1 ;}
   void savePrescale(){savePrescale_=1 ;} 
   std::vector<TriggerFilter*> filters_ ;
+  std::string triggerName(){return name_;}
 };
 
 #endif
