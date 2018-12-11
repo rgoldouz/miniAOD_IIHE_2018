@@ -72,7 +72,7 @@ IIHEModuleTrigger::~IIHEModuleTrigger(){}
 
 // ------------ method called once each job just before starting event loop  ------------
 void IIHEModuleTrigger::beginJob(){
-}
+if (isMC_)isPatTrigger = true;}
 
 bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
   for(unsigned int i=0 ; i<HLTriggers_.size() ; ++i){
@@ -125,9 +125,8 @@ void IIHEModuleTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByToken(triggerObjects_, triggerObjects);
   iEvent.getByToken(triggerPrescales_, triggerPrescales);
 
-  edm::Handle<TriggerResults> triggerResultsCollection_ ;
-  if (isPatTrigger) {
     edm::Handle<TriggerResults> triggerResultsCollection_ ;
+  if (isPatTrigger) {
     iEvent.getByToken(triggerResultsToken_, triggerResultsCollection_);
   }
 
@@ -264,8 +263,6 @@ void IIHEModuleTrigger::endEvent(){}
 
 
 // ------------ method called once each job just after ending the event loop  ------------
-void IIHEModuleTrigger::endJob(){
-if (isMC_){isPatTrigger = true;} 
-}
+void IIHEModuleTrigger::endJob(){} 
 
 DEFINE_FWK_MODULE(IIHEModuleTrigger);
