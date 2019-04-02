@@ -53,10 +53,13 @@ void IIHEModuleJet::beginJob(){
   addBranch("jet_CvsB");
   addBranch("jet_MVA2BJets");
   setBranchType(kVectorInt);
-  addBranch("jet_isJetIDLoose");
-  addBranch("jet_isJetIDTight");
-  addBranch("jet_isJetIDTightLepVeto");
-
+  addBranch("jet_isJetIDLoose_2016");
+  addBranch("jet_isJetIDTight_2016");
+  addBranch("jet_isJetIDTightLepVeto_2016");
+  addBranch("jet_isJetID_2017");
+  addBranch("jet_isJetIDLepVeto_2017");
+  addBranch("jet_isJetID_2018");
+  addBranch("jet_isJetIDLepVeto_2018");
   if (isMC_){
 
   setBranchType(kVectorFloat);
@@ -142,28 +145,78 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     int NumNeutralParticles =pfjet->neutralMultiplicity();
     int CHM = pfjet->chargedMultiplicity(); 
 
-    bool isJetIDLoose;
-    bool isJetIDTight;
-    bool isJetIDTightLepVeto;
+    bool isJetIDLoose_2016;
+    bool isJetIDTight_2016;
+    bool isJetIDTightLepVeto_2016;
+    bool isJetID_2017;
+    bool isJetIDLepVeto_2017;
+    bool isJetID_2018;
+    bool isJetIDLepVeto_2018;
 
+//****** 2016 IDs **** https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID13TeVRun2016
     if( fabs(eta) <= 2.7){
-      isJetIDLoose = ((NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4));
-      isJetIDTight = ((NHF<0.90 && NEMF<0.90 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4));
-      isJetIDTightLepVeto = ((NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abs(eta)>2.4));
+      isJetIDLoose_2016 = ((NHF<0.99 && NEMF<0.99 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4));
+      isJetIDTight_2016 = ((NHF<0.90 && NEMF<0.90 && NumConst>1) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || abs(eta)>2.4));
+      isJetIDTightLepVeto_2016 = ((NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8) && ((abs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.90) || abs(eta)>2.4));
       }
     else if (abs(eta)>2.7 && abs(eta)<=3.0 ){
-      isJetIDLoose = (NHF<0.98 && NEMF>0.01 && NumNeutralParticles>2 );
-      isJetIDTight = (NHF<0.98 && NEMF>0.01 && NumNeutralParticles>2 );
-      isJetIDTightLepVeto = false;
+      isJetIDLoose_2016 = (NHF<0.98 && NEMF>0.01 && NumNeutralParticles>2 );
+      isJetIDTight_2016 = (NHF<0.98 && NEMF>0.01 && NumNeutralParticles>2 );
+      isJetIDTightLepVeto_2016 = false;
       }
     else{
-      isJetIDLoose = (NEMF<0.90 && NumNeutralParticles>10 );
-      isJetIDTight = (NEMF<0.90 && NumNeutralParticles>10 ) ;
-      isJetIDTightLepVeto = false;
+      isJetIDLoose_2016 = (NEMF<0.90 && NumNeutralParticles>10 );
+      isJetIDTight_2016 = (NEMF<0.90 && NumNeutralParticles>10 ) ;
+      isJetIDTightLepVeto_2016 = false;
     }
-    store("jet_isJetIDLoose"                 ,int(isJetIDLoose));
-    store("jet_isJetIDTight"                 ,int(isJetIDTight));
-    store("jet_isJetIDTightLepVeto"          ,int(isJetIDTightLepVeto));
+    store("jet_isJetIDLoose_2016"                 ,int(isJetIDLoose_2016));
+    store("jet_isJetIDTight_2016"                 ,int(isJetIDTight_2016));
+    store("jet_isJetIDTightLepVeto_2016"          ,int(isJetIDTightLepVeto_2016));
+
+//****** 2017 IDs **** https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
+    if( fabs(eta)<=2.4){
+      isJetID_2017 = (abs(eta)<=2.4 && CHM>0 && CHF>0 && NumConst>1 && NEMF<0.9 && NHF < 0.9 );
+      isJetIDLepVeto_2017 = (abs(eta)<=2.4 && CEMF<0.8 && CHM>0 && CHF>0 && NumConst>1 && NEMF<0.9 && MUF <0.8 && NHF < 0.9 );
+      }
+    else if (abs(eta)>2.4 && abs(eta)<=2.7 ){
+      isJetID_2017  = ( abs(eta)>2.4 && abs(eta)<=2.7 && NumConst>1 && NEMF<0.9 && NHF < 0.9 );
+      isJetIDLepVeto_2017  = ( abs(eta)>2.4 && abs(eta)<=2.7 && NumConst>1 && NEMF<0.9 && MUF <0.8 && NHF < 0.9 );
+      }
+    else if (abs(eta)>2.7 && abs(eta)<=3.0 ){
+      isJetID_2017 = ( NEMF>0.02 && NEMF<0.99 && NumNeutralParticles>2 && abs(eta)>2.7 && abs(eta)<=3.0 );
+      isJetIDLepVeto_2017  = false;
+      }
+    else{
+      isJetID_2017 = (NEMF<0.90 && NHF>0.02 && NumNeutralParticles>10 && abs(eta)>3.0 );
+      isJetIDLepVeto_2017  = false;
+    }
+    store("jet_isJetIDLepVeto_2017"                 ,int(isJetIDLepVeto_2017));
+    store("jet_isJetID_2017"                        ,int(isJetID_2017));
+
+
+//****** 2018 IDs **** https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2018
+    if( fabs(eta)<=2.6){
+      isJetID_2018 = (abs(eta)<=2.6 && CHM>0 && CHF>0 && NumConst>1 && NEMF<0.9 && NHF < 0.9 );
+      isJetIDLepVeto_2018 = (abs(eta)<=2.6 && CEMF<0.8 && CHM>0 && CHF>0 && NumConst>1 && NEMF<0.9 && MUF <0.8 && NHF < 0.9 );
+      }
+    else if (abs(eta)>2.6 && abs(eta)<=2.7 ){
+      isJetID_2018  = ( abs(eta)>2.6 && abs(eta)<=2.7 && CHM>0 && NEMF<0.99 && NHF < 0.9 );
+      isJetIDLepVeto_2018  = ( abs(eta)>2.6 && abs(eta)<=2.7 && CEMF<0.8 && CHM>0 && NEMF<0.99 && MUF <0.8 && NHF < 0.9 );
+      }
+    else if (abs(eta)>2.7 && abs(eta)<=3.0 ){
+      isJetID_2018 = ( NEMF>0.02 && NEMF<0.99 && NumNeutralParticles>2 && abs(eta)>2.7 && abs(eta)<=3.0 );
+      isJetIDLepVeto_2018  = false;
+      }
+    else{
+      isJetID_2018 = (NEMF<0.90 && NHF>0.2 && NumNeutralParticles>10 && abs(eta)>3.0 );
+      isJetIDLepVeto_2018  = false;
+    }
+    store("jet_isJetIDLepVeto_2018"                 ,int(isJetIDLepVeto_2018));
+    store("jet_isJetID_2018"                        ,int(isJetID_2018));
+
+
+
+
     if (isMC_){
 
 //JetBTagWeight( edm::View<pat::Jet>&b, size_t ijet, const vector<BTagEntry::OperatingPoinconst string &bc_full_syst, const string &udsg_full_syst,const string &bc_full_syst, const string &udsg_full_syst,const string &bc_fast_syst, const string &udsg_fast_syst,bool do_deep_csv, bool do_by_proc, Runs runs)
