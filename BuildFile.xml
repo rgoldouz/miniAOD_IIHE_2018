@@ -64,6 +64,7 @@
 <use   name="fastjet"/>
 <use   name="JetMETCorrections/Objects"/>
 <use   name="CondFormats/JetMETObjects"/>
+<use   name="RecoTauTag/RecoTau"/>
 
 <flags   EDM_PLUGIN="1"/>
 

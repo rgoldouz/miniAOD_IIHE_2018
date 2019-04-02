@@ -8,7 +8,7 @@
 class IIHEMuonTrackVariableBase{
 public:
   IIHEMuonTrackVariableBase(std::string, std::string, int) ;
-  ~IIHEMuonTrackVariableBase(){} ;
+  virtual ~IIHEMuonTrackVariableBase(){} ;
   
   const std::string       Name(){ return       name_ ; }
   const std::string BranchName(){ return branchName_ ; }

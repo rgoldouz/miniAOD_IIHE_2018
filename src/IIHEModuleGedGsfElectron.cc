@@ -44,17 +44,6 @@ IIHEModuleGedGsfElectron::IIHEModuleGedGsfElectron(const edm::ParameterSet& iCon
   esReducedRecHitCollection_ = iC.consumes<EcalRecHitCollection> (iConfig.getParameter<InputTag>("esReducedRecHitCollection"));
   beamSpotToken_      = iC.consumes<reco::BeamSpot>(iConfig.getParameter<InputTag>("beamSpot")) ;
   rhoTokenAll_ = iC.consumes<double> (iConfig.getParameter<edm::InputTag>("eventRho"));
-  eleTrkPtIso_ = iC.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("eleTrkPtIsoLabel"));
-  VIDVeto_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("VIDVeto"));
-  VIDLoose_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("VIDLoose"));
-  VIDMedium_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("VIDMedium"));
-  VIDTight_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("VIDTight"));
-  VIDHEEP7_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("VIDHEEP7"));
-  eleMediumIdMapToken_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumIdMap"));
-  eleTightIdMapToken_ = iC.consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightIdMap"));
-  mvaValuesMapToken_ = iC.consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaValuesMap"));
-  mvaCategoriesMapToken_ = iC.consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("mvaCategoriesMap"));
-  calibratedElectronCollectionToken_ = iC.consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("calibratedElectronCollection")) ;
   electronCollectionToken_     = iC.consumes<edm::View<pat::Electron>> (iConfig.getParameter<edm::InputTag>("electronCollection")) ;
   ETThreshold_ = iConfig.getUntrackedParameter<double>("electronPtThreshold") ;
   primaryVertexLabel_          = iConfig.getParameter<edm::InputTag>("primaryVertex") ;
@@ -68,25 +57,8 @@ void IIHEModuleGedGsfElectron::beginJob(){
   addBranch("gsf_classification", kVectorInt) ;
 
   setBranchType(kVectorFloat) ;
-  addBranch("gsfCalibrated_energy") ;
-  addBranch("gsfCalibrated_p") ;
-  addBranch("gsfCalibrated_pt") ;
-  addBranch("gsfCalibrated_et") ;
-  addBranch("gsfCalibrated_caloEnergy") ;
-  addBranch("gsfCalibrated_hadronicOverEm") ;
-  addBranch("gsfCalibrated_hcalDepth1OverEcal") ;
-  addBranch("gsfCalibrated_hcalDepth2OverEcal") ;
-  addBranch("gsfCalibrated_dr03EcalRecHitSumEt") ;
-  addBranch("gsfCalibrated_dr03HcalDepth1TowerSumEt") ;
-  addBranch("gsfCalibrated_ooEmooP") ;
-  addBranch("gsfCalibrated_eSuperClusterOverP") ;
-  setBranchType(kVectorInt) ;
-  addBranch("gsfCalibrated_Loose");
-  addBranch("gsfCalibrated_Medium");
-  addBranch("gsfCalibrated_Tight");
-  addBranch("gsfCalibrated_isHeepV7");
-
-  setBranchType(kVectorFloat) ;
+  addBranch("gsf_ecalTrkEnergyPostCorr") ;
+  addBranch("gsf_ecalEnergyPostCorr") ;
   addBranch("gsf_energy") ;
   addBranch("gsf_p") ;
   addBranch("gsf_pt") ;
@@ -120,7 +92,7 @@ void IIHEModuleGedGsfElectron::beginJob(){
   addBranch("gsf_hcalDepth1OverEcal") ;
   addBranch("gsf_hcalDepth2OverEcal") ;
   addBranch("gsf_dr03TkSumPt") ;
-  addBranch("gsf_dr03TkSumPtHEEP7") ;
+  addBranch("gsf_heepTrkPtIso") ;
   addBranch("gsf_dr03EcalRecHitSumEt") ;
   addBranch("gsf_dr03HcalDepth1TowerSumEt") ;
   addBranch("gsf_dr03HcalDepth2TowerSumEt") ;
@@ -132,19 +104,26 @@ void IIHEModuleGedGsfElectron::beginJob(){
   addBranch("gsf_isEB") ;
   addBranch("gsf_isEE") ;
   addBranch("gsf_passConversionVeto") ;
-  addBranch("gsf_Loose");
-  addBranch("gsf_Medium");
-  addBranch("gsf_Tight");
-  addBranch("gsf_VIDVeto");
-  addBranch("gsf_VIDLoose");
-  addBranch("gsf_VIDMedium");
-  addBranch("gsf_VIDTight");
-  addBranch("gsf_VIDHEEP7");
-  addBranch("gsf_VIDMVAMedium");
-  addBranch("gsf_VIDMVATight");
+  addBranch("gsf_VID_cutBasedElectronID_Fall17_94X_V1_loose");
+  addBranch("gsf_VID_cutBasedElectronID_Fall17_94X_V1_medium"); 
+  addBranch("gsf_VID_cutBasedElectronID_Fall17_94X_V1_tight");
+  addBranch("gsf_VID_cutBasedElectronID_Fall17_94X_V1_veto"); 
+  addBranch("gsf_VID_cutBasedElectronID_Summer16_80X_V1_loose");
+  addBranch("gsf_VID_cutBasedElectronID_Summer16_80X_V1_medium"); 
+  addBranch("gsf_VID_cutBasedElectronID_Summer16_80X_V1_tight");
+  addBranch("gsf_VID_cutBasedElectronID_Summer16_80X_V1_veto");
+  addBranch("gsf_VID_heepElectronID_HEEPV70");
+  addBranch("gsf_VID_mvaEleID_Fall17_iso_V1_wp80");
+  addBranch("gsf_VID_mvaEleID_Fall17_iso_V1_wp90"); 
+  addBranch("gsf_VID_mvaEleID_Fall17_iso_V1_wpLoose");
+  addBranch("gsf_VID_mvaEleID_Fall17_noIso_V1_wp80");
+  addBranch("gsf_VID_mvaEleID_Fall17_noIso_V1_wp90");
+  addBranch("gsf_VID_mvaEleID_Fall17_noIso_V1_wpLoose");
+  addBranch("gsf_VID_mvaEleID_Spring16_GeneralPurpose_V1_wp80"); 
+  addBranch("gsf_VID_mvaEleID_Spring16_GeneralPurpose_V1_wp90");
+  addBranch("gsf_VID_mvaEleID_Spring16_HZZ_V1_wpLoose");
 
   setBranchType(kVectorFloat) ;
-  addBranch("gsf_VIDMVAValue");
   addBranch("gsf_deltaEtaSeedClusterTrackAtCalo") ;
   addBranch("gsf_deltaPhiSeedClusterTrackAtCalo") ;
   addBranch("gsf_ecalEnergy") ;
@@ -307,43 +286,6 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
   edm::Handle<edm::View<pat::Electron>>     electronCollection_ ;
   iEvent.getByToken( electronCollectionToken_ , electronCollection_) ;
 
-  edm::Handle<edm::View<pat::Electron>>     calibratedElectronCollection_ ;
-  iEvent.getByToken( calibratedElectronCollectionToken_ , calibratedElectronCollection_) ;
-
-  edm::Handle<edm::ValueMap<float>> eleTrkPtIsoHandle_;
-  iEvent.getByToken(eleTrkPtIso_,eleTrkPtIsoHandle_);
-
-  edm::Handle<edm::ValueMap<bool>> VIDVetoHandle_;
-  iEvent.getByToken(VIDVeto_,VIDVetoHandle_);
-
-  edm::Handle<edm::ValueMap<bool>> VIDLooseHandle_;
-  iEvent.getByToken(VIDLoose_,VIDLooseHandle_);
-
-  edm::Handle<edm::ValueMap<bool>> VIDMediumHandle_;
-  iEvent.getByToken(VIDMedium_,VIDMediumHandle_);
-
-  edm::Handle<edm::ValueMap<bool>> VIDTightHandle_;
-  iEvent.getByToken(VIDTight_,VIDTightHandle_);
-
-  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > tight_id_decisions; 
-  iEvent.getByToken(eleMediumIdMapToken_,medium_id_decisions);
-  iEvent.getByToken(eleTightIdMapToken_,tight_id_decisions);
-  edm::Handle<edm::ValueMap<float> > mvaValues;
-  edm::Handle<edm::ValueMap<int> > mvaCategories;
-  iEvent.getByToken(mvaValuesMapToken_,mvaValues);
-  iEvent.getByToken(mvaCategoriesMapToken_,mvaCategories);
-
-
-//  edm::Handle<edm::ValueMap<bool>> VIDmvaEleIDwp90Handle_;
-//  iEvent.getByToken(VIDmvaEleIDwp90_,VIDmvaEleIDwp90Handle_);
-
-//  edm::Handle<edm::ValueMap<bool>> VIDmvaEleIDwp80Handle_;
-//  iEvent.getByToken(VIDmvaEleIDwp80_,VIDmvaEleIDwp80Handle_);
-
-  edm::Handle<edm::ValueMap<bool>> VIDHEEP7Handle_;
-  iEvent.getByToken(VIDHEEP7_,VIDHEEP7Handle_);
-
   edm::Handle<reco::BeamSpot> beamspotHandle_ ;
   iEvent.getByToken(beamSpotToken_, beamspotHandle_) ;
 
@@ -392,10 +334,11 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     else if (Eta >= 2.2 && Eta < 2.3) EffArea = 0.1635;
     else if (Eta >= 2.3 && Eta < 2.4) EffArea = 0.1937;
     else if (Eta >= 2.4 && Eta < 5) EffArea = 0.2393;
-
     int gsf_nLostInnerHits = gsfiter->gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS) ;
     int gsf_nLostOuterHits = gsfiter->gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_OUTER_HITS) ;
     store("gsf_energy"                        , gsfiter->energy()                        ) ;
+    store("gsf_ecalTrkEnergyPostCorr"         , gsfiter->userFloat("ecalTrkEnergyPostCorr")) ;
+    store("gsf_ecalEnergyPostCorr"            , gsfiter->userFloat("ecalEnergyPostCorr")) ;
     store("gsf_p"                             , gsfiter->p()                             ) ;
     store("gsf_pt"                            , gsfiter->pt()                            ) ;
     store("gsf_et"                            , gsfiter->et()                            ) ;
@@ -416,23 +359,27 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     store("gsf_hcalDepth1OverEcal"            , gsfiter->hcalDepth1OverEcal()            ) ;
     store("gsf_hcalDepth2OverEcal"            , gsfiter->hcalDepth2OverEcal()            ) ;
     store("gsf_dr03TkSumPt"                   , gsfiter->dr03TkSumPt()                   ) ;
-    store("gsf_dr03TkSumPtHEEP7"              , (*eleTrkPtIsoHandle_).get(gsfref)        ) ;
+    store("gsf_heepTrkPtIso"              , gsfiter->userFloat("heepTrkPtIso"        ) );
     store("gsf_relIso"                        , electronHelper.GetElectronRelIso(electronCollection_->at(i), coneSize::R03, corrType::rhoEA, effAreaType::spring16)) ;
     store("gsf_effArea"                       , EffArea                                  ) ;
-    store("gsf_Loose"                         , int(electronHelper.isGoodElectron(electronCollection_->at(i),0,25,electronID::electron80XCutBasedL) && abs(gsfiter->superCluster()->eta()) < 2.5));
-    store("gsf_Medium"                        , int(electronHelper.isGoodElectron(electronCollection_->at(i),0,25,electronID::electron80XCutBasedM) && abs(gsfiter->superCluster()->eta()) < 2.5)) ;
-    store("gsf_Tight"                         , int(electronHelper.isGoodElectron(electronCollection_->at(i),0,25,electronID::electron80XCutBasedT) && abs(gsfiter->superCluster()->eta()) < 2.5));
-    store("gsf_VIDVeto"                       , int((*VIDVetoHandle_).get(gsfref))            ) ;  
-    store("gsf_VIDLoose"                      , int((*VIDLooseHandle_).get(gsfref))           ) ;
-    store("gsf_VIDMedium"                     , int((*VIDMediumHandle_).get(gsfref))          ) ;
-    store("gsf_VIDTight"                      , int((*VIDTightHandle_).get(gsfref))           ) ;
-    store("gsf_VIDHEEP7"                      , int((*VIDHEEP7Handle_).get(gsfref))           ) ;
-    store("gsf_VIDMVAMedium"                  , int((*medium_id_decisions).get(gsfref))          ) ;
-    store("gsf_VIDMVATight"                   , int((*tight_id_decisions).get(gsfref))           ) ;
-    store("gsf_VIDMVAValue"                   , int((*mvaValues).get(gsfref))           ) ;
-    store("gsf_VIDMVAVCategories"             , int((*mvaCategories).get(gsfref))           ) ;
-//    store("gsf_VIDmvaEleIDwp90"               , (*VIDmvaEleIDwp90Handle_).get(gsfref)        ) ;
-//    store("gsf_VIDmvaEleIDwp80"               , (*VIDmvaEleIDwp80Handle_).get(gsfref)        ) ;
+    store("gsf_VID_cutBasedElectronID_Fall17_94X_V1_loose"   ,int(gsfiter->electronID("cutBasedElectronID-Fall17-94X-V1-loose")));
+    store("gsf_VID_cutBasedElectronID_Fall17_94X_V1_medium"  ,int(gsfiter->electronID("cutBasedElectronID-Fall17-94X-V1-medium")));
+    store("gsf_VID_cutBasedElectronID_Fall17_94X_V1_tight"   ,int(gsfiter->electronID("cutBasedElectronID-Fall17-94X-V1-tight")));
+    store("gsf_VID_cutBasedElectronID_Fall17_94X_V1_veto"    ,int(gsfiter->electronID("cutBasedElectronID-Fall17-94X-V1-veto")));
+    store("gsf_VID_cutBasedElectronID_Summer16_80X_V1_loose" ,int(gsfiter->electronID("cutBasedElectronID-Summer16-80X-V1-loose")));
+    store("gsf_VID_cutBasedElectronID_Summer16_80X_V1_medium",int(gsfiter->electronID("cutBasedElectronID-Summer16-80X-V1-medium")));
+    store("gsf_VID_cutBasedElectronID_Summer16_80X_V1_tight" ,int(gsfiter->electronID("cutBasedElectronID-Summer16-80X-V1-tight")));
+    store("gsf_VID_cutBasedElectronID_Summer16_80X_V1_veto"  ,int(gsfiter->electronID("cutBasedElectronID-Summer16-80X-V1-veto")));
+    store("gsf_VID_heepElectronID_HEEPV70"                   ,int(gsfiter->electronID("heepElectronID-HEEPV70")));
+    store("gsf_VID_mvaEleID_Fall17_iso_V1_wp80"              ,int(gsfiter->electronID("mvaEleID-Fall17-iso-V1-wp80")));
+    store("gsf_VID_mvaEleID_Fall17_iso_V1_wp90"              ,int(gsfiter->electronID("mvaEleID-Fall17-iso-V1-wp90")));
+    store("gsf_VID_mvaEleID_Fall17_iso_V1_wpLoose"           ,int(gsfiter->electronID("mvaEleID-Fall17-iso-V1-wpLoose")));
+    store("gsf_VID_mvaEleID_Fall17_noIso_V1_wp80"            ,int(gsfiter->electronID("mvaEleID-Fall17-noIso-V1-wp80")));
+    store("gsf_VID_mvaEleID_Fall17_noIso_V1_wp90"            ,int(gsfiter->electronID("mvaEleID-Fall17-noIso-V1-wp90")));
+    store("gsf_VID_mvaEleID_Fall17_noIso_V1_wpLoose"         ,int(gsfiter->electronID("mvaEleID-Fall17-noIso-V1-wpLoose")));
+    store("gsf_VID_mvaEleIDSpring16_GeneralPurpose_V1_wp80" ,int(gsfiter->electronID("mvaEleID-Spring16-GeneralPurpose-V1-wp80")));
+    store("gsf_VID_mvaEleIDSpring16_GeneralPurpose_V1_wp90" ,int(gsfiter->electronID("mvaEleID-Spring16-GeneralPurpose-V1-wp90")));
+    store("gsf_VID_mvaEleIDSpring16_HZZ_V1_wpLoose"         ,int(gsfiter->electronID("mvaEleID-Spring16-HZZ-V1-wpLoose")));
     store("gsf_dr03EcalRecHitSumEt"           , gsfiter->dr03EcalRecHitSumEt()           ) ;
     store("gsf_dr03HcalDepth1TowerSumEt"      , gsfiter->dr03HcalDepth1TowerSumEt()      ) ;
     store("gsf_dr03HcalDepth2TowerSumEt"      , gsfiter->dr03HcalDepth2TowerSumEt()      ) ;
@@ -586,78 +533,32 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
       store("gsf_mc_index" ,    -1) ;
       store("gsf_mc_ERatio", 999.0) ;
     }
-    bool isHeep = false;
-    //Barrel
-    if ( ET > 35  && fabs(gsfiter->superCluster()->eta()) < 1.4442  &&
-      gsfiter->ecalDrivenSeed()                                            &&
-      fabs(gsfiter->deltaEtaSeedClusterTrackAtVtx()) < 0.004                    &&
-      fabs(gsfiter->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
-      gsfiter->hadronicOverEm() < 0.05 + 1/ sc_energy          &&
-      (gsfiter->full5x5_e1x5()/gsfiter->full5x5_e5x5() > 0.83 || gsfiter->full5x5_e2x5Max()/gsfiter->full5x5_e5x5() > 0.94) &&
-      gsf_nLostInnerHits < 2                                               &&
-      fabs(gsfiter->gsfTrack()->dxy(firstpvertex->position())) < 0.02                       &&
-      gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2 + 0.03 * ET + 0.28 * rho   && 
-      (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep = true;
-    //endcap
-    if ( ET > 35  && (fabs(gsfiter->superCluster()->eta()) > 1.566  && (abs(gsfiter->superCluster()->eta()) < 2.5) )&&
-      gsfiter->ecalDrivenSeed()                                            &&
-      fabs(gsfiter->deltaEtaSeedClusterTrackAtVtx()) < 0.006                    &&
-      fabs(gsfiter->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
-      gsfiter->hadronicOverEm() < 0.05 + 5/ sc_energy          &&
-      gsfiter->full5x5_sigmaIetaIeta() <0.03                                         &&
-      gsf_nLostInnerHits < 2                                               &&
-      fabs(gsfiter->gsfTrack()->dxy(firstpvertex->position())) < 0.05                       &&
-      (( ET < 50 && gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2.5 + 0.28 * rho) || 
-      ( ET > 50 && gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2.5 + 0.03 * (ET-50) + 0.28 * rho)) &&
-      (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep = true;
-
-    store("gsf_isHeepV7", int(isHeep));
-
-    Ptr<pat::Electron> gsfiterCalibrated = calibratedElectronCollection_->ptrAt( i );
-
-
-
-      store("gsfCalibrated_energy"                     , gsfiterCalibrated->energy()                        ) ;
-      store("gsfCalibrated_p"                          , gsfiterCalibrated->p()                             ) ;
-      store("gsfCalibrated_pt"                         , gsfiterCalibrated->pt()                            ) ;
-      store("gsfCalibrated_et"                         , gsfiterCalibrated->et()                            ) ;
-      store("gsfCalibrated_caloEnergy"                 , gsfiterCalibrated->caloEnergy()                    ) ; 
-      store("gsfCalibrated_hadronicOverEm"             , gsfiterCalibrated->hadronicOverEm()                ) ;
-      store("gsfCalibrated_hcalDepth1OverEcal"         , gsfiterCalibrated->hcalDepth1OverEcal()            ) ;
-      store("gsfCalibrated_hcalDepth2OverEcal"         , gsfiterCalibrated->hcalDepth2OverEcal()            ) ;
-      store("gsfCalibrated_dr03EcalRecHitSumEt"        , gsfiterCalibrated->dr03EcalRecHitSumEt()           ) ;
-      store("gsfCalibrated_dr03HcalDepth1TowerSumEt"   , gsfiterCalibrated->dr03HcalDepth1TowerSumEt()      ) ;
-      store("gsfCalibrated_Loose"                      , int(electronHelper.isGoodElectron(calibratedElectronCollection_->at(i),0,25,electronID::electron80XCutBasedL) && abs(gsfiterCalibrated->superCluster()->eta()) < 2.5));
-      store("gsfCalibrated_Medium"                     , int(electronHelper.isGoodElectron(calibratedElectronCollection_->at(i),0,25,electronID::electron80XCutBasedM) && abs(gsfiterCalibrated->superCluster()->eta()) < 2.5)) ;
-      store("gsfCalibrated_Tight"                      , int(electronHelper.isGoodElectron(calibratedElectronCollection_->at(i),0,25,electronID::electron80XCutBasedT) && abs(gsfiterCalibrated->superCluster()->eta()) < 2.5));
-      store("gsfCalibrated_ooEmooP"                       ,fabs(1.0/gsfiterCalibrated->ecalEnergy() - gsfiterCalibrated->eSuperClusterOverP()/gsfiterCalibrated->ecalEnergy() )) ;
-      store("gsfCalibrated_eSuperClusterOverP"            ,gsfiterCalibrated->eSuperClusterOverP()) ;
-
-        bool isHeep80 = false;
-        float ETCalibrated = gsfiterCalibrated->caloEnergy()*sin(2.*atan(exp(-1.*gsfiterCalibrated->eta()))) ;
-        if ( ETCalibrated > 35  && fabs(gsfiterCalibrated->superCluster()->eta()) < 1.4442  &&
-        gsfiterCalibrated->ecalDrivenSeed()                                            &&
-        fabs(gsfiterCalibrated->deltaEtaSeedClusterTrackAtVtx()) < 0.004                    &&
-        fabs(gsfiterCalibrated->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
-        gsfiterCalibrated->hadronicOverEm() < 0.05 + 1/ gsfiterCalibrated->superCluster()->energy()          &&
-        (gsfiterCalibrated->full5x5_e1x5()/gsfiterCalibrated->full5x5_e5x5() > 0.83 || gsfiterCalibrated->full5x5_e2x5Max()/gsfiterCalibrated->full5x5_e5x5() > 0.94) &&
-        gsf_nLostInnerHits < 2                                               &&
-        fabs(gsfiterCalibrated->gsfTrack()->dxy(firstpvertex->position())) < 0.02                       &&
-        gsfiterCalibrated->dr03EcalRecHitSumEt() + gsfiterCalibrated->dr03HcalDepth1TowerSumEt() < 2 + 0.03 * ETCalibrated + 0.28 * rho   &&
-        (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep80 = true;
-        if ( ETCalibrated > 35  && (fabs(gsfiterCalibrated->superCluster()->eta()) > 1.566  && (abs(gsfiterCalibrated->superCluster()->eta()) < 2.5) )&&
-        gsfiterCalibrated->ecalDrivenSeed()                                            &&
-        fabs(gsfiterCalibrated->deltaEtaSeedClusterTrackAtVtx()) < 0.006                    &&
-        fabs(gsfiterCalibrated->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
-        gsfiterCalibrated->hadronicOverEm() < 0.05 + 5/ gsfiterCalibrated->superCluster()->energy()          &&
-        gsfiterCalibrated->full5x5_sigmaIetaIeta() <0.03                                         &&
-        gsf_nLostInnerHits < 2                                               &&
-        fabs(gsfiterCalibrated->gsfTrack()->dxy(firstpvertex->position())) < 0.05                       &&
-        (( ETCalibrated < 50 && gsfiterCalibrated->dr03EcalRecHitSumEt() + gsfiterCalibrated->dr03HcalDepth1TowerSumEt() < 2.5 + 0.28 * rho) ||
-        ( ETCalibrated > 50 && gsfiterCalibrated->dr03EcalRecHitSumEt() + gsfiterCalibrated->dr03HcalDepth1TowerSumEt() < 2.5 + 0.03 * (ETCalibrated-50) + 0.28 * rho)) &&
-        (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep80 = true;
-      store("gsfCalibrated_isHeepV7", int(isHeep80));
-
+//    bool isHeep = false;
+//    //Barrel
+//    if ( ET > 35  && fabs(gsfiter->superCluster()->eta()) < 1.4442  &&
+//      gsfiter->ecalDrivenSeed()                                            &&
+//      fabs(gsfiter->deltaEtaSeedClusterTrackAtVtx()) < 0.004                    &&
+//      fabs(gsfiter->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
+//      gsfiter->hadronicOverEm() < 0.05 + 1/ sc_energy          &&
+//      (gsfiter->full5x5_e1x5()/gsfiter->full5x5_e5x5() > 0.83 || gsfiter->full5x5_e2x5Max()/gsfiter->full5x5_e5x5() > 0.94) &&
+//      gsf_nLostInnerHits < 2                                               &&
+//      fabs(gsfiter->gsfTrack()->dxy(firstpvertex->position())) < 0.02                       &&
+//      gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2 + 0.03 * ET + 0.28 * rho   && 
+//      (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep = true;
+//    //endcap
+//    if ( ET > 35  && (fabs(gsfiter->superCluster()->eta()) > 1.566  && (abs(gsfiter->superCluster()->eta()) < 2.5) )&&
+//      gsfiter->ecalDrivenSeed()                                            &&
+//      fabs(gsfiter->deltaEtaSeedClusterTrackAtVtx()) < 0.006                    &&
+//      fabs(gsfiter->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
+//      gsfiter->hadronicOverEm() < 0.05 + 5/ sc_energy          &&
+//      gsfiter->full5x5_sigmaIetaIeta() <0.03                                         &&
+//      gsf_nLostInnerHits < 2                                               &&
+//      fabs(gsfiter->gsfTrack()->dxy(firstpvertex->position())) < 0.05                       &&
+//      (( ET < 50 && gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2.5 + 0.28 * rho) || 
+//      ( ET > 50 && gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2.5 + 0.03 * (ET-50) + 0.28 * rho)) &&
+//      (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep = true;
+//
+//    store("gsf_isHeepV7", int(isHeep));
  }
   store("gsf_n", gsf_n) ;
 

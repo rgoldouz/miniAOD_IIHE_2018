@@ -7,7 +7,7 @@
 class IIHEMETVariableBase{
 public:
   IIHEMETVariableBase(std::string, std::string, int) ;
-  ~IIHEMETVariableBase(){} ;
+  virtual ~IIHEMETVariableBase(){} ;
 
   const std::string       Name(){ return       name_ ; }
   const std::string BranchName(){ return branchName_ ; }

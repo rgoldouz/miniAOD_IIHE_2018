@@ -59,14 +59,21 @@ options.parseArguments()
 #                                      Global tags                                       #
 ##########################################################################################
 globalTag = "80"
-if options.DataProcessing == "mc2017":
-  globalTag = "94X_mc2017_realistic_v10"
+
+if options.DataProcessing == "data2016":
+  globalTag = "94X_dataRun2_v10"
+if options.DataProcessing == "mc2016":
+  globalTag = "94X_mcRun2_asymptotic_v3"
+
 if options.DataProcessing == "data2017":
-  globalTag = "92X_dataRun2_Jun23ReReco_PixelCommissioning"
+  globalTag = "94X_dataRun2_v11"
+if options.DataProcessing == "mc2017":
+  globalTag = "94X_mc2017_realistic_v17"
+
 if options.DataProcessing == "data2018":
-  globalTag = "101X_dataRun2_Prompt_v9"
-if options.DataProcessing == "dataLegacy2016":
-  globalTag = "80X_dataRun2_2016LegacyRepro_v4"
+  globalTag = "102X_dataRun2_Sep2018Rereco_v1"
+if options.DataProcessing == "mc2018":
+  globalTag = "102X_upgrade2018_realistic_v12"
 ##########################################################################################
 #                                  Start the sequences                                   #
 ##########################################################################################
@@ -82,7 +89,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
@@ -99,12 +106,8 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(),
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
 )
-#process.source.fileNames.append( path )
-#process.source.fileNames.append( "file:03Feb2017data.root" )
-#process.source.fileNames.append( "file:TW_80_miniAOD.root" )
-process.source.fileNames.append( "file:2018data.root" )
-#process.source.fileNames.append( "file:legacyData.root" )
-###
+process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
+#process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")###
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
 #  filename_out = "file:/tmp/output_%s" % (options.sample + "_" + options.file)
@@ -113,7 +116,7 @@ if options.DataFormat == "data" and not options.grid:
   filename_out = "outfile_Data.root"
 
 #filename_out = "outfile.root"
-process.out = cms.OutputModule("PoolOutputModule", fileName = cms.untracked.string(filename_out) )
+#process.out = cms.OutputModule("PoolOutputModule", fileName = cms.untracked.string(filename_out) )
 process.TFileService = cms.Service("TFileService", fileName = cms.string(filename_out) )
 
 
@@ -127,22 +130,12 @@ na = TauIDEmbedder(process, cms,
 )
 na.runTauID()
 
-
 ##########################################################################################
-#                                   IIHETree options                                     #
+#                                   2018 electron scale smearing                                       #
 ##########################################################################################
-
-#Track isolation correction value for HEEP v7
-#process.load("RecoEgamma.ElectronIdentification.heepIdVarValueMapProducer_cfi")
-#EGamma VID for various working points
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-dataFormat = DataFormat.MiniAOD
-switchOnVIDElectronIdProducer(process, dataFormat)
-my_id_modules = ["RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff",
-                 "RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff",
-                 "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff"]
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       era='2018-Prompt')  
 
 
 
@@ -154,29 +147,14 @@ process.IIHEAnalysis.globalTag = cms.string(globalTag)
 process.IIHEAnalysis.isData  = cms.untracked.bool("data" in options.DataProcessing)
 process.IIHEAnalysis.isMC    = cms.untracked.bool("mc" in options.DataProcessing)
 #****Collections added before the analysis
-# VID output
-process.IIHEAnalysis.eleTrkPtIsoLabel                            = cms.InputTag("heepIDVarValueMaps"    ,"eleTrkPtIso"       ,"IIHEAnalysis" )
-process.IIHEAnalysis.VIDVeto                                     = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto"  )
-process.IIHEAnalysis.VIDLoose                                    = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose" )
-process.IIHEAnalysis.VIDMedium                                   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium")
-process.IIHEAnalysis.VIDTight                                    = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight" )
-process.IIHEAnalysis.eleMediumIdMap                             = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp90" )
-process.IIHEAnalysis.eleTightIdMap                             = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80" )
-process.IIHEAnalysis.mvaValuesMap     = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values")
-process.IIHEAnalysis.mvaCategoriesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Categories")
-
-process.IIHEAnalysis.VIDHEEP7                                    = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV70"                   )
-# Collections for DATA only.
 process.IIHEAnalysis.particleFlowEGammaGSFixedCollection         = cms.InputTag("particleFlowEGammaGSFixed", "dupECALClusters"              )
 process.IIHEAnalysis.ecalMultiAndGSGlobalRecHitEBCollection      = cms.InputTag("ecalMultiAndGSGlobalRecHitEB","dupESClusters"        ,"PAT")
 process.IIHEAnalysis.METsMuEGCleanCollection                     = cms.InputTag("slimmedMETsMuEGClean"                                      )
 process.IIHEAnalysis.discardedMuonCollection                     = cms.InputTag("packedPFCandidatesDiscarded"                               )
 
-#use 80 regression + scale/smearing for electron
-process.IIHEAnalysis.calibratedElectronCollection    = cms.InputTag("calibratedPatElectrons","","IIHEAnalysis")
 
 #jet smeared collection
-#process.IIHEAnalysis.JetCollection                   = cms.InputTag("basicJetsForMet" ,"","IIHEAnalysis")
+#process.IIHEAnalysis.JetCollection                   = cms.InputTag("basicJetsForMet"              ,"","IIHEAnalysis")
 #process.IIHEAnalysis.JetCollectionSmeared            = cms.InputTag("patSmearedJets"               ,"","IIHEAnalysis")
 #process.IIHEAnalysis.JetCollectionEnUp               = cms.InputTag("shiftedPatJetEnUp"            ,"","IIHEAnalysis")
 #process.IIHEAnalysis.JetCollectionEnDown             = cms.InputTag("shiftedPatJetEnDown"          ,"","IIHEAnalysis")
@@ -201,7 +179,7 @@ process.IIHEAnalysis.particleLevelJetsCollection               = cms.InputTag("p
 process.IIHEAnalysis.particleLevelak1DressedLeptonCollection   = cms.InputTag("pseudoTop"       , "leptons"  ,"IIHEAnalysis"  )
 process.IIHEAnalysis.particleLevelMETCollection                = cms.InputTag("pseudoTop"       , "mets","IIHEAnalysis"  )
 
-
+process.IIHEAnalysis.electronCollection                        = cms.InputTag("slimmedElectrons"          , ""                ,"IIHEAnalysis"  )
 
 process.IIHEAnalysis.includeLeptonsAcceptModule  = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTriggerModule        = cms.untracked.bool(True)
@@ -212,7 +190,7 @@ process.IIHEAnalysis.includeMuonModule           = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
-process.IIHEAnalysis.includeL1Module            = cms.untracked.bool(True)
+#process.IIHEAnalysis.includeL1Module            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule        = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in options.DataProcessing)
 #process.IIHEAnalysis.includeDataModule            = cms.untracked.bool("data" in options.DataProcessing)
@@ -223,20 +201,20 @@ process.IIHEAnalysis.includeAutoAcceptEventModule                = cms.untracked
 #                            Woohoo!  We"re ready to start!                              #
 ##########################################################################################
 #process.p1 = cms.Path(process.kt6PFJetsForIsolation+process.IIHEAnalysis)
-#process.out = cms.OutputModule(
-#    "PoolOutputModule",
-#    fileName = cms.untracked.string("EDM.root")
-#    )
+process.egmGsfElectronIDs.physicsObjectIDs.physicsObjectSrc = cms.InputTag("slimmedElectronss", "", "RECO")
 
 process.IIHEAnalysis.calibratedElectronCollection    = cms.InputTag("slimmedElectrons")
 process.p1 = cms.Path(
+    process.egammaPostRecoSeq *
     process.rerunMvaIsolationSequence *
-    process.NewTauIDsEmbedded *
-    process.egmGsfElectronIDSequence * 
+    process.NewTauIDsEmbedded * 
     process.IIHEAnalysis
     )
 
-
+process.out = cms.OutputModule(
+    "PoolOutputModule",
+    fileName = cms.untracked.string("EDM.root")
+    )
 
 #process.outpath = cms.EndPath(process.out)
-
+#
