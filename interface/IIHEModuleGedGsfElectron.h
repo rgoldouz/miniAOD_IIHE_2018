@@ -13,19 +13,6 @@ private:
   edm::EDGetTokenT<reco::TrackCollection>       generalTracksToken_;
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_ ;
   edm::EDGetTokenT<double> rhoTokenAll_; 
-  edm::EDGetTokenT<edm::ValueMap<float> > eleTrkPtIso_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDVeto_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDLoose_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDMedium_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDTight_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDmvaEleIDwp90_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDmvaEleIDwp80_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > VIDHEEP7_;
-
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > mvaValuesMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<int> > mvaCategoriesMapToken_;
 
   edm::EDGetTokenT<edm::View<pat::Electron>> electronCollectionToken_;
   edm::EDGetTokenT<edm::View<pat::Electron>> calibratedElectronCollectionToken_;

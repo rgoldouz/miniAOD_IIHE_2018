@@ -44,7 +44,11 @@ private:
   std::vector<std::string> HLTNamesFromConfigRECO_ ;
   std::vector<std::string> triggerNamesFromPSet_ ;
   std::vector<std::string> savedHLTriggers_ ; 
-  void clearHLTrigger(){HLTriggers_.clear();} ;
+  void clearHLTrigger(){
+  for (unsigned int k=0;k<HLTriggers_.size();++k){
+    delete HLTriggers_[k];
+  }
+  HLTriggers_.clear();} ;
 
 
   edm::InputTag  triggerBitsLabel_;

@@ -15,7 +15,6 @@ using namespace edm ;
 IIHEModuleJet::IIHEModuleJet(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC):IIHEModule(iConfig){
   pfJetLabel_                  =  iConfig.getParameter<edm::InputTag>("JetCollection");
   pfJetToken_                  =  iC.consumes<View<pat::Jet> > (pfJetLabel_);
-
   ETThreshold_ = iConfig.getUntrackedParameter<double>("jetPtThreshold") ;
   isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
 
@@ -70,9 +69,7 @@ void IIHEModuleJet::beginJob(){
   addBranch("jet_SmearedJetResDown_pt");
   addBranch("jet_SmearedJetResDown_energy");
   addBranch("jet_EnUp_pt");
-  addBranch("jet_EnUp_energy");
   addBranch("jet_EnDown_pt");
-  addBranch("jet_EnDown_energy");
 
   addBranch("jet_BtagSF_loose");
   addBranch("jet_BtagSFbcUp_loose");
@@ -102,14 +99,14 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   edm::Handle<edm::View<pat::Jet> > pfJetHandle_;
   iEvent.getByToken(pfJetToken_, pfJetHandle_);
 
-  const string ctr = "central";
-  const string vup = "up";
-  const string vdown = "down";
+  ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+  iSetup.get<JetCorrectionsRecord>().get("AK4PFchs", JetCorParColl);
+  JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+  JetCorrectionUncertainty jecUnc(JetCorPar);
 
 
   for ( unsigned int i = 0; i <pfJetHandle_->size(); ++i) {
     Ptr<pat::Jet> pfjet = pfJetHandle_->ptrAt( i );
-
     if(pfjet->pt() < ETThreshold_) continue ;
 
     store("jet_px"    , pfjet->px()) ;
@@ -218,10 +215,11 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
 
     if (isMC_){
-
-//JetBTagWeight( edm::View<pat::Jet>&b, size_t ijet, const vector<BTagEntry::OperatingPoinconst string &bc_full_syst, const string &udsg_full_syst,const string &bc_full_syst, const string &udsg_full_syst,const string &bc_fast_syst, const string &udsg_fast_syst,bool do_deep_csv, bool do_by_proc, Runs runs)
-
-
+    jecUnc.setJetEta(pfjet->eta());
+    jecUnc.setJetPt(pfjet->pt());
+    double unc = jecUnc.getUncertainty(true);
+    store("jet_EnUp_pt", (1+unc)*pfjet->pt());
+    store("jet_EnDown_pt", (1-unc)*pfjet->pt());
    }
 
   }

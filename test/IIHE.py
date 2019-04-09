@@ -12,6 +12,8 @@ import FWCore.ParameterSet.VarParsing as opts
 import copy
 import os
 
+
+
 options = opts.VarParsing ("analysis")
 options.register("sample",
                  "ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1", 
@@ -89,10 +91,10 @@ process.load('Configuration.StandardSequences.Services_cff')
 
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+#process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-
 ##########################################################################################
 #                                         Files                                          #
 ##########################################################################################
@@ -105,9 +107,10 @@ if options.DataFormat == "data":
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(),
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
+#    skipEvents=cms.untracked.uint32(17000)
 )
-process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-#process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")###
+#process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
+process.source.fileNames.append( "/store/data/Run2018A/EGamma/MINIAOD/17Sep2018-v2/270000/A3480122-01D1-3840-8E8E-E1B44ACE74E5.root")###
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
 #  filename_out = "file:/tmp/output_%s" % (options.sample + "_" + options.file)
@@ -131,13 +134,57 @@ na = TauIDEmbedder(process, cms,
 na.runTauID()
 
 ##########################################################################################
-#                                   2018 electron scale smearing                                       #
+#                                  Jet Energy corrections.                               #
+##########################################################################################
+
+datadir = "0"
+if "2018" in options.DataProcessing:
+    if "mc" in options.DataProcessing:
+        datadir = "Autumn18_V8_MC"
+    else:
+        datadir = "Autumn18_RunABCD_V8_DATA"
+    print "WARNING: we are reading JEC from %s so GRID jobs might not work" % datadir
+    from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
+    process.jec = cms.ESSource('PoolDBESSource',
+        CondDBSetup,
+        connect = cms.string("sqlite:"+datadir+".db"),
+        toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('JetCorrectionsRecord'),
+                tag    = cms.string("JetCorrectorParametersCollection_"+datadir+"_AK4PFchs"),
+                label  = cms.untracked.string('AK4PFchs')
+            )
+        )
+    )
+# Add an ESPrefer to override JEC that might be available from the global tag
+    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+
+
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   labelName = 'UpdatedJEC',
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+)
+
+
+##########################################################################################
+#                                   2018 electron scale smearing                         #
 ##########################################################################################
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        era='2018-Prompt')  
 
 
+##########################################################################################
+#                                   2018 MET corrections                                 #
+##########################################################################################
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData="data" in options.DataProcessing,
+)
 
 ##########################################################################################
 #                            MY analysis input!                              ####
@@ -154,7 +201,7 @@ process.IIHEAnalysis.discardedMuonCollection                     = cms.InputTag(
 
 
 #jet smeared collection
-#process.IIHEAnalysis.JetCollection                   = cms.InputTag("basicJetsForMet"              ,"","IIHEAnalysis")
+#process.IIHEAnalysis.JetCollection                   = cms.InputTag("updatedPatJetsUpdatedJEC")
 #process.IIHEAnalysis.JetCollectionSmeared            = cms.InputTag("patSmearedJets"               ,"","IIHEAnalysis")
 #process.IIHEAnalysis.JetCollectionEnUp               = cms.InputTag("shiftedPatJetEnUp"            ,"","IIHEAnalysis")
 #process.IIHEAnalysis.JetCollectionEnDown             = cms.InputTag("shiftedPatJetEnDown"          ,"","IIHEAnalysis")
@@ -196,18 +243,17 @@ process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in 
 #process.IIHEAnalysis.includeDataModule            = cms.untracked.bool("data" in options.DataProcessing)
 
 
-process.IIHEAnalysis.includeAutoAcceptEventModule                = cms.untracked.bool(True)
+#process.IIHEAnalysis.includeAutoAcceptEventModule                = cms.untracked.bool(True)
 ##########################################################################################
 #                            Woohoo!  We"re ready to start!                              #
 ##########################################################################################
-#process.p1 = cms.Path(process.kt6PFJetsForIsolation+process.IIHEAnalysis)
-process.egmGsfElectronIDs.physicsObjectIDs.physicsObjectSrc = cms.InputTag("slimmedElectronss", "", "RECO")
 
-process.IIHEAnalysis.calibratedElectronCollection    = cms.InputTag("slimmedElectrons")
 process.p1 = cms.Path(
     process.egammaPostRecoSeq *
     process.rerunMvaIsolationSequence *
     process.NewTauIDsEmbedded * 
+    process.patJetCorrFactorsUpdatedJEC * 
+    process.updatedPatJetsUpdatedJEC *
     process.IIHEAnalysis
     )
 

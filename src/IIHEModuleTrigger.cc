@@ -72,8 +72,24 @@ IIHEModuleTrigger::~IIHEModuleTrigger(){}
 // ------------ method called once each job just before starting event loop  ------------
 void IIHEModuleTrigger::beginJob(){
 }
-
+//remove some HLT paths 
 bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
+  if(   hlt->nSubstringInString(hlt->name(), "Upsilon")
+     || hlt->nSubstringInString(hlt->name(), "LowMass")
+     || hlt->nSubstringInString(hlt->name(), "Tau")
+     || hlt->nSubstringInString(hlt->name(), "MET")
+     || hlt->nSubstringInString(hlt->name(), "HT")
+     || hlt->nSubstringInString(hlt->name(), "Jpsi")
+     || hlt->nSubstringInString(hlt->name(), "PsiPrime")
+     || hlt->nSubstringInString(hlt->name(), "Scouting")
+     || hlt->nSubstringInString(hlt->name(), "Jet")
+     || hlt->nSubstringInString(hlt->name(), "IP")
+     || hlt->nSubstringInString(hlt->name(), "PF")
+  ) {
+      delete hlt;
+      return false ;
+  }
+
   for(unsigned int i=0 ; i<HLTriggers_.size() ; ++i){
     if(HLTriggers_.at(i)->name()==hlt->name()){
       return false ;
@@ -173,12 +189,12 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
     }
 
   parent_->configureBranches() ;
-  changed_ = false ;
+//  changed_ = false ;
   }
 
   bool changed = true ;
   if(hltConfig_.init(iRun, iSetup, triggerBitsLabel_.process(), changed)){
-    if(changed){
+    if(changed_){
       clearHLTrigger();
       if(false) hltConfig_.dump("Modules") ;
       
@@ -214,8 +230,10 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
           }
         }
         
-        if(addThisTrigger==false) continue ;
-        hlt->savePrescale();
+        if(addThisTrigger==false) {
+          delete hlt;
+          continue ;}
+//        hlt->savePrescale();
         addHLTrigger(hlt) ;
       }
       
@@ -232,6 +250,7 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
       nWasRun_ = 0 ;
       nAccept_ = 0 ;
       nErrors_ = 0 ;
+      changed_ = false ;
     }
   }
   else{

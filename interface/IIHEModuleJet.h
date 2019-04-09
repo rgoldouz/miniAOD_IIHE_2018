@@ -3,7 +3,10 @@
 #include "UserCode/IIHETree/interface/btag_weighter.h"
 #include "UserCode/IIHETree/interface/IIHEModule.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
-
+#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 // class decleration
 
 class IIHEModuleJet : public IIHEModule {
@@ -27,16 +30,6 @@ public:
 private:
   edm::InputTag pfJetLabel_;
   edm::EDGetTokenT<edm::View<pat::Jet> > pfJetToken_;
-  edm::InputTag pfJetLabelSmeared_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmeared_;
-  edm::InputTag pfJetLabelEnUp_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenEnUp_;
-  edm::InputTag pfJetLabelEnDown_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenEnDown_;
-  edm::InputTag pfJetLabelSmearedJetResUp_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResUp_;
-  edm::InputTag pfJetLabelSmearedJetResDown_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResDown_;
 
   float ETThreshold_ ;
   bool isMC_;
