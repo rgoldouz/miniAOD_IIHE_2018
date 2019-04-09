@@ -140,9 +140,9 @@ na.runTauID()
 datadir = "0"
 if "2018" in options.DataProcessing:
     if "mc" in options.DataProcessing:
-        datadir = "Files/Autumn18_V8_MC"
+        datadir = "Autumn18_V8_MC"
     else:
-        datadir = "Files/Autumn18_RunABCD_V8_DATA"
+        datadir = "Autumn18_RunABCD_V8_DATA"
     print "WARNING: we are reading JEC from %s so GRID jobs might not work" % datadir
     from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
     process.jec = cms.ESSource('PoolDBESSource',
