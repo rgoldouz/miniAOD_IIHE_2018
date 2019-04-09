@@ -92,7 +92,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ##########################################################################################
@@ -140,9 +140,9 @@ na.runTauID()
 datadir = "0"
 if "2018" in options.DataProcessing:
     if "mc" in options.DataProcessing:
-        datadir = "Autumn18_V8_MC"
+        datadir = "Files/Autumn18_V8_MC"
     else:
-        datadir = "Autumn18_RunABCD_V8_DATA"
+        datadir = "Files/Autumn18_RunABCD_V8_DATA"
     print "WARNING: we are reading JEC from %s so GRID jobs might not work" % datadir
     from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
     process.jec = cms.ESSource('PoolDBESSource',
