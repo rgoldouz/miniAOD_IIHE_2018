@@ -11,7 +11,7 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as opts
 import copy
 import os
-
+from os import environ
 
 
 options = opts.VarParsing ("analysis")
@@ -137,27 +137,62 @@ na.runTauID()
 #                                  Jet Energy corrections.                               #
 ##########################################################################################
 
-datadir = "0"
+datadir = "%s/src/UserCode/IIHETree/test/data/" % environ['CMSSW_BASE']
+jesdata = "0"
+#from https://github.com/cms-jet/JRDatabase/tree/master/SQLiteFiles
+jerdata = "0"
+sampletorun='0'
 if "2018" in options.DataProcessing:
     if "mc" in options.DataProcessing:
-        datadir = "Autumn18_V8_MC"
+        jesdata = "JES_Autumn18_V8_MC"
+        jerdata = "JER_Autumn18_V1_MC"
+        sampletorun = "MC"
     else:
-        datadir = "Autumn18_RunABCD_V8_DATA"
-    print "WARNING: we are reading JEC from %s so GRID jobs might not work" % datadir
+        jesdata = "JES_Autumn18_RunABCD_V8_DATA"
+        jerdata = "JER_Autumn18_V1_DATA"
+        sampletorun = "DATA"
+    print "we are reading JEC from %s" % jesdata
+    print "we are reading JER from %s" % jerdata
+
+
+##### JES ####
     from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
     process.jec = cms.ESSource('PoolDBESSource',
         CondDBSetup,
-        connect = cms.string("sqlite:"+datadir+".db"),
+        connect = cms.string("sqlite_file:"+datadir+jesdata+".db"),
         toGet = cms.VPSet(
             cms.PSet(
                 record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string("JetCorrectorParametersCollection_"+datadir+"_AK4PFchs"),
+                tag    = cms.string("JetCorrectorParametersCollection_"+jesdata[4:]+"_AK4PFchs"),
                 label  = cms.untracked.string('AK4PFchs')
             )
         )
     )
 # Add an ESPrefer to override JEC that might be available from the global tag
     process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
+
+##### JER ####
+    process.load("JetMETCorrections.Modules.JetResolutionESProducer_cfi")
+    process.jer = cms.ESSource("PoolDBESSource",
+                               CondDBSetup,
+                               toGet = cms.VPSet(
+        # Resolution
+        cms.PSet(
+          record = cms.string('JetResolutionRcd'),
+          tag    = cms.string('JR_Autumn18_V1_'+sampletorun+'_PtResolution_AK4PFchs'),
+          label  = cms.untracked.string('AK4PFchs_pt')
+          ),
+        
+        # Scale factors
+        cms.PSet(
+          record = cms.string('JetResolutionScaleFactorRcd'),
+          tag    = cms.string('JR_Autumn18_V1_'+sampletorun+'_SF_AK4PFchs'),          
+          label  = cms.untracked.string('AK4PFchs')
+          ),
+        ),
+                               connect = cms.string("sqlite_file:"+datadir+jerdata+".db") 
+                               )
+    process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
@@ -254,6 +289,7 @@ process.p1 = cms.Path(
     process.NewTauIDsEmbedded * 
     process.patJetCorrFactorsUpdatedJEC * 
     process.updatedPatJetsUpdatedJEC *
+    process.fullPatMetSequence *
     process.IIHEAnalysis
     )
 
@@ -262,5 +298,5 @@ process.out = cms.OutputModule(
     fileName = cms.untracked.string("EDM.root")
     )
 
-#process.outpath = cms.EndPath(process.out)
+process.outpath = cms.EndPath(process.out)
 #
