@@ -172,7 +172,6 @@ void IIHEModuleGedGsfElectron::beginJob(){
   setBranchType(kVectorInt) ;
   addBranch("gsf_pixelMatch_subDetector1") ;
   addBranch("gsf_pixelMatch_subDetector2") ;
-  
   addBranch("gsf_mc_bestDR", kVectorFloat) ;
   addBranch("gsf_mc_index" , kVectorInt  ) ;
   addBranch("gsf_mc_ERatio", kVectorFloat) ;
@@ -231,42 +230,31 @@ void IIHEModuleGedGsfElectron::beginJob(){
   addBranch("gsf_sc_lazyTools_eseffsirir") ;
   addBranch("gsf_sc_lazyTools_BasicClusterSeedTime") ;
 
-
-  setBranchType(kVectorInt) ;
-  addBranch("gsf_isHeepV7");
-
-
   // Saturation information
   addBranch("EHits_isSaturated", kInt) ;
   setBranchType(kVectorInt) ;
   addBranch("EBHits_rawId"   ) ;
   addBranch("EBHits_iRechit" ) ;
-  addBranch("EBHits_energy", kVectorFloat) ;
   addBranch("EBHits_ieta"    ) ;
   addBranch("EBHits_iphi"    ) ;
   addBranch("EBHits_RecoFlag") ;
-
-  setBranchType(kVectorInt) ;
   addBranch("EBHits_kSaturated"           ) ;
   addBranch("EBHits_kLeadingEdgeRecovered") ;
   addBranch("EBHits_kNeighboursRecovered" ) ;
   addBranch("EBHits_kWeird"               ) ;
+  addBranch("EBHits_energy", kVectorFloat) ;
 
   setBranchType(kVectorInt) ;
   addBranch("EEHits_rawId"   ) ;
   addBranch("EEHits_iRechit" ) ;
-  addBranch("EEHits_energy", kVectorFloat) ;
   addBranch("EEHits_ieta"    ) ;
   addBranch("EEHits_iphi"    ) ;
   addBranch("EEHits_RecoFlag") ;
-  addBranch("gsf_VIDMVAVCategories") ;
-
-  setBranchType(kVectorInt) ;
   addBranch("EEHits_kSaturated"           ) ;
   addBranch("EEHits_kLeadingEdgeRecovered") ;
   addBranch("EEHits_kNeighboursRecovered" ) ;
   addBranch("EEHits_kWeird"               ) ;
-
+  addBranch("EEHits_energy", kVectorFloat) ;
 }
 
 // ------------ method called to for each event  ------------
@@ -533,32 +521,6 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
       store("gsf_mc_index" ,    -1) ;
       store("gsf_mc_ERatio", 999.0) ;
     }
-//    bool isHeep = false;
-//    //Barrel
-//    if ( ET > 35  && fabs(gsfiter->superCluster()->eta()) < 1.4442  &&
-//      gsfiter->ecalDrivenSeed()                                            &&
-//      fabs(gsfiter->deltaEtaSeedClusterTrackAtVtx()) < 0.004                    &&
-//      fabs(gsfiter->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
-//      gsfiter->hadronicOverEm() < 0.05 + 1/ sc_energy          &&
-//      (gsfiter->full5x5_e1x5()/gsfiter->full5x5_e5x5() > 0.83 || gsfiter->full5x5_e2x5Max()/gsfiter->full5x5_e5x5() > 0.94) &&
-//      gsf_nLostInnerHits < 2                                               &&
-//      fabs(gsfiter->gsfTrack()->dxy(firstpvertex->position())) < 0.02                       &&
-//      gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2 + 0.03 * ET + 0.28 * rho   && 
-//      (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep = true;
-//    //endcap
-//    if ( ET > 35  && (fabs(gsfiter->superCluster()->eta()) > 1.566  && (abs(gsfiter->superCluster()->eta()) < 2.5) )&&
-//      gsfiter->ecalDrivenSeed()                                            &&
-//      fabs(gsfiter->deltaEtaSeedClusterTrackAtVtx()) < 0.006                    &&
-//      fabs(gsfiter->deltaPhiSuperClusterTrackAtVtx()) < 0.06                     &&
-//      gsfiter->hadronicOverEm() < 0.05 + 5/ sc_energy          &&
-//      gsfiter->full5x5_sigmaIetaIeta() <0.03                                         &&
-//      gsf_nLostInnerHits < 2                                               &&
-//      fabs(gsfiter->gsfTrack()->dxy(firstpvertex->position())) < 0.05                       &&
-//      (( ET < 50 && gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2.5 + 0.28 * rho) || 
-//      ( ET > 50 && gsfiter->dr03EcalRecHitSumEt() + gsfiter->dr03HcalDepth1TowerSumEt() < 2.5 + 0.03 * (ET-50) + 0.28 * rho)) &&
-//      (*eleTrkPtIsoHandle_).get(gsfref) < 5) isHeep = true;
-//
-//    store("gsf_isHeepV7", int(isHeep));
  }
   store("gsf_n", gsf_n) ;
 
@@ -567,7 +529,7 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
   bool isSaturated = false;
   for(EcalRecHitCollection::const_iterator EBIt = theBarrelEcalRecHits->begin() ; EBIt!=theBarrelEcalRecHits->end() ; ++EBIt){
     if((*EBIt).checkFlag(EcalRecHit::kSaturated)) isSaturated = true;
-    if( (*EBIt).energy() < 200.0 ) continue ;
+   if( (*EBIt).energy() < 200.0 ) continue ;
     nEBRecHits++ ;
     EBDetId elementId = EBIt->id() ;
     store("EBHits_rawId"   , elementId.rawId()) ;
