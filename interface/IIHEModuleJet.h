@@ -30,6 +30,12 @@ public:
 private:
   edm::InputTag pfJetLabel_;
   edm::EDGetTokenT<edm::View<pat::Jet> > pfJetToken_;
+  edm::InputTag pfJetLabelSmeared_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmeared_;
+  edm::InputTag pfJetLabelSmearedJetResUp_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResUp_;
+  edm::InputTag pfJetLabelSmearedJetResDown_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResDown_;
 
   float ETThreshold_ ;
   bool isMC_;

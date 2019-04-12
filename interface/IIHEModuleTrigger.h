@@ -34,6 +34,7 @@ private:
   std::vector<HLTrigger*> HLTriggersPAT_ ;
   std::vector<HLTrigger*> HLTriggersRECO_ ;
   bool changed_ = true ;
+  bool firstRun_ = true ;
 
   HLTConfigProvider hltConfig_ ;
   HLTConfigProvider hltConfigPAT_ ;

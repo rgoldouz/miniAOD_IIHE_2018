@@ -95,6 +95,10 @@ bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
       return false ;
     }
   }
+  if( !firstRun_ && std::find(savedHLTriggers_.begin(), savedHLTriggers_.end(), hlt->name().substr(0, hlt->name().find("_v"))) == savedHLTriggers_.end() && hlt->name().substr(0, hlt->name().find("_v")) != savedHLTriggers_.back()){
+      delete hlt;
+      return false ;
+  }
   if(   hlt->nSubstringInString(hlt->name(), "Ele35_WPTight") 
      || hlt->nSubstringInString(hlt->name(), "DoubleEle33_CaloIdL_MW_v") 
      || hlt->nSubstringInString(hlt->name(), "DoubleEle25_CaloIdL_MW_v")
@@ -189,12 +193,12 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
     }
 
   parent_->configureBranches() ;
-//  changed_ = false ;
+  changed_ = false;
   }
 
   bool changed = true ;
   if(hltConfig_.init(iRun, iSetup, triggerBitsLabel_.process(), changed)){
-    if(changed_){
+    if(changed){
       clearHLTrigger();
       if(false) hltConfig_.dump("Modules") ;
       
@@ -242,15 +246,16 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
         HLTriggers_.at(i)->beginRun(hltConfig_) ;
       }
       
-      // Attempt to add branches
-      addBranches() ;
-      parent_->configureBranches() ;
+      // Attempt to add branches just one time
+      if (firstRun_){
+        addBranches() ;
+        parent_->configureBranches() ;
+        firstRun_ = false;}
       // Now reset things to 0
       nEvents_ = 0 ;
       nWasRun_ = 0 ;
       nAccept_ = 0 ;
       nErrors_ = 0 ;
-      changed_ = false ;
     }
   }
   else{

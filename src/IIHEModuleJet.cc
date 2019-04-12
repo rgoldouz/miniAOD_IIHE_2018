@@ -15,6 +15,12 @@ using namespace edm ;
 IIHEModuleJet::IIHEModuleJet(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC):IIHEModule(iConfig){
   pfJetLabel_                  =  iConfig.getParameter<edm::InputTag>("JetCollection");
   pfJetToken_                  =  iC.consumes<View<pat::Jet> > (pfJetLabel_);
+  pfJetLabelSmeared_           =  iConfig.getParameter<edm::InputTag>("JetCollectionSmeared");
+  pfJetTokenSmeared_           =  iC.consumes<View<pat::Jet> > (pfJetLabelSmeared_);
+  pfJetLabelSmearedJetResUp_   =  iConfig.getParameter<edm::InputTag>("JetCollectionSmearedJetResUp");
+  pfJetTokenSmearedJetResUp_   =  iC.consumes<View<pat::Jet> > (pfJetLabelSmearedJetResUp_);
+  pfJetLabelSmearedJetResDown_ =  iConfig.getParameter<edm::InputTag>("JetCollectionSmearedJetResDown");
+  pfJetTokenSmearedJetResDown_ = iC.consumes<View<pat::Jet> > (pfJetLabelSmearedJetResDown_);
   ETThreshold_ = iConfig.getUntrackedParameter<double>("jetPtThreshold") ;
   isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
 
@@ -47,10 +53,17 @@ void IIHEModuleJet::beginJob(){
   addBranch("jet_hadronFlavour");
 
   setBranchType(kVectorFloat);
+  setBranchType(kVectorFloat);
   addBranch("jet_CSVv2");
   addBranch("jet_CvsL");
   addBranch("jet_CvsB");
   addBranch("jet_MVA2BJets");
+  addBranch("jet_CvsB_DeepJet_charm_tagger");
+  addBranch("jet_CvsL_DeepJet_charm_tagger");
+  addBranch("jet_CvsB_DeepCSV_charm_tagger");
+  addBranch("jet_CvsL_DeepCSV_charm_tagger");
+  addBranch("jet_DeepJet");
+  addBranch("jet_DeepCSV");
   setBranchType(kVectorInt);
   addBranch("jet_isJetIDLoose_2016");
   addBranch("jet_isJetIDTight_2016");
@@ -63,11 +76,8 @@ void IIHEModuleJet::beginJob(){
 
   setBranchType(kVectorFloat);
   addBranch("jet_Smeared_pt");
-  addBranch("jet_Smeared_energy");
   addBranch("jet_SmearedJetResUp_pt");
-  addBranch("jet_SmearedJetResUp_energy");
   addBranch("jet_SmearedJetResDown_pt");
-  addBranch("jet_SmearedJetResDown_energy");
   addBranch("jet_EnUp_pt");
   addBranch("jet_EnDown_pt");
 
@@ -98,6 +108,16 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   edm::Handle<edm::View<pat::Jet> > pfJetHandle_;
   iEvent.getByToken(pfJetToken_, pfJetHandle_);
+
+  edm::Handle<edm::View<pat::Jet> > pfJetHandleSmeared_;
+  iEvent.getByToken(pfJetTokenSmeared_, pfJetHandleSmeared_);
+
+  edm::Handle<edm::View<pat::Jet> > pfJetHandleSmearedJetResUp_;
+  iEvent.getByToken(pfJetTokenSmearedJetResUp_, pfJetHandleSmearedJetResUp_);
+
+  edm::Handle<edm::View<pat::Jet> > pfJetHandleSmearedJetResDown_;
+  iEvent.getByToken(pfJetTokenSmearedJetResDown_, pfJetHandleSmearedJetResDown_);
+
 
   ESHandle<JetCorrectorParametersCollection> JetCorParColl;
   iSetup.get<JetCorrectionsRecord>().get("AK4PFchs", JetCorParColl);
@@ -132,6 +152,16 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
     store("jet_CvsL",pfjet->bDiscriminator("pfCombinedCvsLJetTags"));
     store("jet_CvsB",pfjet->bDiscriminator("pfCombinedCvsBJetTags"));
     store("jet_MVA2BJets", pfjet->bDiscriminator("pfCombinedMVAV2BJetTags"));
+    store("jet_DeepCSV", pfjet->bDiscriminator("pfDeepCSVJetTags:probb") + pfjet->bDiscriminator("pfDeepCSVJetTags:probbb"));
+    store("jet_DeepJet", pfjet->bDiscriminator("pfDeepFlavourJetTags:probb") + pfjet->bDiscriminator("pfDeepFlavourJetTags:probbb") + pfjet->bDiscriminator("pfDeepFlavourJetTags:problepb"));
+    store("jet_CvsL_DeepCSV_charm_tagger", pfjet->bDiscriminator("pfDeepCSVJetTags:probc")/(pfjet->bDiscriminator("pfDeepCSVJetTags:probc") + pfjet->bDiscriminator("pfDeepCSVJetTags:probudsg")));
+
+    store("jet_CvsB_DeepCSV_charm_tagger", pfjet->bDiscriminator("pfDeepCSVJetTags:probc")/(pfjet->bDiscriminator("pfDeepCSVJetTags:probc")+pfjet->bDiscriminator("pfDeepCSVJetTags:probb")+pfjet->bDiscriminator("pfDeepCSVJetTags:probbb")));
+
+    store("jet_CvsL_DeepJet_charm_tagger", pfjet->bDiscriminator("pfDeepFlavourJetTags:probc")/(pfjet->bDiscriminator("pfDeepFlavourJetTags:probc")+pfjet->bDiscriminator("pfDeepFlavourJetTags:probuds")+pfjet->bDiscriminator("pfDeepFlavourJetTags:probg")));
+
+    store("jet_CvsB_DeepJet_charm_tagger", pfjet->bDiscriminator("pfDeepFlavourJetTags:probc")/(pfjet->bDiscriminator("pfDeepFlavourJetTags:probc")+pfjet->bDiscriminator("pfDeepFlavourJetTags:probb")+pfjet->bDiscriminator("pfDeepFlavourJetTags:probbb")+ pfjet->bDiscriminator("pfDeepFlavourJetTags:problepb")));
+
     float eta = pfjet->eta();
     float NHF = pfjet->neutralHadronEnergyFraction();
     float NEMF = pfjet->neutralEmEnergyFraction();
@@ -213,13 +243,15 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
 
 
-
     if (isMC_){
-    jecUnc.setJetEta(pfjet->eta());
-    jecUnc.setJetPt(pfjet->pt());
-    double unc = jecUnc.getUncertainty(true);
-    store("jet_EnUp_pt", (1+unc)*pfjet->pt());
-    store("jet_EnDown_pt", (1-unc)*pfjet->pt());
+      jecUnc.setJetEta(pfjet->eta());
+      jecUnc.setJetPt(pfjet->pt());
+      double unc = jecUnc.getUncertainty(true);
+      store("jet_EnUp_pt", (1+unc)*pfjet->pt());
+      store("jet_EnDown_pt", (1-unc)*pfjet->pt());
+      store("jet_Smeared_pt",pfJetHandleSmeared_->at(i).pt());
+      store("jet_SmearedJetResUp_pt",pfJetHandleSmearedJetResUp_->at(i).pt());
+      store("jet_SmearedJetResDown_pt",pfJetHandleSmearedJetResDown_->at(i).pt());
    }
 
   }

@@ -92,7 +92,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ##########################################################################################
@@ -106,11 +106,15 @@ if options.DataFormat == "data":
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(),
+    lumisToProcess = cms.untracked.VLuminosityBlockRange('319756:1567','319337:56'),
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
-#    skipEvents=cms.untracked.uint32(17000)
+#    skipEvents=cms.untracked.uint32(8000)
 )
 #process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-process.source.fileNames.append( "/store/data/Run2018A/EGamma/MINIAOD/17Sep2018-v2/270000/A3480122-01D1-3840-8E8E-E1B44ACE74E5.root")###
+#process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
+process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/0D7361CD-D1BE-4A42-BAE2-D84A551D46FD.root")
+process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
+
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
 #  filename_out = "file:/tmp/output_%s" % (options.sample + "_" + options.file)
@@ -137,7 +141,8 @@ na.runTauID()
 #                                  Jet Energy corrections.                               #
 ##########################################################################################
 
-datadir = "%s/src/UserCode/IIHETree/test/data/" % environ['CMSSW_BASE']
+#datadir = "%s/src/UserCode/IIHETree/test/data/" % environ['CMSSW_BASE']
+datadir = "data/"
 jesdata = "0"
 #from https://github.com/cms-jet/JRDatabase/tree/master/SQLiteFiles
 jerdata = "0"
@@ -194,7 +199,6 @@ if "2018" in options.DataProcessing:
                                )
     process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
-
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
 updateJetCollection(
@@ -204,6 +208,58 @@ updateJetCollection(
    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
 )
 
+#see https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py#L102
+from RecoMET.METProducers.METSigParams_cfi import *
+process.mySmearedJets = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("updatedPatJetsUpdatedJEC"),
+    enabled = cms.bool(True),  # If False, no smearing is performed
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+    # Read from GT
+    algopt = cms.string('AK4PFchs_pt'),
+    algo = cms.string('AK4PFchs'),
+    # Gen jet matching
+    genJets = cms.InputTag("slimmedGenJets"),
+    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    variation = cms.int32(0),  # If not specified, default to 0
+    seed = cms.uint32(37428479),  # If not specified, default to 37428479
+    debug = cms.untracked.bool(False)
+)
+
+process.mySmearedJetsUP = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("updatedPatJetsUpdatedJEC"),
+    enabled = cms.bool(True),  # If False, no smearing is performed
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+    # Read from GT
+    algopt = cms.string('AK4PFchs_pt'),
+    algo = cms.string('AK4PFchs'),
+    # Gen jet matching
+    genJets = cms.InputTag("slimmedGenJets"),
+    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    variation = cms.int32(+1),  # If not specified, default to 0
+    seed = cms.uint32(37428479),  # If not specified, default to 37428479
+    debug = cms.untracked.bool(False)
+)
+
+process.mySmearedJetsDown = cms.EDProducer("SmearedPATJetProducer",
+    src = cms.InputTag("updatedPatJetsUpdatedJEC"),
+    enabled = cms.bool(True),  # If False, no smearing is performed
+    rho = cms.InputTag("fixedGridRhoFastjetAll"),
+    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
+    # Read from GT
+    algopt = cms.string('AK4PFchs_pt'),
+    algo = cms.string('AK4PFchs'),
+    # Gen jet matching
+    genJets = cms.InputTag("slimmedGenJets"),
+    dRMax = cms.double(0.2),  # = cone size (0.4) / 2
+    dPtMaxFactor = cms.double(3),  # dPt < 3 * resolution
+    variation = cms.int32(-1),  # If not specified, default to 0
+    seed = cms.uint32(37428479),  # If not specified, default to 37428479
+    debug = cms.untracked.bool(False)
+)
 
 ##########################################################################################
 #                                   2018 electron scale smearing                         #
@@ -236,12 +292,10 @@ process.IIHEAnalysis.discardedMuonCollection                     = cms.InputTag(
 
 
 #jet smeared collection
-#process.IIHEAnalysis.JetCollection                   = cms.InputTag("updatedPatJetsUpdatedJEC")
-#process.IIHEAnalysis.JetCollectionSmeared            = cms.InputTag("patSmearedJets"               ,"","IIHEAnalysis")
-#process.IIHEAnalysis.JetCollectionEnUp               = cms.InputTag("shiftedPatJetEnUp"            ,"","IIHEAnalysis")
-#process.IIHEAnalysis.JetCollectionEnDown             = cms.InputTag("shiftedPatJetEnDown"          ,"","IIHEAnalysis")
-#process.IIHEAnalysis.JetCollectionSmearedJetResUp    = cms.InputTag("shiftedPatSmearedJetResUp"    ,"","IIHEAnalysis")
-#process.IIHEAnalysis.JetCollectionSmearedJetResDown  = cms.InputTag("shiftedPatSmearedJetResDown"  ,"","IIHEAnalysis")
+process.IIHEAnalysis.JetCollection                   = cms.InputTag("updatedPatJetsUpdatedJEC")
+process.IIHEAnalysis.JetCollectionSmeared            = cms.InputTag("mySmearedJets"               ,"","IIHEAnalysis")
+process.IIHEAnalysis.JetCollectionSmearedJetResUp    = cms.InputTag("mySmearedJetsUP"    ,"","IIHEAnalysis")
+process.IIHEAnalysis.JetCollectionSmearedJetResDown  = cms.InputTag("mySmearedJetsDown"  ,"","IIHEAnalysis")
 
 #MET collections
 process.IIHEAnalysis.patPFMetCollection                        = cms.InputTag("patPFMet"                  , ""                ,"IIHEAnalysis"  )
@@ -282,21 +336,37 @@ process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in 
 ##########################################################################################
 #                            Woohoo!  We"re ready to start!                              #
 ##########################################################################################
-
-process.p1 = cms.Path(
+if "mc" in options.DataProcessing:
+    process.IIHE = cms.Sequence(
     process.egammaPostRecoSeq *
     process.rerunMvaIsolationSequence *
-    process.NewTauIDsEmbedded * 
-    process.patJetCorrFactorsUpdatedJEC * 
+    process.NewTauIDsEmbedded *
+    process.patJetCorrFactorsUpdatedJEC *
+    process.updatedPatJetsUpdatedJEC *
+    process.fullPatMetSequence *
+    process.mySmearedJets     *
+    process.mySmearedJetsUP *
+    process.mySmearedJetsDown *
+    process.IIHEAnalysis
+    )
+else:
+    process.IIHE = cms.Sequence(
+    process.egammaPostRecoSeq *
+    process.rerunMvaIsolationSequence *
+    process.NewTauIDsEmbedded *
+    process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
     process.IIHEAnalysis
     )
+
+
+process.p1 = cms.Path(process.IIHE)
 
 process.out = cms.OutputModule(
     "PoolOutputModule",
     fileName = cms.untracked.string("EDM.root")
     )
 
-process.outpath = cms.EndPath(process.out)
+#process.outpath = cms.EndPath(process.out)
 #
