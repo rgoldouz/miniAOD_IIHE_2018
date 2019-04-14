@@ -307,9 +307,13 @@ process.fullBtagSF = cms.Sequence(process.looseBtagSFnominal* process.looseBtagS
 #                                   2018 electron scale smearing                         #
 ##########################################################################################
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       era='2018-Prompt')  
 
+if "2016" in options.DataProcessing:
+    setupEgammaPostRecoSeq(process, era='2016-Legacy')
+if "2017" in options.DataProcessing:
+    setupEgammaPostRecoSeq(process, era='2017-Nov17ReReco')
+if "2018" in options.DataProcessing:
+    setupEgammaPostRecoSeq(process, era='2018-Prompt')
 
 ##########################################################################################
 #                                   2018 MET corrections                                 #
@@ -420,5 +424,5 @@ process.out = cms.OutputModule(
     fileName = cms.untracked.string("EDM.root")
     )
 
-process.outpath = cms.EndPath(process.out)
+#process.outpath = cms.EndPath(process.out)
 #
