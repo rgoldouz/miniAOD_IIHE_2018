@@ -75,7 +75,7 @@ if options.DataProcessing == "mc2017":
 if options.DataProcessing == "data2018":
   globalTag = "102X_dataRun2_Sep2018Rereco_v1"
 if options.DataProcessing == "mc2018":
-  globalTag = "102X_upgrade2018_realistic_v12"
+  globalTag = "102X_upgrade2018_realistic_v18"
 ##########################################################################################
 #                                  Start the sequences                                   #
 ##########################################################################################
@@ -111,8 +111,9 @@ process.source = cms.Source("PoolSource",
 #    skipEvents=cms.untracked.uint32(8000)
 )
 #process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
-#process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/0D7361CD-D1BE-4A42-BAE2-D84A551D46FD.root")
+#process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
+#process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
+process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/0D7361CD-D1BE-4A42-BAE2-D84A551D46FD.root")
 #process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
 
 filename_out = "outfile.root"
