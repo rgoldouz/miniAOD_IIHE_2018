@@ -265,9 +265,9 @@ process.mySmearedJetsDown = cms.EDProducer("SmearedPATJetProducer",
 # btag SF from NanoAOD example
 process.load("UserCode.IIHETree.btagWeighter_cfi")
 if "2016" in options.DataProcessing:
-    process.btagWeightTable.weightFiles = cms.vstring('data/DeepCSV_2016LegacySF_V1.csv')
+    process.btagWeightTable.weightFiles = cms.vstring('UserCode/IIHETree/test/data/DeepCSV_2016LegacySF_V1.csv')
 if "2017" in options.DataProcessing:
-    process.btagWeightTable.weightFiles = cms.vstring('data/DeepCSV_94XSF_V4_B_F.csv')
+    process.btagWeightTable.weightFiles = cms.vstring('UserCode/IIHETree/test/data/DeepCSV_94XSF_V4_B_F.csv')
 if "2018" in options.DataProcessing:
     process.btagWeightTable.weightFiles = cms.vstring('UserCode/IIHETree/test/data/DeepCSV_102XSF_V1.csv')
 
