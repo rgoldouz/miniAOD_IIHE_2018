@@ -154,7 +154,6 @@ void IIHEModuleGedGsfElectron::beginJob(){
   addBranch("gsf_deltaPhiSeedClusterTrackAtCalo") ;
   addBranch("gsf_deltaEtaSeedClusterTrackAtCalo") ;
   addBranch("gsf_deltaEtaSeedClusterTrackAtVtx") ;
-  addBranch("gsf_relIso") ;
   addBranch("gsf_effArea") ;
   addBranch("gsf_sumChargedHadronPt") ;
   addBranch("gsf_sumNeutralHadronEt") ;
@@ -297,9 +296,6 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
   unsigned int gsf_n = 0 ;
   unsigned int gsfref = -1 ;
 
-  MiniAODHelper electronHelper;
-  electronHelper.SetRho(rho);
-  electronHelper.SetVertex(pvCollection_->at(0));
 
   double EffArea = 9999.;
 
@@ -348,7 +344,6 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     store("gsf_hcalDepth2OverEcal"            , gsfiter->hcalDepth2OverEcal()            ) ;
     store("gsf_dr03TkSumPt"                   , gsfiter->dr03TkSumPt()                   ) ;
     store("gsf_heepTrkPtIso"              , gsfiter->userFloat("heepTrkPtIso"        ) );
-    store("gsf_relIso"                        , electronHelper.GetElectronRelIso(electronCollection_->at(i), coneSize::R03, corrType::rhoEA, effAreaType::spring16)) ;
     store("gsf_effArea"                       , EffArea                                  ) ;
     store("gsf_VID_cutBasedElectronID_Fall17_94X_V1_loose"   ,int(gsfiter->electronID("cutBasedElectronID-Fall17-94X-V1-loose")));
     store("gsf_VID_cutBasedElectronID_Fall17_94X_V1_medium"  ,int(gsfiter->electronID("cutBasedElectronID-Fall17-94X-V1-medium")));

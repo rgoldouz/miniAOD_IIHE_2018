@@ -1,6 +1,5 @@
 #ifndef UserCode_IIHETree_IIHEModuleJet_h
 #define UserCode_IIHETree_IIHEModuleJet_h
-#include "UserCode/IIHETree/interface/btag_weighter.h"
 #include "UserCode/IIHETree/interface/IIHEModule.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
@@ -39,6 +38,5 @@ private:
 
   float ETThreshold_ ;
   bool isMC_;
-  BTagWeighter *btw;
 };
 #endif

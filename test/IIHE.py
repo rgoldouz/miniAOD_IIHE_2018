@@ -92,7 +92,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ##########################################################################################
@@ -106,14 +106,14 @@ if options.DataFormat == "data":
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(),
-    lumisToProcess = cms.untracked.VLuminosityBlockRange('319756:1567','319337:56'),
+#    lumisToProcess = cms.untracked.VLuminosityBlockRange('319756:1567','319337:56'),
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
 #    skipEvents=cms.untracked.uint32(8000)
 )
 #process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-#process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
-process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/0D7361CD-D1BE-4A42-BAE2-D84A551D46FD.root")
-process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
+process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
+#process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/0D7361CD-D1BE-4A42-BAE2-D84A551D46FD.root")
+#process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
 
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
@@ -261,6 +261,48 @@ process.mySmearedJetsDown = cms.EDProducer("SmearedPATJetProducer",
     debug = cms.untracked.bool(False)
 )
 
+# btag SF from NanoAOD example
+process.load("UserCode.IIHETree.btagWeighter_cfi")
+if "2016" in options.DataProcessing:
+    process.btagWeightTable.weightFiles = cms.vstring('data/DeepCSV_2016LegacySF_V1.csv')
+if "2017" in options.DataProcessing:
+    process.btagWeightTable.weightFiles = cms.vstring('data/DeepCSV_94XSF_V4_B_F.csv')
+if "2018" in options.DataProcessing:
+    process.btagWeightTable.weightFiles = cms.vstring('UserCode/IIHETree/test/data/DeepCSV_102XSF_V1.csv')
+
+process.looseBtagSFnominal = process.btagWeightTable.clone()
+process.looseBtagSFnominal.operatingPoints = cms.vstring("loose")
+process.looseBtagSFup = process.btagWeightTable.clone()
+process.looseBtagSFup.operatingPoints = cms.vstring("loose")
+process.looseBtagSFup.sysTypes = cms.vstring("up")
+process.looseBtagSFdown = process.btagWeightTable.clone()
+process.looseBtagSFdown.operatingPoints = cms.vstring("loose")
+process.looseBtagSFdown.sysTypes = cms.vstring("down")
+
+process.mediumBtagSFnominal = process.btagWeightTable.clone()
+process.mediumBtagSFnominal.operatingPoints = cms.vstring("medium")
+process.mediumBtagSFup = process.btagWeightTable.clone()
+process.mediumBtagSFup.operatingPoints = cms.vstring("medium")
+process.mediumBtagSFup.sysTypes = cms.vstring("up")
+process.mediumBtagSFdown = process.btagWeightTable.clone()
+process.mediumBtagSFdown.operatingPoints = cms.vstring("medium")
+process.mediumBtagSFdown.sysTypes = cms.vstring("down")
+
+process.load("UserCode.IIHETree.btagWeighter_cfi")
+process.tightBtagSFnominal = process.btagWeightTable.clone()
+process.tightBtagSFnominal.operatingPoints = cms.vstring("tight")
+process.tightBtagSFup = process.btagWeightTable.clone()
+process.tightBtagSFup.operatingPoints = cms.vstring("tight")
+process.tightBtagSFup.sysTypes = cms.vstring("up")
+process.tightBtagSFdown = process.btagWeightTable.clone()
+process.tightBtagSFdown.operatingPoints = cms.vstring("tight")
+process.tightBtagSFdown.sysTypes = cms.vstring("down")
+
+print "we are reading b-tagging SF from %s" % process.tightBtagSFdown.weightFiles
+
+process.fullBtagSF = cms.Sequence(process.looseBtagSFnominal* process.looseBtagSFup* process.looseBtagSFdown*
+                                  process.mediumBtagSFnominal* process.mediumBtagSFup* process.mediumBtagSFdown*
+                                  process.tightBtagSFnominal* process.tightBtagSFup* process.tightBtagSFdown)
 ##########################################################################################
 #                                   2018 electron scale smearing                         #
 ##########################################################################################
@@ -347,6 +389,7 @@ if "mc" in options.DataProcessing:
     process.mySmearedJets     *
     process.mySmearedJetsUP *
     process.mySmearedJetsDown *
+    process.fullBtagSF *
     process.IIHEAnalysis
     )
 else:
@@ -368,5 +411,5 @@ process.out = cms.OutputModule(
     fileName = cms.untracked.string("EDM.root")
     )
 
-#process.outpath = cms.EndPath(process.out)
+process.outpath = cms.EndPath(process.out)
 #

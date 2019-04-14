@@ -80,24 +80,6 @@ void IIHEModuleJet::beginJob(){
   addBranch("jet_SmearedJetResDown_pt");
   addBranch("jet_EnUp_pt");
   addBranch("jet_EnDown_pt");
-
-  addBranch("jet_BtagSF_loose");
-  addBranch("jet_BtagSFbcUp_loose");
-  addBranch("jet_BtagSFbcDown_loose");
-  addBranch("jet_BtagSFudsgUp_loose");
-  addBranch("jet_BtagSFudsgDown_loose");
-
-  addBranch("jet_BtagSF_medium");
-  addBranch("jet_BtagSFbcUp_medium");
-  addBranch("jet_BtagSFbcDown_medium");
-  addBranch("jet_BtagSFudsgUp_medium");
-  addBranch("jet_BtagSFudsgDown_medium");
-
-  addBranch("jet_BtagSF_tight");
-  addBranch("jet_BtagSFbcUp_tight");
-  addBranch("jet_BtagSFbcDown_tight");
-  addBranch("jet_BtagSFudsgUp_tight");
-  addBranch("jet_BtagSFudsgDown_tight");
   }
 
 }

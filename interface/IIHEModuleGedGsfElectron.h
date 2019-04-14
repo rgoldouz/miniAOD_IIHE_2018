@@ -2,7 +2,6 @@
 #define UserCode_IIHETree_IIHEModuleGedGsfElectron_h
 
 #include "UserCode/IIHETree/interface/IIHEModule.h"
-#include "UserCode/IIHETree/interface/MiniAODHelper.h"
 // class decleration
 class IIHEModuleGedGsfElectron : public IIHEModule {
 private:
