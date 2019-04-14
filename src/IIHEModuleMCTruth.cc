@@ -125,7 +125,6 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<GenEventInfoProduct> genEventInfoHandle;
   iEvent.getByToken(generatorLabel_, genEventInfoHandle);
   float weight = genEventInfoHandle->weight() ;
-cout<<genEventInfoHandle->weights().size()<<endl;
   float w_sign = (weight>=0) ? 1 : -1 ;
   store("mc_weight"                  ,weight);
   store("mc_w_sign"             , w_sign) ;
