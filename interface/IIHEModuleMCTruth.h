@@ -55,7 +55,7 @@ private:
   edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesCollection_;
   edm::EDGetTokenT<std::vector<reco::GenJet> > genJetsSrc_;
   float nEventsWeighted_ ;
-
+  std::vector<float> sumofgenWeights_;
   TH1F *pileupDist_;
 };
 #endif

@@ -29,7 +29,7 @@ public:
   virtual void beginRun(edm::Run const&, edm::EventSetup const&);
 private:
   edm::EDGetTokenT<LHEEventProduct> lheEventLabel_;
-  std::vector<float> sumofWeights_;
-  std::vector<std::string> weightsId_;
+  std::vector<float> sumofLHEWeights_;
+  std::vector<std::string> LHEweightsId_;
 };
 #endif

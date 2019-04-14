@@ -333,12 +333,20 @@ process.IIHEAnalysis.METsMuEGCleanCollection                     = cms.InputTag(
 process.IIHEAnalysis.discardedMuonCollection                     = cms.InputTag("packedPFCandidatesDiscarded"                               )
 
 
-#jet smeared collection
+#jet collections
 process.IIHEAnalysis.JetCollection                   = cms.InputTag("updatedPatJetsUpdatedJEC")
 process.IIHEAnalysis.JetCollectionSmeared            = cms.InputTag("mySmearedJets"               ,"","IIHEAnalysis")
 process.IIHEAnalysis.JetCollectionSmearedJetResUp    = cms.InputTag("mySmearedJetsUP"    ,"","IIHEAnalysis")
 process.IIHEAnalysis.JetCollectionSmearedJetResDown  = cms.InputTag("mySmearedJetsDown"  ,"","IIHEAnalysis")
-
+process.IIHEAnalysis.looseBtagSFdown     = cms.InputTag("looseBtagSFdown" ,"","IIHEAnalysis") 
+process.IIHEAnalysis.looseBtagSFnominal  = cms.InputTag("looseBtagSFnominal" ,"","IIHEAnalysis") 
+process.IIHEAnalysis.looseBtagSFup       = cms.InputTag("looseBtagSFup" ,"","IIHEAnalysis") 
+process.IIHEAnalysis.mediumBtagSFdown    = cms.InputTag("mediumBtagSFdown","","IIHEAnalysis") 
+process.IIHEAnalysis.mediumBtagSFnominal = cms.InputTag("mediumBtagSFnominal","","IIHEAnalysis") 
+process.IIHEAnalysis.mediumBtagSFup      = cms.InputTag("mediumBtagSFup" ,"","IIHEAnalysis") 
+process.IIHEAnalysis.tightBtagSFdown     = cms.InputTag("tightBtagSFdown" ,"","IIHEAnalysis") 
+process.IIHEAnalysis.tightBtagSFnominal  = cms.InputTag("tightBtagSFnominal" ,"","IIHEAnalysis") 
+process.IIHEAnalysis.tightBtagSFup       = cms.InputTag("tightBtagSFup" ,"","IIHEAnalysis")
 #MET collections
 process.IIHEAnalysis.patPFMetCollection                        = cms.InputTag("patPFMet"                  , ""                ,"IIHEAnalysis"  )
 process.IIHEAnalysis.patPFMetT1Collection                      = cms.InputTag("patPFMetT1"                , ""                ,"IIHEAnalysis"  )
@@ -357,6 +365,7 @@ process.IIHEAnalysis.particleLevelJetsCollection               = cms.InputTag("p
 process.IIHEAnalysis.particleLevelak1DressedLeptonCollection   = cms.InputTag("pseudoTop"       , "leptons"  ,"IIHEAnalysis"  )
 process.IIHEAnalysis.particleLevelMETCollection                = cms.InputTag("pseudoTop"       , "mets","IIHEAnalysis"  )
 
+#corrected electron collection
 process.IIHEAnalysis.electronCollection                        = cms.InputTag("slimmedElectrons"          , ""                ,"IIHEAnalysis"  )
 
 process.IIHEAnalysis.includeLeptonsAcceptModule  = cms.untracked.bool(True)

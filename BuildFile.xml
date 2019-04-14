@@ -33,6 +33,7 @@
 <use   name="DataFormats/Luminosity"/>
 <use   name="DataFormats/PatCandidates"/>
 <use   name="DataFormats/RecoCandidate"/>
+<use   name="DataFormats/NanoAOD"/>
 <use   name="HLTrigger/HLTcore"/>
 <use   name="L1Trigger/RegionalCaloTrigger"/>
 <use   name="clhep"/>

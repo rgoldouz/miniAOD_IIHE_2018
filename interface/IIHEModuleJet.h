@@ -6,6 +6,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "DataFormats/NanoAOD/interface/FlatTable.h"
 // class decleration
 
 class IIHEModuleJet : public IIHEModule {
@@ -35,6 +36,17 @@ private:
   edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResUp_;
   edm::InputTag pfJetLabelSmearedJetResDown_;
   edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResDown_;
+
+  edm::EDGetTokenT<nanoaod::FlatTable>  looseBtagSFdownToken_;       
+  edm::EDGetTokenT<nanoaod::FlatTable>  looseBtagSFnominalToken_;    
+  edm::EDGetTokenT<nanoaod::FlatTable>  looseBtagSFupToken_;         
+  edm::EDGetTokenT<nanoaod::FlatTable>  mediumBtagSFdownToken_;      
+  edm::EDGetTokenT<nanoaod::FlatTable>  mediumBtagSFnominalToken_;   
+  edm::EDGetTokenT<nanoaod::FlatTable>  mediumBtagSFupToken_;        
+  edm::EDGetTokenT<nanoaod::FlatTable>  tightBtagSFdownToken_;       
+  edm::EDGetTokenT<nanoaod::FlatTable>  tightBtagSFnominalToken_;    
+  edm::EDGetTokenT<nanoaod::FlatTable>  tightBtagSFupToken_;         
+
 
   float ETThreshold_ ;
   bool isMC_;

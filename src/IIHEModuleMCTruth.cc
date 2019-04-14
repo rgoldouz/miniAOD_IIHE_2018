@@ -101,6 +101,9 @@ void IIHEModuleMCTruth::beginJob(){
   addBranch("genjet_phi") ;
   addBranch("genjet_energy") ;
 
+  setBranchType(kVectorFloat) ;
+  addBranch("gen_weight_sys");
+
   nEventsWeighted_ = 0.0 ;
   pileupDist_ = new TH1F("pileupDist","pileup distribution",120,0,120);
 }
@@ -122,6 +125,7 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
   edm::Handle<GenEventInfoProduct> genEventInfoHandle;
   iEvent.getByToken(generatorLabel_, genEventInfoHandle);
   float weight = genEventInfoHandle->weight() ;
+cout<<genEventInfoHandle->weights().size()<<endl;
   float w_sign = (weight>=0) ? 1 : -1 ;
   store("mc_weight"                  ,weight);
   store("mc_w_sign"             , w_sign) ;
@@ -135,6 +139,25 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
   store("mc_xPDF_second" , genEventInfoHandle->pdf()->xPDF.second); // PDF weight for parton #2
   store("mc_scalePDF" , genEventInfoHandle->pdf()->scalePDF);    // scale of the hard interaction
    
+/*
+    First two weights (weightID= 0 and 1) correspond to central ME weight value and replica.
+    The remaining 12 values (weightIDs = 2 to 13) correspond to the PS weights in the following order (ISR up, FSR up, ISR down, FSR down) x 3 sets, i.e.:
+    2 = isrRedHi isr:muRfac=0.707, 3 = fsrRedHi fsr:muRfac=0.707, 4 = isrRedLo isr:muRfac=1.414, 5 = fsrRedLo fsr:muRfac=1.414, 
+    6 = isrDefHi isr:muRfac=0.5, 7 = fsrDefHi fsr:muRfac=0.5,  8 = isrDefLo isr:muRfac=2.0,   9 = fsrDefLo fsr:muRfac=2.0, 
+    10 = isrConHi isr:muRfac=0.25, 11 = fsrConHi fsr:muRfac=0.25, 12 = isrConLo isr:muRfac=4.0, 13 = fsrConLo fsr:muRfac=4.0 
+*/
+
+  if(!(genEventInfoHandle->weights().empty())) {
+          for (unsigned i = 0; i < genEventInfoHandle->weights().size(); ++i) {
+                  if(sumofgenWeights_.size() != genEventInfoHandle->weights().size()) {
+                          sumofgenWeights_.push_back(0);
+                  }
+                  store("gen_weight_sys",(float) genEventInfoHandle->weights().at(i));
+                  sumofgenWeights_[i] += (float) genEventInfoHandle->weights().at(i);
+          }
+  } else {
+          store("gen_weight_sys", 1);
+  }
   // Fill pile-up related informations
   // --------------------------------
   edm::Handle<std::vector< PileupSummaryInfo > >  puInfo ;
@@ -359,6 +382,7 @@ void IIHEModuleMCTruth::endEvent(){}
 // ------------ method called once each job just after ending the event loop  ------------
 void IIHEModuleMCTruth::endJob(){
   addValueToMetaTree("mc_nEventsWeighted", nEventsWeighted_) ;
+  addFVValueToMetaTree("mc_sumofgenWeights", sumofgenWeights_) ;
   parent_->saveToFile(pileupDist_) ;
 }
 
