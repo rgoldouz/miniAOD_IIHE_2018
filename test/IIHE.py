@@ -110,8 +110,8 @@ process.source = cms.Source("PoolSource",
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
 #    skipEvents=cms.untracked.uint32(8000)
 )
-process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-#process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
+#process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
+process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
 #process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
 #process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv2/ZToEE_NNPDF30_13TeV-powheg_M_800_1400/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/B63D4452-D4C7-E611-AD7F-D48564593F64.root")
 #process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
