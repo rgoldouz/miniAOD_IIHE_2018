@@ -18,6 +18,7 @@ IIHEModuleEvent::IIHEModuleEvent(const edm::ParameterSet& iConfig, edm::Consumes
   rhoTokenFastjetCentralChargedPileUp_ =  iC.consumes<double> (InputTag("fixedGridRhoFastjetCentralChargedPileUp"));
   rhoTokenFastjetCentralNeutral_ =  iC.consumes<double> (InputTag("fixedGridRhoFastjetCentralNeutral"));
 
+
 }
 
 IIHEModuleEvent::~IIHEModuleEvent(){}

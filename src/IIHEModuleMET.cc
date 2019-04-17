@@ -257,6 +257,7 @@ void IIHEModuleMET::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
   metFinalWrapper_->fill(patPFMetFinalCollectionHandle_->front()) ;
   metFinalWrapper_->store(analysis) ;
+
 }
 void IIHEModuleMET::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup){}
 void IIHEModuleMET::beginEvent(){}

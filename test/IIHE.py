@@ -110,10 +110,10 @@ process.source = cms.Source("PoolSource",
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
 #    skipEvents=cms.untracked.uint32(8000)
 )
-#process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
+process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
 #process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
 #process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
-process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/0D7361CD-D1BE-4A42-BAE2-D84A551D46FD.root")
+#process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv2/ZToEE_NNPDF30_13TeV-powheg_M_800_1400/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/B63D4452-D4C7-E611-AD7F-D48564593F64.root")
 #process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
 
 filename_out = "outfile.root"
@@ -324,6 +324,26 @@ runMetCorAndUncFromMiniAOD(process,
                            isData="data" in options.DataProcessing,
 )
 
+process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
+
+baddetEcallist = cms.vuint32(
+                            [872439604,872422825,872420274,872423218,872423215,872416066,872435036,872439336, 872420273,872436907,872420147,872439731,872436657,872420397,
+                             872439732,872439339, 872439603,872422436,872439861,872437051,872437052,872420649,872421950,872437185, 872422564,872421566,872421695,872421955,
+                             872421567,872437184,872421951,872421694, 872437056,872437057,872437313,872438182,872438951,872439990,872439864,872439609, 872437181,872437182,
+                             872437053,872436794,872436667,872436536,872421541,872421413, 872421414,872421031,872423083,872421439])
+
+
+process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
+    "EcalBadCalibFilter",
+    EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
+    ecalMinEt        = cms.double(50.),
+    baddetEcal    = baddetEcallist, 
+    taggingMode = cms.bool(True),
+    debug = cms.bool(False)
+    )
+
+
+
 ##########################################################################################
 #                            MY analysis input!                              ####
 ##########################################################################################
@@ -339,6 +359,7 @@ process.IIHEAnalysis.discardedMuonCollection                     = cms.InputTag(
 
 
 #jet collections
+process.IIHEAnalysis.JetCollectionPrecor                   = cms.InputTag("slimmedJets")
 process.IIHEAnalysis.JetCollection                   = cms.InputTag("updatedPatJetsUpdatedJEC")
 process.IIHEAnalysis.JetCollectionSmeared            = cms.InputTag("mySmearedJets"               ,"","IIHEAnalysis")
 process.IIHEAnalysis.JetCollectionSmearedJetResUp    = cms.InputTag("mySmearedJetsUP"    ,"","IIHEAnalysis")
@@ -382,10 +403,8 @@ process.IIHEAnalysis.includeMuonModule           = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
-#process.IIHEAnalysis.includeL1Module            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule        = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in options.DataProcessing)
-#process.IIHEAnalysis.includeDataModule            = cms.untracked.bool("data" in options.DataProcessing)
 
 
 #process.IIHEAnalysis.includeAutoAcceptEventModule                = cms.untracked.bool(True)
@@ -400,6 +419,7 @@ if "mc" in options.DataProcessing:
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
+    process.ecalBadCalibReducedMINIAODFilter*
     process.mySmearedJets     *
     process.mySmearedJetsUP *
     process.mySmearedJetsDown *
@@ -414,6 +434,7 @@ else:
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
+    process.ecalBadCalibReducedMINIAODFilter *
     process.IIHEAnalysis
     )
 

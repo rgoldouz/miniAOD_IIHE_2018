@@ -19,43 +19,50 @@
 
 // class decleration
 class IIHEModuleMCTruth : public IIHEModule {
-public:
-  explicit IIHEModuleMCTruth(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC);
-  explicit IIHEModuleMCTruth(const edm::ParameterSet& iConfig): IIHEModule(iConfig){};
-  ~IIHEModuleMCTruth();
-  
-  void   pubBeginJob(){   beginJob() ; } ;
-  void pubBeginEvent(){ beginEvent() ; } ;
-  void   pubEndEvent(){   endEvent() ; } ;
-  virtual void pubAnalyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){ analyze(iEvent, iSetup) ; } ;
-  
-  virtual void beginEvent() ;
-  virtual void endEvent() ;
-  virtual void beginJob() ;
-  virtual void analyze(const edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
-  virtual void beginRun(edm::Run const&, edm::EventSetup const&);
-  
-  int matchEtaPhi_getIndex(float, float) ;
-  const MCTruthObject* matchEtaPhi(float, float) ;
-  const MCTruthObject* getRecordByIndex(int) ;
-  
-  void setWhitelist(){ whitelist_ = whitelist_ = parent_->getMCTruthWhitelist() ; }
-private:
-  std::vector<int> whitelist_ ;
-  double pt_threshold_ ;
-  double  m_threshold_ ;
-  double DeltaROverlapThreshold_ ;
-  std::vector<MCTruthObject*> MCTruthRecord_ ;
-  
-  edm::InputTag puInfoSrc_ ;
-  edm::EDGetTokenT<GenEventInfoProduct> generatorLabel_;
-  edm::EDGetTokenT<LHEEventProduct> lheEventLabel_;
-  edm::EDGetTokenT<vector<PileupSummaryInfo> > puCollection_;
-  edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesCollection_;
-  edm::EDGetTokenT<std::vector<reco::GenJet> > genJetsSrc_;
-  float nEventsWeighted_ ;
-  std::vector<float> sumofgenWeights_;
-  TH1F *pileupDist_;
+	public:
+		explicit IIHEModuleMCTruth(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC);
+		explicit IIHEModuleMCTruth(const edm::ParameterSet& iConfig): IIHEModule(iConfig){};
+		~IIHEModuleMCTruth();
+
+		void   pubBeginJob(){   beginJob() ; } ;
+		void pubBeginEvent(){ beginEvent() ; } ;
+		void   pubEndEvent(){   endEvent() ; } ;
+		virtual void pubAnalyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){ analyze(iEvent, iSetup) ; } ;
+
+		virtual void beginEvent() ;
+		virtual void endEvent() ;
+		virtual void beginJob() ;
+		virtual void analyze(const edm::Event&, const edm::EventSetup&);
+		virtual void endJob() ;
+		virtual void beginRun(edm::Run const&, edm::EventSetup const&);
+
+		int matchEtaPhi_getIndex(float, float) ;
+		const MCTruthObject* matchEtaPhi(float, float) ;
+		const MCTruthObject* getRecordByIndex(int) ;
+		int GetTauDecay (const reco::Candidate* part);
+		int GetTauDecay (const reco::GenParticle& part);
+		const reco::Candidate* IsFromID (const reco::Candidate* part, int targetPDGId);
+		const reco::Candidate* GetFirstCopy (const reco::Candidate* part);
+		int GetIndexInOutput (const reco::Candidate* part, std::vector<const reco::Candidate *> cands);
+		reco::GenParticle GetTauHad (const reco::Candidate* part);
+		reco::GenParticle GetTauHadNeutrals (const reco::Candidate* part); 
+
+		void setWhitelist(){ whitelist_ = whitelist_ = parent_->getMCTruthWhitelist() ; }
+	private:
+		std::vector<int> whitelist_ ;
+		double pt_threshold_ ;
+		double  m_threshold_ ;
+		double DeltaROverlapThreshold_ ;
+		std::vector<MCTruthObject*> MCTruthRecord_ ;
+
+		edm::InputTag puInfoSrc_ ;
+		edm::EDGetTokenT<GenEventInfoProduct> generatorLabel_;
+		edm::EDGetTokenT<LHEEventProduct> lheEventLabel_;
+		edm::EDGetTokenT<vector<PileupSummaryInfo> > puCollection_;
+		edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesCollection_;
+		edm::EDGetTokenT<std::vector<reco::GenJet> > genJetsSrc_;
+		float nEventsWeighted_ ;
+		std::vector<float> sumofgenWeights_;
+		TH1F *pileupDist_;
 };
 #endif

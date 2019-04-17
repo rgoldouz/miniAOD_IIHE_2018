@@ -36,6 +36,7 @@ private:
   edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResUp_;
   edm::InputTag pfJetLabelSmearedJetResDown_;
   edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenSmearedJetResDown_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > pfJetTokenPrecor_;
 
   edm::EDGetTokenT<nanoaod::FlatTable>  looseBtagSFdownToken_;       
   edm::EDGetTokenT<nanoaod::FlatTable>  looseBtagSFnominalToken_;    

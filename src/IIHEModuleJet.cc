@@ -21,6 +21,7 @@ IIHEModuleJet::IIHEModuleJet(const edm::ParameterSet& iConfig, edm::ConsumesColl
   pfJetTokenSmearedJetResUp_   =  iC.consumes<View<pat::Jet> > (pfJetLabelSmearedJetResUp_);
   pfJetLabelSmearedJetResDown_ =  iConfig.getParameter<edm::InputTag>("JetCollectionSmearedJetResDown");
   pfJetTokenSmearedJetResDown_ = iC.consumes<View<pat::Jet> > (pfJetLabelSmearedJetResDown_);
+  pfJetTokenPrecor_                  =  iC.consumes<View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("JetCollectionPrecor"));
 
   looseBtagSFdownToken_      =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("looseBtagSFdown"));
   looseBtagSFnominalToken_   =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("looseBtagSFnominal"));
@@ -111,6 +112,8 @@ void IIHEModuleJet::beginJob(){
 // ------------ method called to for each event  ------------
 void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
+  edm::Handle<edm::View<pat::Jet> > pfJetHandlePrecor_;
+  iEvent.getByToken(pfJetTokenPrecor_, pfJetHandlePrecor_);
 
   edm::Handle<edm::View<pat::Jet> > pfJetHandle_;
   iEvent.getByToken(pfJetToken_, pfJetHandle_);
@@ -130,15 +133,14 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   JetCorrectionUncertainty jecUnc(JetCorPar);
 
-
   for ( unsigned int i = 0; i <pfJetHandle_->size(); ++i) {
     Ptr<pat::Jet> pfjet = pfJetHandle_->ptrAt( i );
     if(pfjet->pt() < ETThreshold_) continue ;
-
     store("jet_px"    , pfjet->px()) ;
     store("jet_py"    , pfjet->py()) ;
     store("jet_pz"    , pfjet->pz()) ;
     store("jet_pt"    , pfjet->pt()) ;
+    store("jet_pt_Precor"    , pfJetHandlePrecor_->ptrAt( i )->pt()) ;
     store("jet_eta"   , pfjet->eta()) ;
     store("jet_theta" , pfjet->theta()) ;
     store("jet_phi"   , pfjet->phi()) ;

@@ -237,6 +237,35 @@ void IIHEModuleMuon::beginJob(){
   addBranch("mu_isSoftMuon"     ) ;
   addBranch("mu_isHighPtMuon"     ) ;
   addBranch("mu_isTrackerHighPtMuon"     ) ;
+  addBranch("mu_CutBasedIdLoose");
+  addBranch("mu_CutBasedIdMedium");
+  addBranch("mu_CutBasedIdMediumPrompt");
+  addBranch("mu_CutBasedIdTight");
+  addBranch("mu_CutBasedIdGlobalHighPt");
+  addBranch("mu_CutBasedIdTrkHighPt");
+  addBranch("mu_PFIsoVeryLoose");
+  addBranch("mu_PFIsoLoose");
+  addBranch("mu_PFIsoMedium");
+  addBranch("mu_PFIsoTight");
+  addBranch("mu_PFIsoVeryTight");
+  addBranch("mu_PFIsoVeryVeryTight");
+  addBranch("mu_TkIsoLoose");
+  addBranch("mu_TkIsoTight");
+  addBranch("mu_SoftCutBasedId");
+  addBranch("mu_SoftMvaId");
+  addBranch("mu_MvaLoose");
+  addBranch("mu_MvaMedium");
+  addBranch("mu_MvaTight");
+  addBranch("mu_MiniIsoLoose");
+  addBranch("mu_MiniIsoMedium");
+  addBranch("mu_MiniIsoTight");
+  addBranch("mu_MiniIsoVeryTight");
+  addBranch("mu_TriggerIdLoose");
+  addBranch("mu_InTimeMuon");
+  addBranch("mu_MultiIsoLoose");
+  addBranch("mu_MultiIsoMedium");
+
+
   
   // Hits block
   setBranchType(kVectorInt) ;

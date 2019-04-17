@@ -65,7 +65,7 @@ private:
   edm::EDGetTokenT<edm::TriggerResults> triggerResultsTokenRECO_;
   edm::InputTag triggerResultsLabel_;
   edm::InputTag triggerResultsLabelRECO_;
-
+  edm::EDGetTokenT< bool >ecalBadCalibFilterUpdate_token ;
  
   bool isSingleElectonTriggerName(std::string) ;
   bool isDoubleElectonTriggerName(std::string) ;

@@ -36,6 +36,8 @@ IIHEModuleTrigger::IIHEModuleTrigger(const edm::ParameterSet& iConfig, edm::Cons
 
   triggerResultsLabelRECO_                      = iConfig.getParameter<edm::InputTag>("triggerResultsCollectionRECO") ;
   triggerResultsTokenRECO_                      = iC.consumes<edm::TriggerResults>(triggerResultsLabelRECO_);
+
+  ecalBadCalibFilterUpdate_token= iC.consumes< bool >(edm::InputTag("ecalBadCalibReducedMINIAODFilter"));
   
   std::string triggersIn = iConfig.getUntrackedParameter<std::string>("triggers") ;
   triggerNamesFromPSet_ = splitString(triggersIn, ",") ;
@@ -71,6 +73,7 @@ IIHEModuleTrigger::~IIHEModuleTrigger(){}
 
 // ------------ method called once each job just before starting event loop  ------------
 void IIHEModuleTrigger::beginJob(){
+ addBranch("trig_Flag_ecalBadCalibReduced", kInt) ;
 }
 //remove some HLT paths 
 bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
@@ -134,6 +137,10 @@ int IIHEModuleTrigger::addBranches(){
 void IIHEModuleTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   // Trigger information
   //MET filter 
+  edm::Handle< bool > passecalBadCalibFilterUpdate ;
+  iEvent.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
+  store("trig_Flag_ecalBadCalibReduced" , int((*passecalBadCalibFilterUpdate)));
+
   // get hold of TriggerResults
   edm::Handle<TriggerResults> HLTR ;
   edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;

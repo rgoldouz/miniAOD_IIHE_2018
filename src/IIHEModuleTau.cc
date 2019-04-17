@@ -37,6 +37,20 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_dxy");
 	addBranch("tau_dxy_error");
 	addBranch("tau_ptLeadChargedCand");
+	addBranch("tau_byIsolationMVArun2v1DBoldDMwLTraw");
+	addBranch("tau_byCombinedIsolationDeltaBetaCorrRaw3Hits");
+	addBranch("tau_byIsolationMVArun2v1DBnewDMwLTraw");
+	addBranch("tau_byIsolationMVArun2v1PWoldDMwLTraw");
+	addBranch("tau_byIsolationMVArun2v1PWnewDMwLTraw");
+	addBranch("tau_byIsolationMVArun2v1DBdR03oldDMwLTraw");
+	addBranch("tau_byIsolationMVArun2v1PWdR03oldDMwLTraw");
+	addBranch("tau_againstElectronMVA6Raw");
+	addBranch("tau_againstElectronMVA6category");
+	addBranch("tau_mc_bestDR");
+	addBranch("tau_mc_ERatio");
+
+
+	setBranchType(kVectorInt);
 	addBranch("tau_decayModeFinding");
 	addBranch("tau_decayModeFindingNewDMs");
 	addBranch("tau_againstMuonLoose3");
@@ -44,58 +58,59 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byLooseCombinedIsolationDeltaBetaCorr3Hits");
 	addBranch("tau_byMediumCombinedIsolationDeltaBetaCorr3Hits");
 	addBranch("tau_byTightCombinedIsolationDeltaBetaCorr3Hits");
-	addBranch("tau_byCombinedIsolationDeltaBetaCorrRaw3Hits");
-	addBranch("tau_byIsolationMVArun2v1DBoldDMwLTraw");
+
+
 	addBranch("tau_byVLooseIsolationMVArun2v1DBoldDMwLT");
 	addBranch("tau_byLooseIsolationMVArun2v1DBoldDMwLT");
 	addBranch("tau_byMediumIsolationMVArun2v1DBoldDMwLT");
 	addBranch("tau_byTightIsolationMVArun2v1DBoldDMwLT");
 	addBranch("tau_byVTightIsolationMVArun2v1DBoldDMwLT");
 	addBranch("tau_byVVTightIsolationMVArun2v1DBoldDMwLT");
-	addBranch("tau_byIsolationMVArun2v1DBnewDMwLTraw");
+
+
 	addBranch("tau_byVLooseIsolationMVArun2v1DBnewDMwLT");
 	addBranch("tau_byLooseIsolationMVArun2v1DBnewDMwLT");
 	addBranch("tau_byMediumIsolationMVArun2v1DBnewDMwLT");
 	addBranch("tau_byTightIsolationMVArun2v1DBnewDMwLT");
 	addBranch("tau_byVTightIsolationMVArun2v1DBnewDMwLT");
 	addBranch("tau_byVVTightIsolationMVArun2v1DBnewDMwLT");
-	addBranch("tau_byIsolationMVArun2v1PWoldDMwLTraw");
+
+
 	addBranch("tau_byVLooseIsolationMVArun2v1PWoldDMwLT");
 	addBranch("tau_byLooseIsolationMVArun2v1PWoldDMwLT");
 	addBranch("tau_byMediumIsolationMVArun2v1PWoldDMwLT");
 	addBranch("tau_byTightIsolationMVArun2v1PWoldDMwLT");
 	addBranch("tau_byVTightIsolationMVArun2v1PWoldDMwLT");
 	addBranch("tau_byVVTightIsolationMVArun2v1PWoldDMwLT");
-	addBranch("tau_byIsolationMVArun2v1PWnewDMwLTraw");
+
 	addBranch("tau_byVLooseIsolationMVArun2v1PWnewDMwLT");
 	addBranch("tau_byLooseIsolationMVArun2v1PWnewDMwLT");
 	addBranch("tau_byMediumIsolationMVArun2v1PWnewDMwLT");
 	addBranch("tau_byTightIsolationMVArun2v1PWnewDMwLT");
 	addBranch("tau_byVTightIsolationMVArun2v1PWnewDMwLT");
 	addBranch("tau_byVVTightIsolationMVArun2v1PWnewDMwLT");
-	addBranch("tau_byIsolationMVArun2v1DBdR03oldDMwLTraw");
+
 	addBranch("tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT");
 	addBranch("tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT");
 	addBranch("tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT");
 	addBranch("tau_byTightIsolationMVArun2v1DBdR03oldDMwLT");
 	addBranch("tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT");
 	addBranch("tau_byVVTightIsolationMVArun2v1DBdR03oldDMwLT");
-	addBranch("tau_byIsolationMVArun2v1PWdR03oldDMwLTraw");
+
+
 	addBranch("tau_byVLooseIsolationMVArun2v1PWdR03oldDMwLT");
 	addBranch("tau_byLooseIsolationMVArun2v1PWdR03oldDMwLT");
 	addBranch("tau_byMediumIsolationMVArun2v1PWdR03oldDMwLT");
 	addBranch("tau_byTightIsolationMVArun2v1PWdR03oldDMwLT");
 	addBranch("tau_byVTightIsolationMVArun2v1PWdR03oldDMwLT");
 	addBranch("tau_byVVTightIsolationMVArun2v1PWdR03oldDMwLT");
-	addBranch("tau_againstElectronMVA6Raw");
-	addBranch("tau_againstElectronMVA6category");
+
+
 	addBranch("tau_againstElectronVLooseMVA6");
 	addBranch("tau_againstElectronLooseMVA6");
 	addBranch("tau_againstElectronMediumMVA6");
 	addBranch("tau_againstElectronTightMVA6");
 	addBranch("tau_againstElectronVTightMVA6");
-	addBranch("tau_mc_bestDR");
-	addBranch("tau_mc_ERatio");
 
 	/*
 	   addBranch("tau_byVVLooseIsolationMVArun2v1DBoldDMwLTNew");
@@ -172,6 +187,14 @@ void IIHEModuleTau::beginJob(){
 
 	setBranchType(kVectorFloat);
 	addBranch("tau_byIsolationMVArun2017v1DBoldDMwLTraw2017");
+	addBranch("tau_byIsolationMVArun2017v2DBnewDMwLTraw2017");
+	addBranch("tau_byIsolationMVArun2017v2DBoldDMdR0p3wLTraw2017");
+	addBranch("tau_byIsolationMVArun2017v2DBoldDMwLTraw2017");
+	addBranch("tau_byIsolationMVArun2v1DBnewDMwLTraw2016");
+	addBranch("tau_byIsolationMVArun2v1DBoldDMwLTraw2016");
+
+
+	setBranchType(kVectorInt);
 	addBranch("tau_byVVLooseIsolationMVArun2017v1DBoldDMwLT2017");
 	addBranch("tau_byVLooseIsolationMVArun2017v1DBoldDMwLT2017");
 	addBranch("tau_byLooseIsolationMVArun2017v1DBoldDMwLT2017");
@@ -179,7 +202,7 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byTightIsolationMVArun2017v1DBoldDMwLT2017");
 	addBranch("tau_byVTightIsolationMVArun2017v1DBoldDMwLT2017");
 	addBranch("tau_byVVTightIsolationMVArun2017v1DBoldDMwLT2017");
-	addBranch("tau_byIsolationMVArun2017v2DBnewDMwLTraw2017");
+
 	addBranch("tau_byVVLooseIsolationMVArun2017v2DBnewDMwLT2017");
 	addBranch("tau_byVLooseIsolationMVArun2017v2DBnewDMwLT2017");
 	addBranch("tau_byLooseIsolationMVArun2017v2DBnewDMwLT2017");
@@ -188,7 +211,6 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byVTightIsolationMVArun2017v2DBnewDMwLT2017");
 	addBranch("tau_byVVTightIsolationMVArun2017v2DBnewDMwLT2017");
 
-	addBranch("tau_byIsolationMVArun2017v2DBoldDMdR0p3wLTraw2017");
 	addBranch("tau_byVVLooseIsolationMVArun2017v2DBoldDMdR0p3wLT2017");
 	addBranch("tau_byVLooseIsolationMVArun2017v2DBoldDMdR0p3wLT2017");
 	addBranch("tau_byLooseIsolationMVArun2017v2DBoldDMdR0p3wLT2017");
@@ -197,7 +219,6 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byVTightIsolationMVArun2017v2DBoldDMdR0p3wLT2017");
 	addBranch("tau_byVVTightIsolationMVArun2017v2DBoldDMdR0p3wLT2017");
 
-	addBranch("tau_byIsolationMVArun2017v2DBoldDMwLTraw2017");
 	addBranch("tau_byVVLooseIsolationMVArun2017v2DBoldDMwLT2017");
 	addBranch("tau_byVLooseIsolationMVArun2017v2DBoldDMwLT2017");
 	addBranch("tau_byLooseIsolationMVArun2017v2DBoldDMwLT2017");
@@ -206,7 +227,6 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byVTightIsolationMVArun2017v2DBoldDMwLT2017");
 	addBranch("tau_byVVTightIsolationMVArun2017v2DBoldDMwLT2017");
 
-	addBranch("tau_byIsolationMVArun2v1DBnewDMwLTraw2016");
 	addBranch("tau_byVLooseIsolationMVArun2v1DBnewDMwLT2016");
 	addBranch("tau_byLooseIsolationMVArun2v1DBnewDMwLT2016");
 	addBranch("tau_byMediumIsolationMVArun2v1DBnewDMwLT2016");
@@ -214,7 +234,6 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byVTightIsolationMVArun2v1DBnewDMwLT2016");
 	addBranch("tau_byVVTightIsolationMVArun2v1DBnewDMwLT2016");
 
-	addBranch("tau_byIsolationMVArun2v1DBoldDMwLTraw2016");
 	addBranch("tau_byVLooseIsolationMVArun2v1DBoldDMwLT2016");
 	addBranch("tau_byLooseIsolationMVArun2v1DBoldDMwLT2016");
 	addBranch("tau_byMediumIsolationMVArun2v1DBoldDMwLT2016");

@@ -158,6 +158,7 @@ void IIHEModuleGedGsfElectron::beginJob(){
   addBranch("gsf_sumChargedHadronPt") ;
   addBranch("gsf_sumNeutralHadronEt") ;
   addBranch("gsf_sumPhotonEt") ;
+  addBranch("gsf_sumPUPt") ;
   addBranch("gsf_ooEmooP") ;
   addBranch("gsf_eSuperClusterOverP") ;
 
@@ -291,7 +292,6 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
 
   edm::Handle<double> rhoHandle ;
   iEvent.getByToken(rhoTokenAll_, rhoHandle) ;
-  double rho = *rhoHandle ;
  
   unsigned int gsf_n = 0 ;
   unsigned int gsfref = -1 ;
@@ -372,7 +372,7 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     store("gsf_trackerdrivenSeed"             , int(gsfiter->trackerDrivenSeed())             ) ;
     store("gsf_isEB"                          , int(gsfiter->isEB())                          ) ;
     store("gsf_isEE"                          , int(gsfiter->isEE())                          ) ;
-    store("gsf_passConversionVeto"            , gsfiter->passConversionVeto()            ) ;
+    store("gsf_passConversionVeto"            , int(gsfiter->passConversionVeto())            ) ;
     store("gsf_deltaEtaSeedClusterTrackAtCalo", gsfiter->deltaEtaSeedClusterTrackAtCalo()) ;
     store("gsf_deltaPhiSeedClusterTrackAtCalo", gsfiter->deltaPhiSeedClusterTrackAtCalo()) ;
     store("gsf_ecalEnergy"                    , gsfiter->ecalEnergy()                    ) ;
@@ -409,6 +409,7 @@ void IIHEModuleGedGsfElectron::analyze(const edm::Event& iEvent, const edm::Even
     store("gsf_sumChargedHadronPt"            ,gsfiter->pfIsolationVariables().sumChargedHadronPt) ;
     store("gsf_sumNeutralHadronEt"            ,gsfiter->pfIsolationVariables().sumNeutralHadronEt) ;
     store("gsf_sumPhotonEt"                   ,gsfiter->pfIsolationVariables().sumPhotonEt) ;
+    store("gsf_sumPUPt"                   ,gsfiter->pfIsolationVariables().sumPUPt) ;
     store("gsf_ooEmooP"                       ,fabs(1.0/gsfiter->ecalEnergy() - gsfiter->eSuperClusterOverP()/gsfiter->ecalEnergy() )) ;
     store("gsf_eSuperClusterOverP"            ,gsfiter->eSuperClusterOverP()) ;
 
