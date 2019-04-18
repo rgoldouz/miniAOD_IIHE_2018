@@ -31,5 +31,7 @@ class IIHEModuleTau : public IIHEModule {
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_ ;
   edm::InputTag           primaryVertexLabel_ ;
   float ETThreshold_ ;
+ TauIdMVAAuxiliaries clusterVariables_;
+
 };
 #endif

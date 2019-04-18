@@ -1,5 +1,5 @@
 #include "UserCode/IIHETree/interface/IIHEModuleTau.h"
-#include "RecoTauTag/RecoTau/interface/PFRecoTauClusterVariables.h"
+//#include "RecoTauTag/RecoTau/interface/PFRecoTauClusterVariables.h"
 #include "DataFormats/TauReco/interface/PFTauTransverseImpactParameterAssociation.h"
 
 #include <iostream>
@@ -445,14 +445,13 @@ void IIHEModuleTau::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 		float decayDistZ = tauni->flightLength().z();
 		float decayDistMag = std::sqrt(decayDistX*decayDistX + decayDistY*decayDistY + decayDistZ*decayDistZ);
 
-		float nPhoton = n_photons_total(*tauni);
-		float ptWeightedDetaStrip = pt_weighted_deta_strip(*tauni, tauDecayMode);
-		float ptWeightedDphiStrip = pt_weighted_dphi_strip(*tauni, tauDecayMode);
-		float ptWeightedDrSignal = pt_weighted_dr_signal(*tauni, tauDecayMode);
-		float ptWeightedDrIsolation = pt_weighted_dr_iso(*tauni, tauDecayMode);
+		float nPhoton = (float)clusterVariables_.tau_n_photons_total(*tauni);
+                float ptWeightedDetaStrip = clusterVariables_.tau_pt_weighted_deta_strip(*tauni, tauDecayMode);
+                float ptWeightedDphiStrip = clusterVariables_.tau_pt_weighted_dphi_strip(*tauni, tauDecayMode);
+                float ptWeightedDrSignal = clusterVariables_.tau_pt_weighted_dr_signal(*tauni, tauDecayMode);
+                float ptWeightedDrIsolation = clusterVariables_.tau_pt_weighted_dr_iso(*tauni, tauDecayMode);
 
-		float eRatio = eratio(*tauni);
-
+                float eRatio = clusterVariables_.tau_Eratio(*tauni);
 		// Difference between measured and maximally allowed Gottfried-Jackson angle
 		if ( tauDecayMode == 10 ) {
 			double mTau = 1.77682;

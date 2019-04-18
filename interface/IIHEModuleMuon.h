@@ -126,6 +126,7 @@ private:
   IIHEMuonTrackWrapper* innerTrackWrapper_  ;
   IIHEMuonTrackWrapper* improvedMuonBestTrackWrapper_  ;
 
+  bool isHighPtMuon104(const reco::Muon&, const reco::Vertex&);
   edm::EDGetTokenT<edm::View<pat::Muon> > muonCollectionToken_;
   edm::InputTag          muonCollectionLabel_ ;
 

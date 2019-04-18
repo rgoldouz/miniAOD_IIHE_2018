@@ -235,6 +235,7 @@ void IIHEModuleMuon::beginJob(){
   addBranch("mu_isMediumMuon"     ) ;
   addBranch("mu_isLooseMuon"     ) ;
   addBranch("mu_isSoftMuon"     ) ;
+  addBranch("mu_isHighPtMuonOld"     ) ;
   addBranch("mu_isHighPtMuon"     ) ;
   addBranch("mu_isTrackerHighPtMuon"     ) ;
   addBranch("mu_CutBasedIdLoose");
@@ -341,6 +342,35 @@ void IIHEModuleMuon::beginJob(){
   }
 }
 
+bool IIHEModuleMuon::isHighPtMuon104(const reco::Muon& muon, const reco::Vertex& vtx){
+   if(!muon.isGlobalMuon()) return false;
+ 
+   bool muValHits = ( muon.globalTrack()->hitPattern().numberOfValidMuonHits()>0 ||
+                      muon.tunePMuonBestTrack()->hitPattern().numberOfValidMuonHits()>0 );
+ 
+   bool muMatchedSt = muon.numberOfMatchedStations()>1;
+   if(!muMatchedSt) {
+     if( muon.isTrackerMuon() && muon.numberOfMatchedStations()==1 ) {
+       if( muon.expectedNnumberOfMatchedStations()<2 ||
+           !(muon.stationMask()==1 || muon.stationMask()==16) ||
+           muon.numberOfMatchedRPCLayers()>2
+         )
+         muMatchedSt = true;
+     }
+   }
+ 
+   bool muID = muValHits && muMatchedSt;
+ 
+   bool hits = muon.innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5 &&
+     muon.innerTrack()->hitPattern().numberOfValidPixelHits() > 0; 
+ 
+   bool momQuality = muon.tunePMuonBestTrack()->ptError()/muon.tunePMuonBestTrack()->pt() < 0.3;
+ 
+   bool ip = fabs(muon.innerTrack()->dxy(vtx.position())) < 0.2 && fabs(muon.innerTrack()->dz(vtx.position())) < 0.5;
+ 
+   return muID && hits && momQuality && ip;
+ 
+ }
 // ------------ method called to for each event  ------------
 void IIHEModuleMuon::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
@@ -419,7 +449,8 @@ void IIHEModuleMuon::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     store("mu_isMediumMuon"      , int(muon::isMediumMuon(*muIt))    ) ;
     store("mu_isLooseMuon"       , int(muon::isLooseMuon(*muIt))    ) ;
     store("mu_isSoftMuon"        , int(muon::isSoftMuon(*muIt,*pvCollection_->begin()))  ) ;
-    store("mu_isHighPtMuon"      , int(muon::isHighPtMuon(*muIt,*pvCollection_->begin()))    ) ;
+    store("mu_isHighPtMuonOld"      , int(muon::isHighPtMuon(*muIt,*pvCollection_->begin()))    ) ;
+    store("mu_isHighPtMuon"      , int(isHighPtMuon104(*muIt,*pvCollection_->begin()))    ) ;
     store("mu_isTrackerHighPtMuon"      , int(muon::isTrackerHighPtMuon(*muIt,*pvCollection_->begin()))    ) ;
     store("mu_CutBasedIdLoose"    ,  int(muIt->passed(reco::Muon::CutBasedIdLoose)));
     store("mu_CutBasedIdMedium"    ,  int(muIt->passed(reco::Muon::CutBasedIdMedium)));
