@@ -22,7 +22,7 @@ IIHEModuleTrigger::IIHEModuleTrigger(const edm::ParameterSet& iConfig, edm::Cons
   nWasRun_ = 0 ;
   nAccept_ = 0 ;
   nErrors_ = 0 ;
-
+  isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
   triggerBitsLabel_       = iConfig.getParameter<edm::InputTag>("triggerResultsCollectionHLT") ;
   triggerObjectsLabel_    = iConfig.getParameter<edm::InputTag>("triggerObjectStandAloneCollection") ;
   triggerPrescalesLabel_  = iConfig.getParameter<edm::InputTag>("patTriggerCollection") ;
@@ -103,14 +103,16 @@ bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
       return false ;
   }
   if(   hlt->nSubstringInString(hlt->name(), "Ele35_WPTight") 
-     || hlt->nSubstringInString(hlt->name(), "DoubleEle33_CaloIdL_MW_v") 
+     || hlt->nSubstringInString(hlt->name(), "DoubleEle33_CaloIdL") 
      || hlt->nSubstringInString(hlt->name(), "DoubleEle25_CaloIdL_MW_v")
      || hlt->nSubstringInString(hlt->name(), "Ele23_Ele12" )
      || hlt->nSubstringInString(hlt->name(), "Ele32_WPTight" )
      || hlt->nSubstringInString(hlt->name(), "DiEle27_WPTightCaloOnly" )
      || hlt->nSubstringInString(hlt->name(), "Ele27_eta2p1_WPTight" ) 
+     || hlt->nSubstringInString(hlt->name(), "Ele115_CaloIdVT_GsfTrkIdT" )
+//     || hlt->nSubstringInString(hlt->name(), "Photon" )
   ) {
-    hlt->saveFilters();
+    if (!isMC_) hlt->saveFilters();
   }
 //  hlt->savePrescale();
   HLTriggers_.push_back(hlt) ;

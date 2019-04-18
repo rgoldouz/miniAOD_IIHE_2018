@@ -51,6 +51,7 @@ private:
   }
   HLTriggers_.clear();} ;
 
+  bool isMC_;
 
   edm::InputTag  triggerBitsLabel_;
   edm::InputTag  triggerObjectsLabel_;
