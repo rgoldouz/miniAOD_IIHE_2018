@@ -10,12 +10,18 @@
 class IIHEModuleEvent : public IIHEModule {
 private:
 
-   edm::EDGetTokenT<double> rhoTokenAll_;
-   edm::EDGetTokenT<double> rhoTokenFastjetAll_;
-   edm::EDGetTokenT<double> rhoTokenFastjetAllCalo_;
-   edm::EDGetTokenT<double> rhoTokenFastjetCentralCalo_;
-   edm::EDGetTokenT<double> rhoTokenFastjetCentralChargedPileUp_;
-   edm::EDGetTokenT<double> rhoTokenFastjetCentralNeutral_;
+  edm::EDGetTokenT<double> rhoTokenAll_;
+  edm::EDGetTokenT<double> rhoTokenFastjetAll_;
+  edm::EDGetTokenT<double> rhoTokenFastjetAllCalo_;
+  edm::EDGetTokenT<double> rhoTokenFastjetCentralCalo_;
+  edm::EDGetTokenT<double> rhoTokenFastjetCentralChargedPileUp_;
+  edm::EDGetTokenT<double> rhoTokenFastjetCentralNeutral_;
+
+  bool isMC_;
+
+  edm::EDGetTokenT< double > prefweight_token;
+  edm::EDGetTokenT< double > prefweightup_token;
+  edm::EDGetTokenT< double > prefweightdown_token;
 
 public:
   explicit IIHEModuleEvent(const edm::ParameterSet& iConfig,  edm::ConsumesCollector && iC);

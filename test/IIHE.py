@@ -111,10 +111,11 @@ process.source = cms.Source("PoolSource",
 #    skipEvents=cms.untracked.uint32(8000)
 )
 #process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
+#process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
 #process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
 #process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv2/ZToEE_NNPDF30_13TeV-powheg_M_800_1400/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/B63D4452-D4C7-E611-AD7F-D48564593F64.root")
 #process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
+process.source.fileNames.append( "/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/90000/FE13E873-0237-E811-ACE8-008CFAE4528C.root")
 
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
@@ -317,12 +318,33 @@ if "2018" in options.DataProcessing:
     setupEgammaPostRecoSeq(process, era='2018-Prompt')
 
 ##########################################################################################
+#                                   2018 electron L1 prefireing                         #
+##########################################################################################
+
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
+if "2016" in options.DataProcessing:
+    process.prefiringweight.DataEra = cms.string("2016BtoH")
+
+print 'L1 prefireing weight is saved for runs  ' + str(process.prefiringweight.DataEra)
+##########################################################################################
 #                                   2018 MET corrections                                 #
 ##########################################################################################
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(process,
-                           isData="data" in options.DataProcessing,
+
+runMetCorAndUncFromMiniAOD (
+        process,
+        isData = "data" in options.DataProcessing, # false for MC
+        fixEE2017 = "2017" in options.DataProcessing,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = ""
 )
+
 
 process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
 
@@ -414,16 +436,18 @@ process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in 
 if "mc" in options.DataProcessing:
     process.IIHE = cms.Sequence(
     process.egammaPostRecoSeq *
+    process.prefiringweight *
     process.rerunMvaIsolationSequence *
     process.NewTauIDsEmbedded *
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
+#    process.fullPatMetSequenceModifiedMET *
     process.ecalBadCalibReducedMINIAODFilter*
     process.mySmearedJets     *
     process.mySmearedJetsUP *
     process.mySmearedJetsDown *
-    process.fullBtagSF *
+    process.fullBtagSF * 
     process.IIHEAnalysis
     )
 else:
@@ -434,6 +458,7 @@ else:
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
+#    process.fullPatMetSequenceModifiedMET *
     process.ecalBadCalibReducedMINIAODFilter *
     process.IIHEAnalysis
     )

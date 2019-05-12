@@ -50,7 +50,7 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_mc_ERatio");
 
 
-	setBranchType(kVectorInt);
+	setBranchType(kVectorFloat);
 	addBranch("tau_decayModeFinding");
 	addBranch("tau_decayModeFindingNewDMs");
 	addBranch("tau_againstMuonLoose3");
@@ -194,7 +194,7 @@ void IIHEModuleTau::beginJob(){
 	addBranch("tau_byIsolationMVArun2v1DBoldDMwLTraw2016");
 
 
-	setBranchType(kVectorInt);
+	setBranchType(kVectorFloat);
 	addBranch("tau_byVVLooseIsolationMVArun2017v1DBoldDMwLT2017");
 	addBranch("tau_byVLooseIsolationMVArun2017v1DBoldDMwLT2017");
 	addBranch("tau_byLooseIsolationMVArun2017v1DBoldDMwLT2017");

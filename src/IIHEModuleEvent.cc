@@ -18,7 +18,11 @@ IIHEModuleEvent::IIHEModuleEvent(const edm::ParameterSet& iConfig, edm::Consumes
   rhoTokenFastjetCentralChargedPileUp_ =  iC.consumes<double> (InputTag("fixedGridRhoFastjetCentralChargedPileUp"));
   rhoTokenFastjetCentralNeutral_ =  iC.consumes<double> (InputTag("fixedGridRhoFastjetCentralNeutral"));
 
+  prefweight_token = iC.consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
+  prefweightup_token = iC.consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+  prefweightdown_token = iC.consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
 
+  isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
 }
 
 IIHEModuleEvent::~IIHEModuleEvent(){}
@@ -41,7 +45,11 @@ void IIHEModuleEvent::beginJob(){
   addBranch("ev_fixedGridRhoFastjetCentralChargedPileUp", kFloat) ;
   addBranch("ev_fixedGridRhoFastjetCentralNeutral", kFloat) ;
 
-
+  if(isMC_){
+    addBranch("ev_prefiringweight", kFloat) ;
+    addBranch("ev_prefiringweightup", kFloat) ;
+    addBranch("ev_prefiringweightdown", kFloat) ;
+  }
 }
 
 // ------------ method called to for each event  ------------
@@ -88,8 +96,24 @@ unsigned long int eventNumber = (unsigned long int)(iEvent.id().event());
   float rhojetCentralNeutral_ = *rhoHandlejetCentralNeutral_;
   store("ev_fixedGridRhoFastjetCentralNeutral",rhojetCentralNeutral_) ;
 
+  if(isMC_){
+    edm::Handle< double > theprefweight;
+    iEvent.getByToken(prefweight_token, theprefweight ) ;
+    double _prefiringweight =(*theprefweight);
+    
+    edm::Handle< double > theprefweightup;
+    iEvent.getByToken(prefweightup_token, theprefweightup ) ;
+    double _prefiringweightup =(*theprefweightup);
+    
+    edm::Handle< double > theprefweightdown;
+    iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+    double _prefiringweightdown =(*theprefweightdown);
 
-
+    store("ev_prefiringweight", _prefiringweight) ;
+    store("ev_prefiringweightup", _prefiringweightup) ;
+    store("ev_prefiringweightdown", _prefiringweightdown) ;
+  }
+  
 }
 
 void IIHEModuleEvent::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup){}

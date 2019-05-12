@@ -80,14 +80,14 @@ bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
   if(   hlt->nSubstringInString(hlt->name(), "Upsilon")
      || hlt->nSubstringInString(hlt->name(), "LowMass")
      || hlt->nSubstringInString(hlt->name(), "Tau")
-     || hlt->nSubstringInString(hlt->name(), "MET")
-     || hlt->nSubstringInString(hlt->name(), "HT")
+//     || hlt->nSubstringInString(hlt->name(), "MET")
+//     || hlt->nSubstringInString(hlt->name(), "HT")
      || hlt->nSubstringInString(hlt->name(), "Jpsi")
      || hlt->nSubstringInString(hlt->name(), "PsiPrime")
      || hlt->nSubstringInString(hlt->name(), "Scouting")
-     || hlt->nSubstringInString(hlt->name(), "Jet")
+//     || hlt->nSubstringInString(hlt->name(), "Jet")
      || hlt->nSubstringInString(hlt->name(), "IP")
-     || hlt->nSubstringInString(hlt->name(), "PF")
+//     || hlt->nSubstringInString(hlt->name(), "PF")
   ) {
       delete hlt;
       return false ;
@@ -112,7 +112,7 @@ bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
      || hlt->nSubstringInString(hlt->name(), "Ele115_CaloIdVT_GsfTrkIdT" )
 //     || hlt->nSubstringInString(hlt->name(), "Photon" )
   ) {
-    if (!isMC_) hlt->saveFilters();
+    if (!isMC_ || hlt->nSubstringInString(hlt->name(), "DoubleEle")) hlt->saveFilters();
   }
 //  hlt->savePrescale();
   HLTriggers_.push_back(hlt) ;
