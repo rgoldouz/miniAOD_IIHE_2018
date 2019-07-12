@@ -18,6 +18,7 @@ IIHEModuleMCTruth::IIHEModuleMCTruth(const edm::ParameterSet& iConfig, edm::Cons
 	puCollection_ = iC.consumes<vector<PileupSummaryInfo> > (puInfoSrc_);
 	genParticlesCollection_ = iC.consumes<vector<reco::GenParticle> > (iConfig.getParameter<InputTag>("genParticleSrc"));
 	genJetsSrc_ = iC.consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>( "genJetsCollection" ));
+        genJetsSrcAK8_ = iC.consumes<std::vector<reco::GenJet>>(iConfig.getParameter<edm::InputTag>( "genJetsCollectionAK8" ));
 }
 IIHEModuleMCTruth::~IIHEModuleMCTruth(){}
 
@@ -45,6 +46,7 @@ void IIHEModuleMCTruth::beginJob(){
 	MCPdgIdsToSave.push_back(33) ; // Z'' boson
 	MCPdgIdsToSave.push_back(34) ; // W'  boson
 	MCPdgIdsToSave.push_back(1000016) ; // tau-sneutrino 
+        MCPdgIdsToSave.push_back(600) ; // Excited top
 	addToMCTruthWhitelist(MCPdgIdsToSave) ;
 	addBranch("mc_n", kUInt) ;
 	addBranch("mc_weight", kFloat) ;
@@ -122,7 +124,10 @@ void IIHEModuleMCTruth::beginJob(){
 	addBranch("genjet_eta") ;
 	addBranch("genjet_phi") ;
 	addBranch("genjet_energy") ;
-
+        addBranch("genjetAK8_pt") ;
+        addBranch("genjetAK8_eta") ;
+        addBranch("genjetAK8_phi") ;
+        addBranch("genjetAK8_energy") ;
 	setBranchType(kVectorFloat) ;
 	addBranch("gen_weight_sys");
 
@@ -143,6 +148,15 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		store("genjet_energy", genJets->at(j).energy()) ;
 	}
 
+        edm::Handle<std::vector<reco::GenJet> > genJetsAK8;
+        iEvent.getByToken(genJetsSrcAK8_, genJetsAK8);
+
+        for (size_t j = 0; j < genJetsAK8->size();++j){
+                store("genjetAK8_pt", genJetsAK8->at(j).pt()) ;
+                store("genjetAK8_eta", genJetsAK8->at(j).eta()) ;
+                store("genjetAK8_phi", genJetsAK8->at(j).phi()) ;
+                store("genjetAK8_energy", genJetsAK8->at(j).energy()) ;
+        }
 
 	edm::Handle<GenEventInfoProduct> genEventInfoHandle;
 	iEvent.getByToken(generatorLabel_, genEventInfoHandle);

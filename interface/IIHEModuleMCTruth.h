@@ -61,6 +61,7 @@ class IIHEModuleMCTruth : public IIHEModule {
 		edm::EDGetTokenT<vector<PileupSummaryInfo> > puCollection_;
 		edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesCollection_;
 		edm::EDGetTokenT<std::vector<reco::GenJet> > genJetsSrc_;
+                edm::EDGetTokenT<std::vector<reco::GenJet> > genJetsSrcAK8_;
 		float nEventsWeighted_ ;
 		std::vector<float> sumofgenWeights_;
 		TH1F *pileupDist_;

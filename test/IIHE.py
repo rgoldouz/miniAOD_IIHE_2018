@@ -92,7 +92,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ##########################################################################################
@@ -115,7 +115,9 @@ process.source = cms.Source("PoolSource",
 #process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
 #process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv2/ZToEE_NNPDF30_13TeV-powheg_M_800_1400/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/B63D4452-D4C7-E611-AD7F-D48564593F64.root")
 #process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
-process.source.fileNames.append( "/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/90000/FE13E873-0237-E811-ACE8-008CFAE4528C.root")
+#process.source.fileNames.append( "/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/90000/FE13E873-0237-E811-ACE8-008CFAE4528C.root")
+
+process.source.fileNames.append( "file:/afs/cern.ch/user/r/rgoldouz/public/HIG-RunIISummer16MiniAODv3-03846_4481.root")
 
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
