@@ -49,6 +49,9 @@ void IIHEModuleMCTruth::beginJob(){
         MCPdgIdsToSave.push_back(600) ; // Excited top
 	addToMCTruthWhitelist(MCPdgIdsToSave) ;
 	addBranch("mc_n", kUInt) ;
+        addBranch("mc_nMEPartons", kInt) ;
+        addBranch("mc_nMEPartonsFiltered", kInt) ;
+        addBranch("mc_DJRValues", kVectorFloat) ;
 	addBranch("mc_weight", kFloat) ;
 	addBranch("mc_w_sign", kFloat) ;
 	addBranch("mc_id_first", kInt) ;
@@ -160,6 +163,12 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 	edm::Handle<GenEventInfoProduct> genEventInfoHandle;
 	iEvent.getByToken(generatorLabel_, genEventInfoHandle);
+        store("mc_nMEPartons"            ,genEventInfoHandle->nMEPartons());
+        store("mc_nMEPartonsFiltered"    ,genEventInfoHandle->nMEPartonsFiltered());
+        for (auto djr_val: genEventInfoHandle->DJRValues()) {
+          store("mc_DJRValues"            , djr_val);
+        }
+
 	float weight = genEventInfoHandle->weight() ;
 	float w_sign = (weight>=0) ? 1 : -1 ;
 	store("mc_weight"                  ,weight);
