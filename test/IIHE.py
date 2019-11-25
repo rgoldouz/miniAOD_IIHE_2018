@@ -93,7 +93,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ##########################################################################################
@@ -215,7 +215,10 @@ if "2017" in options.DataProcessing:
 if "2018" in options.DataProcessing:
     process.btagWeightTable.weightFiles = cms.vstring('UserCode/IIHETree/test/data/DeepCSV_102XSF_V1.csv')
 
+process.btagWeightTable.src = cms.InputTag("mySmearedJets"               ,"","IIHEAnalysis")
+
 process.looseBtagSFnominal = process.btagWeightTable.clone()
+print process.looseBtagSFnominal.src
 process.looseBtagSFnominal.operatingPoints = cms.vstring("loose")
 process.looseBtagSFup = process.btagWeightTable.clone()
 process.looseBtagSFup.operatingPoints = cms.vstring("loose")
@@ -367,7 +370,7 @@ process.IIHEAnalysis.includeElectronModule       = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMuonModule           = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule            = cms.untracked.bool(True)
-process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
+#process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
 #process.IIHEAnalysis.includePhotonModule         = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule        = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in options.DataProcessing)

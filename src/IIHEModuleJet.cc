@@ -90,8 +90,8 @@ void IIHEModuleJet::beginJob(){
   addBranch("jet_Smeared_pt");
   addBranch("jet_SmearedJetResUp_pt");
   addBranch("jet_SmearedJetResDown_pt");
-  addBranch("jet_EnUp_pt");
-  addBranch("jet_EnDown_pt");
+  addBranch("jet_SmearedJetEnUp_pt");
+  addBranch("jet_SmearedJetEnDown_pt");
 
   setBranchType(kFloat);
   addBranch("BtagSF_Deepcsv_loose");
@@ -252,11 +252,11 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
 
     if (isMC_){
-      jecUnc.setJetEta(pfjet->eta());
-      jecUnc.setJetPt(pfjet->pt());
+      jecUnc.setJetEta(pfJetHandleSmeared_->at(i).eta());
+      jecUnc.setJetPt(pfJetHandleSmeared_->at(i).pt());
       double unc = jecUnc.getUncertainty(true);
-      store("jet_EnUp_pt", (1+unc)*pfjet->pt());
-      store("jet_EnDown_pt", (1-unc)*pfjet->pt());
+      store("jet_SmearedJetEnUp_pt", (1+unc)*pfJetHandleSmeared_->at(i).pt());
+      store("jet_SmearedJetEnDown_pt", (1-unc)*pfJetHandleSmeared_->at(i).pt());
       store("jet_Smeared_pt",pfJetHandleSmeared_->at(i).pt());
       store("jet_SmearedJetResUp_pt",pfJetHandleSmearedJetResUp_->at(i).pt());
       store("jet_SmearedJetResDown_pt",pfJetHandleSmearedJetResDown_->at(i).pt());

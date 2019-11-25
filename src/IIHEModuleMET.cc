@@ -52,14 +52,14 @@ IIHEMETWrapper::IIHEMETWrapper(std::string prefix){
   prefix_ = prefix ;
 
   Pt_               = new IIHEMETVariableFloat  (prefix_, "Pt"                 ) ;
-  Px_               = new IIHEMETVariableFloat  (prefix_, "Px"                 ) ;
-  Py_               = new IIHEMETVariableFloat  (prefix_, "Py"                 ) ;
+//  Px_               = new IIHEMETVariableFloat  (prefix_, "Px"                 ) ;
+//  Py_               = new IIHEMETVariableFloat  (prefix_, "Py"                 ) ;
   phi_              = new IIHEMETVariableFloat  (prefix_, "phi"                ) ;
   significance_     = new IIHEMETVariableFloat  (prefix_, "significance"       ) ;
 
   variables_.push_back((IIHEMETVariableBase*) Pt_                   ) ;
-  variables_.push_back((IIHEMETVariableBase*) Px_                   ) ;
-  variables_.push_back((IIHEMETVariableBase*) Py_                   ) ;
+//  variables_.push_back((IIHEMETVariableBase*) Px_                   ) ;
+//  variables_.push_back((IIHEMETVariableBase*) Py_                   ) ;
   variables_.push_back((IIHEMETVariableBase*) phi_                  ) ;
   variables_.push_back((IIHEMETVariableBase*) significance_         ) ;
 }
@@ -77,8 +77,8 @@ void IIHEMETWrapper::reset(){
 
 void IIHEMETWrapper::fill(pat::MET MET){
   Pt_        ->fill(MET.pt()                ) ;
-  Px_        ->fill(MET.px()                ) ;
-  Py_        ->fill(MET.py()                ) ;
+//  Px_        ->fill(MET.px()                ) ;
+//  Py_        ->fill(MET.py()                ) ;
   phi_       ->fill(MET.phi()               ) ;
   significance_   ->fill(MET.metSignificance()   ) ;
 }

@@ -102,18 +102,18 @@ bool IIHEModuleTrigger::addHLTrigger(HLTrigger* hlt){
       delete hlt;
       return false ;
   }
-  if(   hlt->nSubstringInString(hlt->name(), "Ele35_WPTight") 
-     || hlt->nSubstringInString(hlt->name(), "DoubleEle33_CaloIdL") 
-     || hlt->nSubstringInString(hlt->name(), "DoubleEle25_CaloIdL_MW_v")
-     || hlt->nSubstringInString(hlt->name(), "Ele23_Ele12" )
-     || hlt->nSubstringInString(hlt->name(), "Ele32_WPTight" )
-     || hlt->nSubstringInString(hlt->name(), "DiEle27_WPTightCaloOnly" )
-     || hlt->nSubstringInString(hlt->name(), "Ele27_eta2p1_WPTight" ) 
-     || hlt->nSubstringInString(hlt->name(), "Ele115_CaloIdVT_GsfTrkIdT" )
-//     || hlt->nSubstringInString(hlt->name(), "Photon" )
-  ) {
-    if (!isMC_ || hlt->nSubstringInString(hlt->name(), "DoubleEle")) hlt->saveFilters();
-  }
+//  if(   hlt->nSubstringInString(hlt->name(), "Ele35_WPTight") 
+//     || hlt->nSubstringInString(hlt->name(), "DoubleEle33_CaloIdL") 
+//     || hlt->nSubstringInString(hlt->name(), "DoubleEle25_CaloIdL_MW_v")
+//     || hlt->nSubstringInString(hlt->name(), "Ele23_Ele12" )
+//     || hlt->nSubstringInString(hlt->name(), "Ele32_WPTight" )
+//     || hlt->nSubstringInString(hlt->name(), "DiEle27_WPTightCaloOnly" )
+//     || hlt->nSubstringInString(hlt->name(), "Ele27_eta2p1_WPTight" ) 
+//     || hlt->nSubstringInString(hlt->name(), "Ele115_CaloIdVT_GsfTrkIdT" )
+////     || hlt->nSubstringInString(hlt->name(), "Photon" )
+//  ) {
+//    if (!isMC_ || hlt->nSubstringInString(hlt->name(), "DoubleEle")) hlt->saveFilters();
+//  }
 //  hlt->savePrescale();
   HLTriggers_.push_back(hlt) ;
   return true ;

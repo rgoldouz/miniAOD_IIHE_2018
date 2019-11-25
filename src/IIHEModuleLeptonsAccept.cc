@@ -70,12 +70,13 @@ void IIHEModuleLeptonsAccept::analyze(const edm::Event& iEvent, const edm::Event
   
   bool acceptEle         = (nEl           >= nEleThreshold_     ) ;
   bool acceptElemu       = (nEl + nMu     >= nEleMuThreshold_ && nEl >0 &&  nMu>0 ) ;
-  bool acceptEleTau      = (nEl + nTau    >= nEleTauThreshold_  && nEl >0 && nTau>0 ) ;
+//  bool acceptEleTau      = (nEl + nTau    >= nEleTauThreshold_  && nEl >0 && nTau>0 ) ;
   bool acceptMu          = (nMu           >= nMuThreshold_      ) ;
-  bool acceptMuTau       = (nMu + nTau    >= nMuTauThreshold_  && nMu>0 && nTau>0 ) ;
-  bool acceptTau         = (nTau          >= nTauThreshold_     ) ;
+//  bool acceptMuTau       = (nMu + nTau    >= nMuTauThreshold_  && nMu>0 && nTau>0 ) ;
+//  bool acceptTau         = (nTau          >= nTauThreshold_     ) ;
 
-  bool acceptThisEvent = (acceptEle || acceptElemu || acceptEleTau || acceptMu || acceptMuTau || acceptTau) ;
+//  bool acceptThisEvent = (acceptEle || acceptElemu || acceptEleTau || acceptMu || acceptMuTau || acceptTau) ;
+  bool acceptThisEvent = (acceptEle || acceptElemu || acceptMu) ;
   // Save the event if we see something we like
   if(acceptThisEvent){
     acceptEvent() ;
