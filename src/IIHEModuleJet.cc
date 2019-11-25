@@ -265,6 +265,7 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
   }
 
   if (isMC_){
+//https://twiki.cern.ch/twiki/bin/view/CMS/BTagShapeCalibration
     edm::Handle<nanoaod::FlatTable>  looseBtagSFdownHandle_;
     iEvent.getByToken(looseBtagSFdownToken_, looseBtagSFdownHandle_);
 

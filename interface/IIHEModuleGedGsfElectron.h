@@ -2,6 +2,8 @@
 #define UserCode_IIHETree_IIHEModuleGedGsfElectron_h
 
 #include "UserCode/IIHETree/interface/IIHEModule.h"
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+
 // class decleration
 class IIHEModuleGedGsfElectron : public IIHEModule {
 private:
@@ -19,6 +21,7 @@ private:
   edm::EDGetTokenT<View<reco::Vertex>> vtxToken_;
   edm::InputTag           primaryVertexLabel_ ;
   float ETThreshold_ ;
+  std::unique_ptr<EffectiveAreas> ea_pfiso_;
 
 public:
   explicit IIHEModuleGedGsfElectron(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC);

@@ -53,11 +53,6 @@ options.register('grid',
 options.parseArguments()
 
 ###########################################################################################
-#os.system('wget https://github.com/rgoldouz/miniAOD_IIHE/archive/CMSSW_8_0_26_patch1.zip')
-#os.system("unzip -a " + "CMSSW_8_0_26_patch1.zip" )
-#os.system("mv " + "miniAOD_IIHE-CMSSW_8_0_26_patch1/data" + " ..")
-#os.system("rm -rf CMSSW_8_0_26_patch1.zip miniAOD_IIHE-CMSSW_8_0_26_patch1")
-##########################################################################################
 #                                      Global tags                                       #
 ##########################################################################################
 globalTag = "80"
@@ -72,10 +67,16 @@ if options.DataProcessing == "data2017":
 if options.DataProcessing == "mc2017":
   globalTag = "94X_mc2017_realistic_v17"
 
-if options.DataProcessing == "data2018":
-  globalTag = "102X_dataRun2_Sep2018Rereco_v1"
+if options.DataProcessing == "data2018ABC":
+  globalTag = "102X_dataRun2_v12"
+if options.DataProcessing == "data2018D":
+  globalTag = "102X_dataRun2_Prompt_v15"
 if options.DataProcessing == "mc2018":
-  globalTag = "102X_upgrade2018_realistic_v18"
+  globalTag = "102X_upgrade2018_realistic_v19"
+
+if globalTag == "80":
+    print '*****ERROR**** you are using wrong global tag so lets stop running'
+    quit()
 ##########################################################################################
 #                                  Start the sequences                                   #
 ##########################################################################################
@@ -92,7 +93,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ##########################################################################################
@@ -110,15 +111,12 @@ process.source = cms.Source("PoolSource",
 #    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
 #    skipEvents=cms.untracked.uint32(8000)
 )
-#process.source.fileNames.append( "file:EGamma_Run2018C_17Sep2018_numEvent100.root" )
-#process.source.fileNames.append( "file:ZToEE_120_200_Autumn18_numEvent100.root" )
 #process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
 #process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv2/ZToEE_NNPDF30_13TeV-powheg_M_800_1400/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/B63D4452-D4C7-E611-AD7F-D48564593F64.root")
 #process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
+process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/DCDFFE10-8042-E811-A396-001E673D2261.root")
 #process.source.fileNames.append( "/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/90000/FE13E873-0237-E811-ACE8-008CFAE4528C.root")
-
-#process.source.fileNames.append( "file:/afs/cern.ch/user/r/rgoldouz/public/HIG-RunIISummer16MiniAODv3-03846_4481.root")
-process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/DYJetsToEE_M-50_LTbinned_0To75_5f_LO_13TeV-madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/EA025783-DD43-E811-B85F-0CC47A7C3434.root")
+#process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/DYJetsToEE_M-50_LTbinned_0To75_5f_LO_13TeV-madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/EA025783-DD43-E811-B85F-0CC47A7C3434.root")
 
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
@@ -145,64 +143,6 @@ na.runTauID()
 ##########################################################################################
 #                                  Jet Energy corrections.                               #
 ##########################################################################################
-
-#datadir = "%s/src/UserCode/IIHETree/test/data/" % environ['CMSSW_BASE']
-datadir = "data/"
-jesdata = "0"
-#from https://github.com/cms-jet/JRDatabase/tree/master/SQLiteFiles
-jerdata = "0"
-sampletorun='0'
-if "2018" in options.DataProcessing:
-    if "mc" in options.DataProcessing:
-        jesdata = "JES_Autumn18_V8_MC"
-        jerdata = "JER_Autumn18_V1_MC"
-        sampletorun = "MC"
-    else:
-        jesdata = "JES_Autumn18_RunABCD_V8_DATA"
-        jerdata = "JER_Autumn18_V1_DATA"
-        sampletorun = "DATA"
-    print "we are reading JEC from %s" % jesdata
-    print "we are reading JER from %s" % jerdata
-
-
-##### JES ####
-    from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
-    process.jec = cms.ESSource('PoolDBESSource',
-        CondDBSetup,
-        connect = cms.string("sqlite_file:"+datadir+jesdata+".db"),
-        toGet = cms.VPSet(
-            cms.PSet(
-                record = cms.string('JetCorrectionsRecord'),
-                tag    = cms.string("JetCorrectorParametersCollection_"+jesdata[4:]+"_AK4PFchs"),
-                label  = cms.untracked.string('AK4PFchs')
-            )
-        )
-    )
-# Add an ESPrefer to override JEC that might be available from the global tag
-    process.es_prefer_jec = cms.ESPrefer('PoolDBESSource', 'jec')
-
-##### JER ####
-    process.load("JetMETCorrections.Modules.JetResolutionESProducer_cfi")
-    process.jer = cms.ESSource("PoolDBESSource",
-                               CondDBSetup,
-                               toGet = cms.VPSet(
-        # Resolution
-        cms.PSet(
-          record = cms.string('JetResolutionRcd'),
-          tag    = cms.string('JR_Autumn18_V1_'+sampletorun+'_PtResolution_AK4PFchs'),
-          label  = cms.untracked.string('AK4PFchs_pt')
-          ),
-        
-        # Scale factors
-        cms.PSet(
-          record = cms.string('JetResolutionScaleFactorRcd'),
-          tag    = cms.string('JR_Autumn18_V1_'+sampletorun+'_SF_AK4PFchs'),          
-          label  = cms.untracked.string('AK4PFchs')
-          ),
-        ),
-                               connect = cms.string("sqlite_file:"+datadir+jerdata+".db") 
-                               )
-    process.es_prefer_jer = cms.ESPrefer('PoolDBESSource', 'jer')
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
@@ -428,6 +368,7 @@ process.IIHEAnalysis.includeMuonModule           = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
+#process.IIHEAnalysis.includePhotonModule         = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule        = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in options.DataProcessing)
 
@@ -445,7 +386,6 @@ if "mc" in options.DataProcessing:
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
-#    process.fullPatMetSequenceModifiedMET *
     process.ecalBadCalibReducedMINIAODFilter*
     process.mySmearedJets     *
     process.mySmearedJetsUP *
@@ -461,7 +401,6 @@ else:
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC *
     process.fullPatMetSequence *
-#    process.fullPatMetSequenceModifiedMET *
     process.ecalBadCalibReducedMINIAODFilter *
     process.IIHEAnalysis
     )
@@ -469,10 +408,10 @@ else:
 
 process.p1 = cms.Path(process.IIHE)
 
-process.out = cms.OutputModule(
-    "PoolOutputModule",
-    fileName = cms.untracked.string("EDM.root")
-    )
+#process.out = cms.OutputModule(
+#    "PoolOutputModule",
+#    fileName = cms.untracked.string("EDMiii.root")
+#    )
 
 #process.outpath = cms.EndPath(process.out)
 #

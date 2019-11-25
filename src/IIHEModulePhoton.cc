@@ -24,9 +24,6 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_n", kUInt) ;
   
   setBranchType(kVectorFloat) ;
-  addBranch("ph_px") ;
-  addBranch("ph_py") ;
-  addBranch("ph_pz") ;
   addBranch("ph_pt") ;
   addBranch("ph_eta") ;
   addBranch("ph_theta") ;
@@ -34,107 +31,26 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_energy") ;
   addBranch("ph_mass") ;
   
-  setBranchType(kVectorInt) ;
-  addBranch("ph_isPFlowPhoton") ;
-  addBranch("ph_isStandardPhoton") ;
-  addBranch("ph_hasConversionTracks") ;
-  addBranch("ph_hasPixelSeed") ;
-  //addBranch("ph_conversionTrackProvenance",kVectorInt) ;
-  addBranch("ph_isEB") ;
-  addBranch("ph_isEE") ;
-  addBranch("ph_isEBGap") ;
-  addBranch("ph_isEBEtaGap") ;
-  addBranch("ph_isEBPhiGap") ;
-  addBranch("ph_isEEGap") ;
-  addBranch("ph_isEERingGap") ;
-  addBranch("ph_isEEDeeGap") ;
-  addBranch("ph_isEBEEGap") ;
-  
   setBranchType(kVectorFloat) ;
   addBranch("ph_hadronicOverEm") ;
   addBranch("ph_hadronicDepth1OverEm") ;
   addBranch("ph_hadronicDepth2OverEm") ;
   addBranch("ph_hadTowOverEm") ;
   addBranch("ph_hadTowDepth1OverEm") ;
-  addBranch("ph_hadTowDepth2OverEm") ;
-  
+  addBranch("ph_hadTowDepth2OverEm") ; 
   addBranch("ph_e1x5") ;
   addBranch("ph_e2x5") ;
   addBranch("ph_e3x3") ;
   addBranch("ph_e5x5") ;
-  
   addBranch("ph_maxEnergyXtal") ;
   addBranch("ph_sigmaEtaEta") ;
   addBranch("ph_sigmaIetaIeta") ;
-  
   addBranch("ph_r1x5") ;
   addBranch("ph_r2x5") ;
   addBranch("ph_r9") ;
   
-  //addBranch("ph_CorrectedEnergy") ;
-  //addBranch("ph_CorrectedEnergyError") ;
-  
-  addBranch("ph_mipChi2") ;
-  addBranch("ph_mipTotEnergy") ;
-  addBranch("ph_mipSlope") ;
-  addBranch("ph_mipIntercept") ;
-  
-  addBranch("ph_mipNhitCone", kVectorInt) ;
-  addBranch("ph_mipIsHalo", kVectorInt) ;
-  
-  setBranchType(kVectorFloat) ;
-  addBranch("ph_ecalRecHitSumEtConeDR04") ;
-  addBranch("ph_hcalTowerSumEtConeDR04") ;
-  addBranch("ph_hcalDepth1TowerSumEtConeDR04") ;
-  addBranch("ph_hcalDepth2TowerSumEtConeDR04") ;
-  addBranch("ph_hcalTowerSumEtBcConeDR04") ;
-  addBranch("ph_hcalDepth1TowerSumEtBcConeDR04") ;
-  addBranch("ph_hcalDepth2TowerSumEtBcConeDR04") ;
-  addBranch("ph_trkSumPtSolidConeDR04") ;
-  addBranch("ph_trkSumPtHollowConeDR04") ;
-  
   setBranchType(kVectorInt) ;
-  addBranch("ph_nTrkSolidConeDR04") ;
-  addBranch("ph_nTrkHollowConeDR04") ;
-  
-  setBranchType(kVectorFloat) ;
-  addBranch("ph_ecalRecHitSumEtConeDR03") ;
-  addBranch("ph_hcalTowerSumEtConeDR03") ;
-  addBranch("ph_hcalDepth1TowerSumEtConeDR03") ;
-  addBranch("ph_hcalDepth2TowerSumEtConeDR03") ;
-  addBranch("ph_hcalTowerSumEtBcConeDR03") ;
-  addBranch("ph_hcalDepth1TowerSumEtBcConeDR03") ;
-  addBranch("ph_hcalDepth2TowerSumEtBcConeDR03") ;
-  addBranch("ph_trkSumPtSolidConeDR03") ;
-  addBranch("ph_trkSumPtHollowConeDR03") ;
-  
-  setBranchType(kVectorInt) ;
-  addBranch("ph_nTrkSolidConeDR03") ;
-  addBranch("ph_nTrkHollowConeDR03") ;
-  
-  setBranchType(kVectorFloat) ;
-  addBranch("ph_chargedHadronIso") ;
-  
-  addBranch("ph_neutralHadronIso") ;
-  addBranch("ph_photonIso") ;
-  
-//CHOOSE_RELEASE_START DEFAULT CMSSW_7_4_4 CMSSW_7_0_6_patch1 CMSSW_7_3_0 CMSSW_7_2_0 CMSSW_7_6_3
-  addBranch("ph_chargedHadronIsoWrongVtx") ;
-  addBranch("ph_sumChargedParticlePt") ;
-  addBranch("ph_sumNeutralHadronEtHighThreshold") ;
-  addBranch("ph_sumPhotonEtHighThreshold") ;
-  addBranch("ph_sumPUPt") ;
-//CHOOSE_RELEASE_END CMSSW_7_4_4 CMSSW_7_0_6_patch1 CMSSW_7_3_0 CMSSW_7_2_0 CMSSW_7_6_3
-/*CHOOSE_RELEASE_START CMSSW_6_2_5 CMSSW_6_2_0_SLHC23_patch1 CMSSW_5_3_11
-CHOOSE_RELEASE_END CMSSW_6_2_5 CMSSW_6_2_0_SLHC23_patch1 CMSSW_5_3_11*/
-  
-  addBranch("ph_nClusterOutsideMustache", kVectorInt) ;
-  addBranch("ph_etOutsideMustache") ;
-  addBranch("ph_pfMVA") ;
-  
-  addBranch("ph_mc_bestDR", kVectorFloat) ;
-  addBranch("ph_mc_index" , kVectorInt  ) ;
-  addBranch("ph_mc_ERatio", kVectorFloat) ;
+  addBranch("ph_hasPixelSeed") ;
 }
 
 // ------------ method called to for each event  ------------
@@ -147,34 +63,12 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   for( unsigned int i = 0 ; i < photonCollection_->size() ; i++ ) {
     Ptr<pat::Photon> phiter = photonCollection_->ptrAt( i );
     if(phiter->pt() < ETThreshold_) continue ;
-    store("ph_px"    , phiter->px()) ;
-    store("ph_py"    , phiter->py()) ;
-    store("ph_pz"    , phiter->pz()) ;
     store("ph_pt"    , phiter->pt()) ;
     store("ph_eta"   , phiter->eta()) ;
     store("ph_theta" , phiter->theta()) ;
     store("ph_phi"   , phiter->phi()) ;
     store("ph_energy", phiter->energy()) ;
     store("ph_mass"  , phiter->mass()) ;
-    store("ph_isPFlowPhoton"                 , phiter->isPFlowPhoton()                   ) ;
-    store("ph_isStandardPhoton"              , phiter->isStandardPhoton()                ) ;
-    store("ph_hasConversionTracks"           , phiter->hasConversionTracks()             ) ;
-    store("ph_hasPixelSeed"                  , phiter->hasPixelSeed()                    ) ;
-    store("ph_isEB"                          , phiter->isEB()                            ) ;
-    store("ph_isEE"                          , phiter->isEE()                            ) ;
-    store("ph_isEBGap"                       , phiter->isEBGap()                         ) ;
-    store("ph_isEBEtaGap"                    , phiter->isEBEtaGap()                      ) ;
-    store("ph_isEBPhiGap"                    , phiter->isEBPhiGap()                      ) ;
-    store("ph_isEEGap"                       , phiter->isEEGap()                         ) ;
-    store("ph_isEERingGap"                   , phiter->isEERingGap()                     ) ;
-    store("ph_isEEDeeGap"                    , phiter->isEEDeeGap()                      ) ;
-    store("ph_isEBEEGap"                     , phiter->isEBEEGap()                       ) ;
-    store("ph_hadronicOverEm"                , phiter->hadronicOverEm()                  ) ;
-    store("ph_hadronicDepth1OverEm"          , phiter->hadronicDepth1OverEm()            ) ;
-    store("ph_hadronicDepth2OverEm"          , phiter->hadronicDepth2OverEm()            ) ;
-    store("ph_hadTowOverEm"                  , phiter->hadTowOverEm()                    ) ;
-    store("ph_hadTowDepth1OverEm"            , phiter->hadTowDepth1OverEm()              ) ;
-    store("ph_hadTowDepth2OverEm"            , phiter->hadTowDepth2OverEm()              ) ;
 
     store("ph_e1x5"                          , phiter->e1x5()                            ) ;
     store("ph_e2x5"                          , phiter->e2x5()                            ) ;
@@ -186,6 +80,7 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("ph_r1x5"                          , phiter->r1x5()                            ) ;
     store("ph_r2x5"                          , phiter->r2x5()                            ) ;
     store("ph_r9"                            , phiter->r9()                              ) ;
+    store("ph_hasPixelSeed"                  , phiter->hasPixelSeed()                    ) ;
 
     store("ph_mipChi2"                       , phiter->mipChi2()                         ) ;
     store("ph_mipTotEnergy"                  , phiter->mipTotEnergy()                    ) ;
@@ -193,6 +88,7 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("ph_mipIntercept"                  , phiter->mipIntercept()                    ) ;
     store("ph_mipNhitCone"                   , phiter->mipNhitCone()                     ) ;
     store("ph_mipIsHalo"                     , phiter->mipIsHalo()                       ) ;
+
 
     store("ph_ecalRecHitSumEtConeDR04"       , phiter->ecalRecHitSumEtConeDR04()         ) ;
     store("ph_hcalTowerSumEtConeDR04"        , phiter->hcalTowerSumEtConeDR04()          ) ;
