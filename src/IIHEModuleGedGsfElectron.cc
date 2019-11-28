@@ -48,7 +48,7 @@ IIHEModuleGedGsfElectron::IIHEModuleGedGsfElectron(const edm::ParameterSet& iCon
   ETThreshold_ = iConfig.getUntrackedParameter<double>("electronPtThreshold") ;
   primaryVertexLabel_          = iConfig.getParameter<edm::InputTag>("primaryVertex") ;
   vtxToken_ = iC.consumes<View<reco::Vertex>>(primaryVertexLabel_);
-  ea_pfiso_.reset(new EffectiveAreas("../test/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt"));
+  ea_pfiso_.reset(new EffectiveAreas((iConfig.getParameter<edm::FileInPath>("EAFile")).fullPath()));
 }
 IIHEModuleGedGsfElectron::~IIHEModuleGedGsfElectron(){}
 

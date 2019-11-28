@@ -238,6 +238,7 @@ int HLTrigger::fullStatus(const edm::Event& iEvent, edm::EventSetup const& iSetu
   if(searchStatus_==searchedForAndFound && index_>=0){
     touched_  = true ;
     accept_   = triggerResults->accept(index_) ;
+//    std::cout<<acceptBranchName_<<"  "<<triggerResults->accept(index_)<<std::endl;
     prescale_ = prescale->getPrescaleForIndex(index_);
     if (saveFilters_){
       for(unsigned i=0 ; i<filters_.size() ; ++i){
