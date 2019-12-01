@@ -125,11 +125,10 @@ int IIHEModuleTrigger::addBranches(){
 //the trigger overhead.  (This is not used in the main analysis, but can be trivially
 // printed to screen.)
   int result = 0 ;
-  IIHEAnalysis* analysis = parent_ ;
   for(unsigned int i=0 ; i<HLTriggers_.size() ; i++){
     if (std::find(savedHLTriggers_.begin(), savedHLTriggers_.end(), HLTriggers_.at(i)->name().substr(0, HLTriggers_.at(i)->name().find("_v"))) != savedHLTriggers_.end()) continue;
     savedHLTriggers_.push_back(HLTriggers_.at(i)->name().substr(0, HLTriggers_.at(i)->name().find("_v"))); 
-    result += HLTriggers_.at(i)->createBranches(analysis) ;
+    result += HLTriggers_.at(i)->createBranches(parent_) ;
   }
   return result ;
 }
@@ -159,29 +158,27 @@ void IIHEModuleTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByToken(triggerResultsTokenRECO_, triggerResultsCollectionRECO_);
 
   // Now fill the values
-  IIHEAnalysis* analysis = parent_ ;
   for(unsigned int i=0 ; i<HLTriggersPAT_.size() ; i++){
-    HLTrigger* hlt = HLTriggersPAT_.at(i) ;
-    hlt->status(triggerResultsCollection_) ;
-    hlt->store(analysis) ;
+//    HLTrigger* hlt = HLTriggersPAT_.at(i) ;
+    HLTriggersPAT_.at(i)->status(triggerResultsCollection_) ;
+    HLTriggersPAT_.at(i)->store(parent_) ;
   } 
 
   for(unsigned int i=0 ; i<HLTriggersRECO_.size() ; i++){
-    HLTrigger* hlt = HLTriggersRECO_.at(i) ;
-    hlt->status(triggerResultsCollectionRECO_) ;
-    hlt->store(analysis) ;
+//    HLTrigger* hlt = HLTriggersRECO_.at(i) ;
+    HLTriggersRECO_.at(i)->status(triggerResultsCollectionRECO_) ;
+    HLTriggersRECO_.at(i)->store(parent_) ;
   }
 
   for(unsigned int i=0 ; i<HLTriggers_.size() ; i++){
-    HLTrigger* hlt = HLTriggers_.at(i) ;
-    hlt->fullStatus(iEvent, iSetup, hltConfig_, HLTR, triggerObjects, triggerPrescales ,analysis) ;
-    hlt->store(analysis) ;
+//    HLTrigger* hlt = HLTriggers_.at(i) ;
+    HLTriggers_.at(i)->fullStatus(iEvent, iSetup, hltConfig_, HLTR, triggerObjects, triggerPrescales ,parent_) ;
+    HLTriggers_.at(i)->store(parent_) ;
   }
   nEvents_++ ;
 }
 
 void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup){
-  IIHEAnalysis* analysis = parent_ ;
   if(changed_){
     hltConfigPAT_.init(iRun, iSetup, triggerResultsLabel_.process(), changed_);
     HLTNamesFromConfigPAT_ = hltConfigPAT_.triggerNames() ;
@@ -189,7 +186,7 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
       std::string namePAT = HLTNamesFromConfigPAT_.at(i) ;
       HLTrigger* hltPAT = new HLTrigger(namePAT, hltConfigPAT_) ;
       HLTriggersPAT_.push_back(hltPAT) ;
-      hltPAT->createBranches(analysis) ;
+      hltPAT->createBranches(parent_) ;
     }
 
     hltConfigRECO_.init(iRun, iSetup, triggerResultsLabelRECO_.process(), changed_);
@@ -198,7 +195,7 @@ void IIHEModuleTrigger::beginRun(edm::Run const& iRun, edm::EventSetup const& iS
       std::string nameRECO = HLTNamesFromConfigRECO_.at(i) ;
       HLTrigger* hltRECO = new HLTrigger(nameRECO, hltConfigRECO_) ;
       HLTriggersRECO_.push_back(hltRECO) ;
-      hltRECO->createBranches(analysis) ;
+      hltRECO->createBranches(parent_) ;
     }
 
   parent_->configureBranches() ;
