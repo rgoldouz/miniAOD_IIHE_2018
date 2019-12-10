@@ -93,7 +93,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 #process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2058) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(20) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",
@@ -368,6 +368,7 @@ process.IIHEAnalysis.particleLevelMETCollection                = cms.InputTag("p
 
 #corrected electron collection
 process.IIHEAnalysis.electronCollection                        = cms.InputTag("slimmedElectrons"          , ""                ,"IIHEAnalysis"  )
+process.IIHEAnalysis.photonCollection                           = cms.InputTag("slimmedPhotons"          , ""                ,"IIHEAnalysis"  )
 
 process.IIHEAnalysis.includeLeptonsAcceptModule  = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTriggerModule        = cms.untracked.bool(True)
@@ -378,7 +379,7 @@ process.IIHEAnalysis.includeMuonModule           = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule            = cms.untracked.bool(True)
 #process.IIHEAnalysis.includeTauModule            = cms.untracked.bool(True)
-#process.IIHEAnalysis.includePhotonModule         = cms.untracked.bool(True)
+process.IIHEAnalysis.includePhotonModule         = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule        = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule        = cms.untracked.bool("mc" in options.DataProcessing)
 

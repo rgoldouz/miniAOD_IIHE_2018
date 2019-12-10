@@ -30,8 +30,6 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_phi") ;
   addBranch("ph_energy") ;
   addBranch("ph_mass") ;
-  
-  setBranchType(kVectorFloat) ;
   addBranch("ph_hadronicOverEm") ;
   addBranch("ph_hadronicDepth1OverEm") ;
   addBranch("ph_hadronicDepth2OverEm") ;
@@ -48,9 +46,33 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_r1x5") ;
   addBranch("ph_r2x5") ;
   addBranch("ph_r9") ;
-  
-  setBranchType(kVectorInt) ;
+  addBranch("ph_hadronicOverEm") ;
+  addBranch("ph_hadronicDepth1OverEm") ;
+  addBranch("ph_hadronicDepth2OverEm") ;
+  addBranch("ph_hadTowOverEm") ;
+  addBranch("ph_hadTowDepth1OverEm") ;
+  addBranch("ph_hadTowDepth2OverEm") ;
+
+  addBranch("ph_phoChargedIsolation") ;
+  addBranch("ph_phoNeutralHadronIsolation") ;
+  addBranch("ph_phoPhotonIsolation") ;
+  addBranch("ph_ecalEnergyErrPreCorr") ;
+  addBranch("ph_ecalEnergyPostCorr") ;
+  addBranch("ph_energyScaleEtDown") ;
+  addBranch("ph_energyScaleEtUp") ;
+
+
+  setBranchType(kVectorInt) ; 
+  addBranch("ph_mvaPhoID_RunIIFall17_v2_wp80") ;
+  addBranch("ph_mvaPhoID_RunIIFall17_v2_wp90") ;
+  addBranch("ph_cutBasedPhotonID_Fall17_94X_V2_loose") ;
+  addBranch("ph_cutBasedPhotonID_Fall17_94X_V2_medium") ;
+  addBranch("ph_cutBasedPhotonID_Fall17_94X_V2_tight") ;
   addBranch("ph_hasPixelSeed") ;
+  addBranch("ph_isPFlowPhoton") ;
+  addBranch("ph_isEB") ;
+  addBranch("ph_isEE") ;
+
 }
 
 // ------------ method called to for each event  ------------
@@ -80,53 +102,36 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("ph_r1x5"                          , phiter->r1x5()                            ) ;
     store("ph_r2x5"                          , phiter->r2x5()                            ) ;
     store("ph_r9"                            , phiter->r9()                              ) ;
-    store("ph_hasPixelSeed"                  , phiter->hasPixelSeed()                    ) ;
 
-    store("ph_mipChi2"                       , phiter->mipChi2()                         ) ;
-    store("ph_mipTotEnergy"                  , phiter->mipTotEnergy()                    ) ;
-    store("ph_mipSlope"                      , phiter->mipSlope()                        ) ;
-    store("ph_mipIntercept"                  , phiter->mipIntercept()                    ) ;
-    store("ph_mipNhitCone"                   , phiter->mipNhitCone()                     ) ;
-    store("ph_mipIsHalo"                     , phiter->mipIsHalo()                       ) ;
+    store("ph_hasPixelSeed"                  , int(phiter->hasPixelSeed())               ) ;
+    store("ph_isPFlowPhoton"                 , int(phiter->isPFlowPhoton())              ) ;
+    store("ph_hasConversionTracks"           , int(phiter->hasConversionTracks())        ) ;
+    store("ph_isEB"                          , int(phiter->isEB())                       ) ;
+    store("ph_isEE"                          , int(phiter->isEE())                       ) ;
+    store("ph_mvaPhoID_RunIIFall17_v2_wp80"            , int(phiter->photonID("mvaPhoID-RunIIFall17-v2-wp80"))) ;
+    store("ph_mvaPhoID_RunIIFall17_v2_wp90"            , int(phiter->photonID("mvaPhoID-RunIIFall17-v2-wp90"))) ;
+    store("ph_cutBasedPhotonID_Fall17_94X_V2_loose"    , int(phiter->photonID("cutBasedPhotonID-Fall17-94X-V2-loose"))) ;
+    store("ph_cutBasedPhotonID_Fall17_94X_V2_medium"   , int(phiter->photonID("cutBasedPhotonID-Fall17-94X-V2-medium"))) ;
+    store("ph_cutBasedPhotonID_Fall17_94X_V2_tight"    , int(phiter->photonID("cutBasedPhotonID-Fall17-94X-V2-tight"))) ;
+
+    store("ph_hadronicOverEm"                , phiter->hadronicOverEm()                  ) ;
+    store("ph_hadronicDepth1OverEm"          , phiter->hadronicDepth1OverEm()            ) ;
+    store("ph_hadronicDepth2OverEm"          , phiter->hadronicDepth2OverEm()            ) ;
+    store("ph_hadTowOverEm"                  , phiter->hadTowOverEm()                    ) ;
+    store("ph_hadTowDepth1OverEm"            , phiter->hadTowDepth1OverEm()              ) ;
+    store("ph_hadTowDepth2OverEm"            , phiter->hadTowDepth2OverEm()              ) ;
 
 
-    store("ph_ecalRecHitSumEtConeDR04"       , phiter->ecalRecHitSumEtConeDR04()         ) ;
-    store("ph_hcalTowerSumEtConeDR04"        , phiter->hcalTowerSumEtConeDR04()          ) ;
-    store("ph_hcalDepth1TowerSumEtConeDR04"  , phiter->hcalDepth1TowerSumEtConeDR04()    ) ;
-    store("ph_hcalDepth2TowerSumEtConeDR04"  , phiter->hcalDepth2TowerSumEtConeDR04()    ) ;
-    store("ph_hcalTowerSumEtBcConeDR04"      , phiter->hcalTowerSumEtBcConeDR04()        ) ;
-    store("ph_hcalDepth1TowerSumEtBcConeDR04", phiter->hcalDepth1TowerSumEtBcConeDR04()  ) ;
-    store("ph_hcalDepth2TowerSumEtBcConeDR04", phiter->hcalDepth2TowerSumEtBcConeDR04()  ) ;
-    store("ph_trkSumPtSolidConeDR04"         , phiter->trkSumPtSolidConeDR04()           ) ;
-    store("ph_trkSumPtHollowConeDR04"        , phiter->trkSumPtHollowConeDR04()          ) ;
-    store("ph_nTrkSolidConeDR04"             , phiter->nTrkSolidConeDR04()               ) ;
-    store("ph_nTrkHollowConeDR04"            , phiter->nTrkHollowConeDR04()              ) ;
+    store("ph_ecalEnergyErrPreCorr"         , phiter->userFloat("ecalEnergyErrPreCorr")) ;
+    store("ph_ecalEnergyPostCorr"         , phiter->userFloat("ecalEnergyPostCorr")) ;
+    store("ph_energyScaleEtDown"         , phiter->userFloat("energyScaleEtDown")) ;
+    store("ph_energyScaleEtUp"         , phiter->userFloat("energyScaleEtUp")) ;
 
-    store("ph_ecalRecHitSumEtConeDR03"       , phiter->ecalRecHitSumEtConeDR03()         ) ;
-    store("ph_hcalTowerSumEtConeDR03"        , phiter->hcalTowerSumEtConeDR03()          ) ;
-    store("ph_hcalDepth1TowerSumEtConeDR03"  , phiter->hcalDepth1TowerSumEtConeDR03()    ) ;
-    store("ph_hcalDepth2TowerSumEtConeDR03"  , phiter->hcalDepth2TowerSumEtConeDR03()    ) ;
-    store("ph_hcalTowerSumEtBcConeDR03"      , phiter->hcalTowerSumEtBcConeDR03()        ) ;
-    store("ph_hcalDepth1TowerSumEtBcConeDR03", phiter->hcalDepth1TowerSumEtBcConeDR03()  ) ;
-    store("ph_hcalDepth2TowerSumEtBcConeDR03", phiter->hcalDepth2TowerSumEtBcConeDR03()  ) ;
-    store("ph_trkSumPtSolidConeDR03"         , phiter->trkSumPtSolidConeDR03()           ) ;
-    store("ph_trkSumPtHollowConeDR03"        , phiter->trkSumPtHollowConeDR03()          ) ;
-    store("ph_nTrkSolidConeDR03"             , phiter->nTrkSolidConeDR03()               ) ;
-    store("ph_nTrkHollowConeDR03"            , phiter->nTrkHollowConeDR03()              ) ;
+    store("ph_phoChargedIsolation"         , phiter->userFloat("phoChargedIsolation"       )) ;
+    store("ph_phoNeutralHadronIsolation"   , phiter->userFloat("phoNeutralHadronIsolation" )) ;
+    store("ph_phoPhotonIsolation"          , phiter->userFloat("phoPhotonIsolation"        )) ;
 
-    store("ph_chargedHadronIso"               , phiter->chargedHadronIso()               ) ;
-    store("ph_neutralHadronIso"               , phiter->neutralHadronIso()               ) ;
-    store("ph_photonIso"                      , phiter->photonIso()                      ) ;
-    
-    store("ph_chargedHadronIsoWrongVtx"       , phiter->chargedHadronIsoWrongVtx()       ) ;
-    store("ph_sumChargedParticlePt"           , phiter->sumChargedParticlePt()           ) ;
-    store("ph_sumNeutralHadronEtHighThreshold", phiter->sumNeutralHadronEtHighThreshold()) ;
-    store("ph_sumPhotonEtHighThreshold"       , phiter->sumPhotonEtHighThreshold()       ) ;
-    store("ph_sumPUPt"                        , phiter->sumPUPt()                        ) ;
 
-    store("ph_nClusterOutsideMustache"        , phiter->nClusterOutsideMustache()        ) ;
-    store("ph_etOutsideMustache"              , phiter->etOutsideMustache()              ) ;
-    store("ph_pfMVA"                          , phiter->pfMVA()                          ) ;
     
     // Now apply truth matching.
     int index = MCTruth_matchEtaPhi_getIndex(phiter->eta(), phiter->phi()) ;
