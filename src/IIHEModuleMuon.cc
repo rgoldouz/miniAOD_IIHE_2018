@@ -8,6 +8,8 @@
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/MuonReco/interface/MuonCocktails.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "PhysicsTools/PatAlgos/plugins/PATMuonProducer.h"
+#include "PhysicsTools/PatUtils/interface/MiniIsolation.h"
 #include <TRandom3.h>
 #include <iostream>
 #include <TMath.h>
@@ -203,6 +205,8 @@ IIHEModuleMuon::IIHEModuleMuon(const edm::ParameterSet& iConfig, edm::ConsumesCo
   muonCollectionLabel_         = iConfig.getParameter<edm::InputTag>("muonCollection"          ) ;
   muonCollectionToken_ =  iC.consumes<View<pat::Muon> > (muonCollectionLabel_);
   isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
+  rhoTokenFastjetCentralNeutral_ =  iC.consumes<double> (InputTag("fixedGridRhoFastjetCentralNeutral"));
+
 }
 IIHEModuleMuon::~IIHEModuleMuon(){}
 
@@ -283,6 +287,7 @@ void IIHEModuleMuon::beginJob(){
   addBranch("mu_combinedQuality_chi2LocalPosition"        ) ;
   addBranch("mu_segmentCompatibility"        ) ;
   addBranch("mu_dB"        ) ;
+  addBranch("mu_MiniIso"        ) ;
 // added 
   addBranch("mu_pt_default"  ) ;
 
@@ -384,6 +389,9 @@ void IIHEModuleMuon::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
   edm::Handle<reco::BeamSpot> beamspotHandle_ ;
   iEvent.getByToken(beamSpotToken_, beamspotHandle_) ;
 
+  edm::Handle<double> rhoHandlejetCentralNeutral_;
+  iEvent.getByToken(rhoTokenFastjetCentralNeutral_,rhoHandlejetCentralNeutral_) ;
+
   store("mu_n", (unsigned int)(muonCollection_->size())) ;
   // Muons come with four tracks:
   //   Standalone track.  This is made from the outer detector
@@ -480,6 +488,10 @@ void IIHEModuleMuon::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
     store("mu_MultiIsoLoose", int(muIt->passed(reco::Muon::MultiIsoLoose)));
     store("mu_MultiIsoMedium", int(muIt->passed(reco::Muon::MultiIsoMedium)));
 
+//see https://cmssdt.cern.ch/lxr/source/PhysicsTools/PatAlgos/plugins/PATMuonProducer.cc?%21v=CMSSW_10_2_0 line 813
+    float drcut = pat::miniIsoDr(muIt->p4(),0.05,0.2,10.0);
+     
+    store("mu_MiniIso", pat::muonRelMiniIsoPUCorrected(muIt->miniPFIsolation(), muIt->p4(), drcut, *rhoHandlejetCentralNeutral_));
 
 
     int numberOfMatchStations    = 0 ;

@@ -61,6 +61,7 @@
 <use   name="CommonTools/UtilAlgos"/>
 <use   name="PhysicsTools/IsolationAlgos"/>
 <use   name="PhysicsTools/PatAlgos"/>
+<use   name="PhysicsTools/PatUtils"/>
 <use   name="hepmc"/>
 <use   name="fastjet"/>
 <use   name="JetMETCorrections/Objects"/>

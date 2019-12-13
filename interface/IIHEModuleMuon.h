@@ -134,6 +134,8 @@ private:
   edm::EDGetTokenT<View<reco::Vertex>> vtxToken_;
   edm::EDGetTokenT<reco::BeamSpot> beamSpotToken_ ;
   edm::InputTag           primaryVertexLabel_ ;
+  edm::EDGetTokenT<double> rhoTokenFastjetCentralNeutral_;
+
   bool storeGlobalTrackMuons_ ;
   bool storeStandAloneMuons_  ;
   bool storeInnerTrackMuons_  ;
