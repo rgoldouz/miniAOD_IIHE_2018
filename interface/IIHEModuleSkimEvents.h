@@ -1,32 +1,39 @@
-#ifndef UserCode_IIHETree_IIHEModuleLeptonsAccept_h
-#define UserCode_IIHETree_IIHEModuleLeptonsAccept_h
+#ifndef UserCode_IIHETree_IIHEModuleSkimEvents_h
+#define UserCode_IIHETree_IIHEModuleSkimEvents_h
 
 #include "UserCode/IIHETree/interface/IIHEModule.h"
 
 // class decleration
-class IIHEModuleLeptonsAccept : public IIHEModule {
+class IIHEModuleSkimEvents : public IIHEModule {
 private:
   int nAcceptAll_  = 0 ;
   
-  float ptThreshold_ ;
+  double ptThresholdEle_;
+  double ptThresholdmu_;
+  double ptThresholdTau_;
+  double ptThresholdPh_;
+
   int nEleThreshold_  ;
   int nEleMuThreshold_;
   int nEleTauThreshold_;
   int nMuThreshold_;
   int nMuTauThreshold_;
   int nTauThreshold_;
+  int nPhThreshold_;
 
   edm::EDGetTokenT<edm::View<pat::Electron> > electronCollectionToken_;
   edm::EDGetTokenT<edm::View<pat::Muon> > muonCollectionToken_;
   edm::EDGetTokenT<edm::View<pat::Tau> > tauCollectionToken_;
+  edm::EDGetTokenT<edm::View<pat::Photon> > photonCollectionToken_;
 
   edm::InputTag      electronCollectionLabel_ ;
   edm::InputTag      muonCollectionLabel_ ;
   edm::InputTag      tauCollectionLabel_ ;
+  edm::InputTag      photonCollectionLabel_ ;
 public:
-  explicit IIHEModuleLeptonsAccept(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC);
-  explicit IIHEModuleLeptonsAccept(const edm::ParameterSet& iConfig): IIHEModule(iConfig){};
-  ~IIHEModuleLeptonsAccept();
+  explicit IIHEModuleSkimEvents(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC);
+  explicit IIHEModuleSkimEvents(const edm::ParameterSet& iConfig): IIHEModule(iConfig){};
+  ~IIHEModuleSkimEvents();
   
   void   pubBeginJob(){   beginJob() ; } ;
   void pubBeginEvent(){ beginEvent() ; } ;

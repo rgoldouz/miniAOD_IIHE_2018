@@ -157,6 +157,7 @@ private:
   bool includeMuonModule_            ;
   bool includeMETModule_             ;
   bool includeJetModule_             ;
+  bool includeFatJetModule_          ;
   bool includeTauModule_             ;
   bool includeL1Module_             ;
   bool includeParticleLevelObjectsModule_;
@@ -165,7 +166,7 @@ private:
   bool includeLHEWeightModule_         ;
   bool includeTriggerModule_         ;
   bool includeZBosonModule_          ;
-  bool includeLeptonsAcceptModule_   ;
+  bool includeSkimEventsModule_   ;
   bool includeAutoAcceptEventModule_ ;
   bool includeTracksModule_           ;
 

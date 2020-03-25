@@ -23,16 +23,6 @@ IIHEModuleJet::IIHEModuleJet(const edm::ParameterSet& iConfig, edm::ConsumesColl
   pfJetTokenSmearedJetResDown_ = iC.consumes<View<pat::Jet> > (pfJetLabelSmearedJetResDown_);
   pfJetTokenPrecor_                  =  iC.consumes<View<pat::Jet> >(iConfig.getParameter<edm::InputTag>("JetCollectionPrecor"));
 
-  looseBtagSFdownToken_      =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("looseBtagSFdown"));
-  looseBtagSFnominalToken_   =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("looseBtagSFnominal"));
-  looseBtagSFupToken_        =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("looseBtagSFup"));
-  mediumBtagSFdownToken_     =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("mediumBtagSFdown"));
-  mediumBtagSFnominalToken_  =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("mediumBtagSFnominal"));
-  mediumBtagSFupToken_       =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("mediumBtagSFup"));
-  tightBtagSFdownToken_      =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("tightBtagSFdown"));
-  tightBtagSFnominalToken_   =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("tightBtagSFnominal"));
-  tightBtagSFupToken_        =  iC.consumes<nanoaod::FlatTable>  (iConfig.getParameter<edm::InputTag>("tightBtagSFup"));
-
   ETThreshold_ = iConfig.getUntrackedParameter<double>("jetPtThreshold") ;
   isMC_ = iConfig.getUntrackedParameter<bool>("isMC") ;
 
@@ -93,18 +83,6 @@ void IIHEModuleJet::beginJob(){
   addBranch("jet_SmearedJetEnUp_pt");
   addBranch("jet_SmearedJetEnDown_pt");
 
-  setBranchType(kFloat);
-  addBranch("BtagSF_Deepcsv_loose");
-  addBranch("BtagSF_Deepcsv_Up_loose");
-  addBranch("BtagSF_Deepcsv_Down_loose");
-
-  addBranch("BtagSF_Deepcsv_medium");
-  addBranch("BtagSF_Deepcsv_Up_medium");
-  addBranch("BtagSF_Deepcsv_Down_medium");
-
-  addBranch("BtagSF_Deepcsv_tight");
-  addBranch("BtagSF_Deepcsv_Up_tight");
-  addBranch("BtagSF_Deepcsv_Down_tight");
   }
 
 }
@@ -262,46 +240,6 @@ void IIHEModuleJet::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
       store("jet_SmearedJetResDown_pt",pfJetHandleSmearedJetResDown_->at(i).pt());
     }
 
-  }
-
-  if (isMC_){
-//https://twiki.cern.ch/twiki/bin/view/CMS/BTagShapeCalibration
-    edm::Handle<nanoaod::FlatTable>  looseBtagSFdownHandle_;
-    iEvent.getByToken(looseBtagSFdownToken_, looseBtagSFdownHandle_);
-
-    edm::Handle<nanoaod::FlatTable> looseBtagSFnominalHandle_;
-    iEvent.getByToken(looseBtagSFnominalToken_, looseBtagSFnominalHandle_);
-
-    edm::Handle<nanoaod::FlatTable>  looseBtagSFupHandle_;
-    iEvent.getByToken(looseBtagSFupToken_, looseBtagSFupHandle_);
-
-    edm::Handle<nanoaod::FlatTable> mediumBtagSFdownHandle_;
-    iEvent.getByToken(mediumBtagSFdownToken_, mediumBtagSFdownHandle_);
-
-    edm::Handle<nanoaod::FlatTable> mediumBtagSFnominalHandle_;
-    iEvent.getByToken(mediumBtagSFnominalToken_, mediumBtagSFnominalHandle_);
-
-    edm::Handle<nanoaod::FlatTable> mediumBtagSFupHandle_;
-    iEvent.getByToken(mediumBtagSFupToken_, mediumBtagSFupHandle_);
-
-    edm::Handle<nanoaod::FlatTable> tightBtagSFdownHandle_;
-    iEvent.getByToken(tightBtagSFdownToken_, tightBtagSFdownHandle_);
-
-    edm::Handle<nanoaod::FlatTable> tightBtagSFnominalHandle_;
-    iEvent.getByToken(tightBtagSFnominalToken_, tightBtagSFnominalHandle_);
-
-    edm::Handle<nanoaod::FlatTable> tightBtagSFupHandle_;
-    iEvent.getByToken(tightBtagSFupToken_, tightBtagSFupHandle_);
-
-    store("BtagSF_Deepcsv_loose"       ,looseBtagSFnominalHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_Up_loose"    ,looseBtagSFupHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_Down_loose"  ,looseBtagSFdownHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_medium"      ,mediumBtagSFnominalHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_Up_medium"   ,mediumBtagSFupHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_Down_medium" ,mediumBtagSFdownHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_tight"       ,tightBtagSFnominalHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_Up_tight"    ,tightBtagSFupHandle_->getAnyValue(0,0));
-    store("BtagSF_Deepcsv_Down_tight"  ,tightBtagSFdownHandle_->getAnyValue(0,0));
   }
 }
 void IIHEModuleJet::beginRun(edm::Run const& iRun, edm::EventSetup const& iSetup){}

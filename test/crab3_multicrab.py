@@ -42,7 +42,11 @@
 #}
 
 dataset = {
-"testDataSet":      ["/TT_FCNC-aTtoHJ_Tleptonic_HTobb_eta_hct-MadGraph5-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM"]
+#"TT_Mtt_700to1000":      ["/TT_Mtt-700to1000_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM"],
+#"TT_Mtt_1000toInf":      ["/TT_Mtt-1000toInf_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM"],
+#"TT":      ["/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_backup_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM"]
+#"TT_MG":      ["/TTJets_TuneCUETP8M2T4_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv3-PUMoriond17_backup_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM"]
+"TT_TuneCP5":      ["/TTTo2L2Nu_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM"]
 }
 
 nfiles = {
@@ -60,7 +64,7 @@ if __name__ == '__main__':
     from CRABClient.UserUtilities import config
     config = config()
 
-    name = '_MC2016'
+    name = 'TOPptSamples'
     config.General.workArea = 'crab_'+name
     config.General.transferLogs = False
     config.General.transferOutputs = True
@@ -82,6 +86,7 @@ if __name__ == '__main__':
     for sample in dataset:
         config.General.requestName = sample
         config.Data.inputDataset = dataset[sample][0]
+        config.Data.outLFNDirBase = '/store/user/rgoldouz/' + name
 #        config.Data.outputDatasetTag = sample
         submit(config)
 
