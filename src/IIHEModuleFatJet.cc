@@ -70,87 +70,108 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("fatjet_puppi_softdrop_mass");
   addBranch("fatjet_chs_softdrop_mass"  );
   addBranch("fatjet_chs_pruned_mass"    );
+
   // b Tagger
-  addBranch("fatjet_bTag_CMVA"     );
-  addBranch("fatjet_bTag_DeepB"    );
-  addBranch("fatjet_bTag_CSVV2"    );
-  addBranch("fatjet_bTag_Hbb"      );
-  addBranch("fatjet_bTag_DDBvL"    ); // btagDDBvL_noMD
-  addBranch("fatjet_bTag_DDCvL"    ); // btagDDCvL_noMD
-  addBranch("fatjet_bTag_DDCvB"    ); // btagDDCvB_noMD
-  addBranch("fatjet_bTagMD_DDBvL"  ); // btagDDBvL
-  addBranch("fatjet_bTagMD_DDCvL"  ); // btagDDCvL
-  addBranch("fatjet_bTagMD_DDCvB"  ); // btagDDCvB
+  addBranch("fatjet_DeepCSV_b"            );
+  addBranch("fatjet_DeepCSV_bb"           );
+  addBranch("fatjet_DeepCSV_c"            );
+  addBranch("fatjet_DeepCSV_udsg"         );
+  addBranch("fatjet_DeepCSV_bTag"         );
+
+  addBranch("fatjet_DeepFlavour_b"        );
+  addBranch("fatjet_DeepFlavour_bb"       );
+  addBranch("fatjet_DeepFlavour_lepb"     );
+  addBranch("fatjet_DeepFlavour_c"        );
+  addBranch("fatjet_DeepFlavour_uds"      );
+  addBranch("fatjet_DeepFlavour_g"        );
+  addBranch("fatjet_DeepFlavour_btag"     );
+
+  addBranch("fatjet_bTag_CMVA"            );
+  addBranch("fatjet_bTag_CSVV2"           );
+  addBranch("fatjet_bTag_Hbb"             );
+
+  addBranch("fatjet_DeepDouble_BvL_QCD"   );
+  addBranch("fatjet_DeepDouble_BvL_Hbb"   );
+  addBranch("fatjet_DeepDouble_CvL_QCD"   );
+  addBranch("fatjet_DeepDouble_CvL_Hcc"   );
+  addBranch("fatjet_DeepDouble_CvB_Hbb"   );
+  addBranch("fatjet_DeepDouble_CvB_Hcc"   );
+  addBranch("fatjet_DeepDoubleMD_BvL_QCD" );
+  addBranch("fatjet_DeepDoubleMD_BvL_Hbb" );
+  addBranch("fatjet_DeepDoubleMD_CvL_QCD" );
+  addBranch("fatjet_DeepDoubleMD_CvL_Hcc" );
+  addBranch("fatjet_DeepDoubleMD_CvB_Hbb" );
+  addBranch("fatjet_DeepDoubleMD_CvB_Hcc" );
 
   // DeepAK8 Nominal Tagger
   // // Aggregated
-  addBranch("fatjet_deepTag_TvsQCD"    );
-  addBranch("fatjet_deepTag_WvsQCD"    );
-  addBranch("fatjet_deepTag_ZvsQCD"    );
-  addBranch("fatjet_deepTag_ZbbvsQCD"  );
-  addBranch("fatjet_deepTag_HbbvsQCD"  );
-  addBranch("fatjet_deepTag_H4qcsQCD"  );
+  addBranch("fatjet_DeepBoosted_TvsQCD"    );
+  addBranch("fatjet_DeepBoosted_WvsQCD"    );
+  addBranch("fatjet_DeepBoosted_ZvsQCD"    );
+  addBranch("fatjet_DeepBoosted_ZbbvsQCD"  );
+  addBranch("fatjet_DeepBoosted_HbbvsQCD"  );
+  addBranch("fatjet_DeepBoosted_H4qcsQCD"  );
   // // Raw
-  addBranch("fatjet_deepTag_Tbcq"      );
-  addBranch("fatjet_deepTag_Tbqq"      );
-  addBranch("fatjet_deepTag_Tbc"       );
-  addBranch("fatjet_deepTag_Tbq"       );
-  addBranch("fatjet_deepTag_Wcq"       );
-  addBranch("fatjet_deepTag_Wqq"       );
-  addBranch("fatjet_deepTag_Zbb"       );
-  addBranch("fatjet_deepTag_Zcc"       );
-  addBranch("fatjet_deepTag_Zqq"       );
-  addBranch("fatjet_deepTag_Hbb"       );
-  addBranch("fatjet_deepTag_Hcc"       );
-  addBranch("fatjet_deepTag_H4q"       );
-  addBranch("fatjet_deepTag_QCDbb"     );
-  addBranch("fatjet_deepTag_QCDcc"     );
-  addBranch("fatjet_deepTag_QCDb"      );
-  addBranch("fatjet_deepTag_QCDc"      );
-  addBranch("fatjet_deepTag_QCDothers" );
+  addBranch("fatjet_DeepBoosted_Tbcq"      );
+  addBranch("fatjet_DeepBoosted_Tbqq"      );
+  addBranch("fatjet_DeepBoosted_Tbc"       );
+  addBranch("fatjet_DeepBoosted_Tbq"       );
+  addBranch("fatjet_DeepBoosted_Wcq"       );
+  addBranch("fatjet_DeepBoosted_Wqq"       );
+  addBranch("fatjet_DeepBoosted_Zbb"       );
+  addBranch("fatjet_DeepBoosted_Zcc"       );
+  addBranch("fatjet_DeepBoosted_Zqq"       );
+  addBranch("fatjet_DeepBoosted_Hbb"       );
+  addBranch("fatjet_DeepBoosted_Hcc"       );
+  addBranch("fatjet_DeepBoosted_H4q"       );
+  addBranch("fatjet_DeepBoosted_QCDbb"     );
+  addBranch("fatjet_DeepBoosted_QCDcc"     );
+  addBranch("fatjet_DeepBoosted_QCDb"      );
+  addBranch("fatjet_DeepBoosted_QCDc"      );
+  addBranch("fatjet_DeepBoosted_QCDothers" );
   // // Raw Combined
-  addBranch("fatjet_deepTag_T"         );
-  addBranch("fatjet_deepTag_W"         );
-  addBranch("fatjet_deepTag_Z"         );
-  addBranch("fatjet_deepTag_H"         );
-  addBranch("fatjet_deepTag_QCD"       );
+  addBranch("fatjet_DeepBoosted_T"         );
+  addBranch("fatjet_DeepBoosted_W"         );
+  addBranch("fatjet_DeepBoosted_Z"         );
+  addBranch("fatjet_DeepBoosted_H"         );
+  addBranch("fatjet_DeepBoosted_QCD"       );
 
   // DeepAK8 Mass-Decorrelated Tagger
   // // Aggregated
-  addBranch("fatjet_deepTagMD_TvsQCD"    );
-  addBranch("fatjet_deepTagMD_WvsQCD"    );
-  addBranch("fatjet_deepTagMD_ZvsQCD"    );
-  addBranch("fatjet_deepTagMD_ZbbvsQCD"  );
-  addBranch("fatjet_deepTagMD_HbbvsQCD"  );
-  addBranch("fatjet_deepTagMD_H4qvsQCD"  );
-  addBranch("fatjet_deepTagMD_ZHbbvsQCD" );
-  addBranch("fatjet_deepTagMD_ZHccvsQCD" );
-  addBranch("fatjet_deepTagMD_bbvsLight" );
-  addBranch("fatjet_deepTagMD_ccvsLight" );
+  addBranch("fatjet_DeepBoostedMD_TvsQCD"    );
+  addBranch("fatjet_DeepBoostedMD_WvsQCD"    );
+  addBranch("fatjet_DeepBoostedMD_ZvsQCD"    );
+  addBranch("fatjet_DeepBoostedMD_ZbbvsQCD"  );
+  addBranch("fatjet_DeepBoostedMD_HbbvsQCD"  );
+  addBranch("fatjet_DeepBoostedMD_H4qvsQCD"  );
+  addBranch("fatjet_DeepBoostedMD_ZHbbvsQCD" );
+  addBranch("fatjet_DeepBoostedMD_ZHccvsQCD" );
+  addBranch("fatjet_DeepBoostedMD_bbvsLight" );
+  addBranch("fatjet_DeepBoostedMD_ccvsLight" );
   // // Raw
-  addBranch("fatjet_deepTagMD_Tbcq"      );
-  addBranch("fatjet_deepTagMD_Tbqq"      );
-  addBranch("fatjet_deepTagMD_Tbc"       );
-  addBranch("fatjet_deepTagMD_Tbq"       );
-  addBranch("fatjet_deepTagMD_Wcq"       );
-  addBranch("fatjet_deepTagMD_Wqq"       );
-  addBranch("fatjet_deepTagMD_Zbb"       );
-  addBranch("fatjet_deepTagMD_Zcc"       );
-  addBranch("fatjet_deepTagMD_Zqq"       );
-  addBranch("fatjet_deepTagMD_Hbb"       );
-  addBranch("fatjet_deepTagMD_Hcc"       );
-  addBranch("fatjet_deepTagMD_H4q"       );
-  addBranch("fatjet_deepTagMD_QCDbb"     );
-  addBranch("fatjet_deepTagMD_QCDcc"     );
-  addBranch("fatjet_deepTagMD_QCDb"      );
-  addBranch("fatjet_deepTagMD_QCDc"      );
-  addBranch("fatjet_deepTagMD_QCDothers" );
+  addBranch("fatjet_DeepBoostedMD_Tbcq"      );
+  addBranch("fatjet_DeepBoostedMD_Tbqq"      );
+  addBranch("fatjet_DeepBoostedMD_Tbc"       );
+  addBranch("fatjet_DeepBoostedMD_Tbq"       );
+  addBranch("fatjet_DeepBoostedMD_Wcq"       );
+  addBranch("fatjet_DeepBoostedMD_Wqq"       );
+  addBranch("fatjet_DeepBoostedMD_Zbb"       );
+  addBranch("fatjet_DeepBoostedMD_Zcc"       );
+  addBranch("fatjet_DeepBoostedMD_Zqq"       );
+  addBranch("fatjet_DeepBoostedMD_Hbb"       );
+  addBranch("fatjet_DeepBoostedMD_Hcc"       );
+  addBranch("fatjet_DeepBoostedMD_H4q"       );
+  addBranch("fatjet_DeepBoostedMD_QCDbb"     );
+  addBranch("fatjet_DeepBoostedMD_QCDcc"     );
+  addBranch("fatjet_DeepBoostedMD_QCDb"      );
+  addBranch("fatjet_DeepBoostedMD_QCDc"      );
+  addBranch("fatjet_DeepBoostedMD_QCDothers" );
   // // Raw Combined
-  addBranch("fatjet_deepTagMD_T"         );
-  addBranch("fatjet_deepTagMD_W"         );
-  addBranch("fatjet_deepTagMD_Z"         );
-  addBranch("fatjet_deepTagMD_H"         );
-  addBranch("fatjet_deepTagMD_QCD"       );
+  addBranch("fatjet_DeepBoostedMD_T"         );
+  addBranch("fatjet_DeepBoostedMD_W"         );
+  addBranch("fatjet_DeepBoostedMD_Z"         );
+  addBranch("fatjet_DeepBoostedMD_H"         );
+  addBranch("fatjet_DeepBoostedMD_QCD"       );
 }
 
 // ------------ method called to for each event  ------------
@@ -170,7 +191,7 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   // ------------------------------
   // Corrections
     ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-    iSetup.get<JetCorrectionsRecord>().get("AK8PFPuppi", JetCorParColl);
+    iSetup.get<JetCorrectionsRecord>().get("AK8PFchs", JetCorParColl);
     JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
     JetCorrectionUncertainty jecUnc(JetCorPar);
 
@@ -220,119 +241,162 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     // ------------------------------
     // Flavor Tagging
-    store("fatjet_bTag_CMVA"    ,fatjet->bDiscriminator("pfCombinedMVAV2BJetTags") );
-    store("fatjet_bTag_DeepB"   ,fatjet->bDiscriminator("pfDeepCSVJetTags:probb")
-                                +fatjet->bDiscriminator("pfDeepCSVJetTags:probbb") );
-    store("fatjet_bTag_CSVV2"   ,fatjet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
-    store("fatjet_bTag_Hbb"     ,fatjet->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags")    );
-    store("fatjet_bTag_DDBvL"   ,fatjet->bDiscriminator("pfDeepDoubleBvLJetTags:probHbb") ); // btagDDBvL_noMD
-    store("fatjet_bTag_DDCvL"   ,fatjet->bDiscriminator("pfDeepDoubleCvLJetTags:probHcc") ); // btagDDCvL_noMD
-    store("fatjet_bTag_DDCvB"   ,fatjet->bDiscriminator("pfDeepDoubleCvBJetTags:probHcc") ); // btagDDCvB_noMD
-    store("fatjet_bTagMD_DDBvL" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleBvLJetTags:probHbb") ); // btagDDBvL
-    store("fatjet_bTagMD_DDCvL" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleCvLJetTags:probHcc") ); // btagDDCvL
-    store("fatjet_bTagMD_DDCvB" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleCvBJetTags:probHcc") ); // btagDDCvB
+
+    store("fatjet_DeepCSV_b"        ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probb")     );
+    store("fatjet_DeepCSV_bb"       ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probbb")    );
+    store("fatjet_DeepCSV_c"        ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probc")     );
+    store("fatjet_DeepCSV_udsg"     ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probudsg")  );
+    store("fatjet_DeepCSV_bTag"     ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probb")
+                                    +fatjet ->bDiscriminator("pfDeepCSVJetTags:probbb")    );
+
+    store("fatjet_DeepFlavour_b"    ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probb")    );
+    store("fatjet_DeepFlavour_bb"   ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probbb")   );
+    store("fatjet_DeepFlavour_lepb" ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:problepb") );
+    store("fatjet_DeepFlavour_c"    ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probc")    );
+    store("fatjet_DeepFlavour_uds"  ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probuds")  );
+    store("fatjet_DeepFlavour_g"    ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probg")    );
+    store("fatjet_DeepFlavour_btag" ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probb")
+                                    +fatjet ->bDiscriminator("pfDeepFlavourJetTags:probbb")   );
+
+    store("fatjet_bTag_CMVA"        ,fatjet->bDiscriminator("pfCombinedMVAV2BJetTags")                      );
+    store("fatjet_bTag_CSVV2"       ,fatjet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+    store("fatjet_bTag_Hbb"         ,fatjet->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags")    );
+
+    store("fatjet_DeepDouble_BvL_QCD"   ,fatjet->bDiscriminator("pfDeepDoubleBvLJetTags:probQCD") );
+    store("fatjet_DeepDouble_BvL_Hbb"   ,fatjet->bDiscriminator("pfDeepDoubleBvLJetTags:probHbb") );
+    store("fatjet_DeepDouble_CvL_QCD"   ,fatjet->bDiscriminator("pfDeepDoubleCvLJetTags:probQCD") );
+    store("fatjet_DeepDouble_CvL_Hcc"   ,fatjet->bDiscriminator("pfDeepDoubleCvLJetTags:probHcc") );
+    store("fatjet_DeepDouble_CvB_Hbb"   ,fatjet->bDiscriminator("pfDeepDoubleCvBJetTags:probHbb") );
+    store("fatjet_DeepDouble_CvB_Hcc"   ,fatjet->bDiscriminator("pfDeepDoubleCvBJetTags:probHcc") );
+    store("fatjet_DeepDoubleMD_BvL_QCD" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleBvLJetTags:probQCD") );
+    store("fatjet_DeepDoubleMD_BvL_Hbb" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleBvLJetTags:probHbb") );
+    store("fatjet_DeepDoubleMD_CvL_QCD" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleCvLJetTags:probQCD") );
+    store("fatjet_DeepDoubleMD_CvL_Hcc" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleCvLJetTags:probHcc") );
+    store("fatjet_DeepDoubleMD_CvB_Hbb" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleCvBJetTags:probHbb") );
+    store("fatjet_DeepDoubleMD_CvB_Hcc" ,fatjet->bDiscriminator("pfMassIndependentDeepDoubleCvBJetTags:probHcc") );
+
 
     // ------------------------------
     // Nominal DeepAK8 Tagger
 
       // aggregated discriminants
-      store("fatjet_deepTag_TvsQCD"   ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:TvsQCD")   );
-      store("fatjet_deepTag_WvsQCD"   ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:WvsQCD")   );
-      store("fatjet_deepTag_ZvsQCD"   ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZvsQCD")   );
-      store("fatjet_deepTag_ZbbvsQCD" ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZbbvsQCD") );
-      store("fatjet_deepTag_HbbvsQCD" ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:HbbvsQCD") );
-      store("fatjet_deepTag_H4qcsQCD" ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:H4qvsQCD") );
+      store("fatjet_DeepBoosted_TvsQCD"   ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:TvsQCD")   );
+      store("fatjet_DeepBoosted_WvsQCD"   ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:WvsQCD")   );
+      store("fatjet_DeepBoosted_ZvsQCD"   ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZvsQCD")   );
+      store("fatjet_DeepBoosted_ZbbvsQCD" ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:ZbbvsQCD") );
+      store("fatjet_DeepBoosted_HbbvsQCD" ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:HbbvsQCD") );
+      store("fatjet_DeepBoosted_H4qcsQCD" ,fatjet->bDiscriminator("pfDeepBoostedDiscriminatorsJetTags:H4qvsQCD") );
 
       // raw discriminants https://github.com/cms-sw/cmssw/blob/CMSSW_10_2_X/RecoBTag/MXNet/python/pfDeepBoostedDiscriminatorsJetTags_cfi.py
-      store("fatjet_deepTag_Tbcq"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbcq")      );
-      store("fatjet_deepTag_Tbqq"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbqq")      );
-      store("fatjet_deepTag_Tbc"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbc")       );
-      store("fatjet_deepTag_Tbq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbq")       );
-      store("fatjet_deepTag_Wcq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probWcq")       );
-      store("fatjet_deepTag_Wqq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probWqq")       );
-      store("fatjet_deepTag_Zbb"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZbb")       );
-      store("fatjet_deepTag_Zcc"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZcc")       );
-      store("fatjet_deepTag_Zqq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZqq")       );
-      store("fatjet_deepTag_Hbb"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHbb")       );
-      store("fatjet_deepTag_Hcc"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHcc")       );
-      store("fatjet_deepTag_H4q"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHqqqq")     );
-      store("fatjet_deepTag_QCDbb"    ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDbb")     );
-      store("fatjet_deepTag_QCDcc"    ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDcc")     );
-      store("fatjet_deepTag_QCDb"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDb")      );
-      store("fatjet_deepTag_QCDc"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDc")      );
-      store("fatjet_deepTag_QCDothers",fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDothers") );
+      store("fatjet_DeepBoosted_Tbcq"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbcq")      );
+      store("fatjet_DeepBoosted_Tbqq"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbqq")      );
+      store("fatjet_DeepBoosted_Tbc"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbc")       );
+      store("fatjet_DeepBoosted_Tbq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbq")       );
+      store("fatjet_DeepBoosted_Wcq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probWcq")       );
+      store("fatjet_DeepBoosted_Wqq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probWqq")       );
+      store("fatjet_DeepBoosted_Zbb"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZbb")       );
+      store("fatjet_DeepBoosted_Zcc"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZcc")       );
+      store("fatjet_DeepBoosted_Zqq"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZqq")       );
+      store("fatjet_DeepBoosted_Hbb"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHbb")       );
+      store("fatjet_DeepBoosted_Hcc"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHcc")       );
+      store("fatjet_DeepBoosted_H4q"      ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHqqqq")     );
+      store("fatjet_DeepBoosted_QCDbb"    ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDbb")     );
+      store("fatjet_DeepBoosted_QCDcc"    ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDcc")     );
+      store("fatjet_DeepBoosted_QCDb"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDb")      );
+      store("fatjet_DeepBoosted_QCDc"     ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDc")      );
+      store("fatjet_DeepBoosted_QCDothers",fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDothers") );
 
       // raw discriminants -- combined
-      store("fatjet_deepTag_T"  ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbcq")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbqq")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbc")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbq")       );
-      store("fatjet_deepTag_W"  ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probWcq")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probWqq")       );
-      store("fatjet_deepTag_Z"  ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZbb")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probZcc")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probZqq")       );
-      store("fatjet_deepTag_H"  ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHbb")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probHcc")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probHqqqq")     );
-      store("fatjet_deepTag_QCD",fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDbb")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDcc")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDb")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDc")
-                                +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDothers") );
+      store("fatjet_DeepBoosted_T"
+        ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbcq")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbqq")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbc")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probTbq")
+      );
+      store("fatjet_DeepBoosted_W"
+        ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probWcq")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probWqq")
+      );
+      store("fatjet_DeepBoosted_Z"
+        ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probZbb")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probZcc")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probZqq")
+      );
+      store("fatjet_DeepBoosted_H"
+        ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probHbb")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probHcc")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probHqqqq")
+      );
+      store("fatjet_DeepBoosted_QCD"
+        ,fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDbb")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDcc")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDb")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDc")
+        +fatjet->bDiscriminator("pfDeepBoostedJetTags:probQCDothers")
+      );
 
     // ------------------------------
     // Mass-Decorrelated DeepAK8 Tagger
 
       // aggregated discriminants https://github.com/cms-sw/cmssw/blob/CMSSW_10_2_X/RecoBTag/MXNet/python/pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags_cfi.py
-      store("fatjet_deepTagMD_TvsQCD"   ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD")    );
-      store("fatjet_deepTagMD_WvsQCD"   ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD")    );
-      store("fatjet_deepTagMD_ZvsQCD"   ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD")    );
-      store("fatjet_deepTagMD_ZbbvsQCD" ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZbbvsQCD")  );
-      store("fatjet_deepTagMD_HbbvsQCD" ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:HbbvsQCD")  );
-      store("fatjet_deepTagMD_H4qvsQCD" ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:H4qvsQCD")  );
-      store("fatjet_deepTagMD_ZHbbvsQCD",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD") );
-      store("fatjet_deepTagMD_ZHccvsQCD",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHccvsQCD") );
-      store("fatjet_deepTagMD_bbvsLight",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:bbvsLight") );
-      store("fatjet_deepTagMD_ccvsLight",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ccvsLight") );
+      store("fatjet_DeepBoostedMD_TvsQCD"   ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:TvsQCD")    );
+      store("fatjet_DeepBoostedMD_WvsQCD"   ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:WvsQCD")    );
+      store("fatjet_DeepBoostedMD_ZvsQCD"   ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZvsQCD")    );
+      store("fatjet_DeepBoostedMD_ZbbvsQCD" ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZbbvsQCD")  );
+      store("fatjet_DeepBoostedMD_HbbvsQCD" ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:HbbvsQCD")  );
+      store("fatjet_DeepBoostedMD_H4qvsQCD" ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:H4qvsQCD")  );
+      store("fatjet_DeepBoostedMD_ZHbbvsQCD",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHbbvsQCD") );
+      store("fatjet_DeepBoostedMD_ZHccvsQCD",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ZHccvsQCD") );
+      store("fatjet_DeepBoostedMD_bbvsLight",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:bbvsLight") );
+      store("fatjet_DeepBoostedMD_ccvsLight",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedDiscriminatorsJetTags:ccvsLight") );
 
       // raw discriminants
-      store("fatjet_deepTagMD_Tbcq"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbcq")      );
-      store("fatjet_deepTagMD_Tbqq"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbqq")      );
-      store("fatjet_deepTagMD_Tbc"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc")       );
-      store("fatjet_deepTagMD_Tbq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq")       );
-      store("fatjet_deepTagMD_Wcq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWcq")       );
-      store("fatjet_deepTagMD_Wqq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWqq")       );
-      store("fatjet_deepTagMD_Zbb"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZbb")       );
-      store("fatjet_deepTagMD_Zcc"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZcc")       );
-      store("fatjet_deepTagMD_Zqq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZqq")       );
-      store("fatjet_deepTagMD_Hbb"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHbb")       );
-      store("fatjet_deepTagMD_Hcc"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHcc")       );
-      store("fatjet_deepTagMD_H4q"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHqqqq")     );
-      store("fatjet_deepTagMD_QCDbb"    ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb")     );
-      store("fatjet_deepTagMD_QCDcc"    ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc")     );
-      store("fatjet_deepTagMD_QCDb"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb")      );
-      store("fatjet_deepTagMD_QCDc"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc")      );
-      store("fatjet_deepTagMD_QCDothers",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers") );
+      store("fatjet_DeepBoostedMD_Tbcq"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbcq")      );
+      store("fatjet_DeepBoostedMD_Tbqq"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbqq")      );
+      store("fatjet_DeepBoostedMD_Tbc"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc")       );
+      store("fatjet_DeepBoostedMD_Tbq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq")       );
+      store("fatjet_DeepBoostedMD_Wcq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWcq")       );
+      store("fatjet_DeepBoostedMD_Wqq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWqq")       );
+      store("fatjet_DeepBoostedMD_Zbb"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZbb")       );
+      store("fatjet_DeepBoostedMD_Zcc"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZcc")       );
+      store("fatjet_DeepBoostedMD_Zqq"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZqq")       );
+      store("fatjet_DeepBoostedMD_Hbb"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHbb")       );
+      store("fatjet_DeepBoostedMD_Hcc"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHcc")       );
+      store("fatjet_DeepBoostedMD_H4q"      ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHqqqq")     );
+      store("fatjet_DeepBoostedMD_QCDbb"    ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb")     );
+      store("fatjet_DeepBoostedMD_QCDcc"    ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc")     );
+      store("fatjet_DeepBoostedMD_QCDb"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb")      );
+      store("fatjet_DeepBoostedMD_QCDc"     ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc")      );
+      store("fatjet_DeepBoostedMD_QCDothers",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers") );
 
       // raw discriminants -- combined
-      store("fatjet_deepTagMD_T"  ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbcq")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbqq")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq")       );
-      store("fatjet_deepTagMD_W"  ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWcq")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWqq")       );
-      store("fatjet_deepTagMD_Z"  ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZbb")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZcc")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZqq")       );
-      store("fatjet_deepTagMD_H"  ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHbb")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHcc")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHqqqq")     );
-      store("fatjet_deepTagMD_QCD",fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc")
-                                  +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers") );
+      store("fatjet_DeepBoostedMD_T"
+        ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbcq")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbqq")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbc")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probTbq")
+      );
+      store("fatjet_DeepBoostedMD_W"
+        ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWcq")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probWqq")
+      );
+      store("fatjet_DeepBoostedMD_Z"
+        ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZbb")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZcc")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probZqq")
+      );
+      store("fatjet_DeepBoostedMD_H"
+        ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHbb")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHcc")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probHqqqq")
+      );
+      store("fatjet_DeepBoostedMD_QCD"
+        ,fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDbb")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDcc")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDb")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc")
+        +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers")
+      );
 
 
     if (isMC_) {
