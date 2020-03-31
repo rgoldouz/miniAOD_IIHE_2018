@@ -54,22 +54,12 @@ void IIHEModuleFatJet::beginJob(){
     addBranch("fatjet_SmearedJetEnUp_pt"    );
     addBranch("fatjet_SmearedJetEnDown_pt"  );
   }
-  // puppi, chs
-  addBranch("fatjet_puppi_tau1" );
-  addBranch("fatjet_puppi_tau2" );
-  addBranch("fatjet_puppi_tau3" );
-  addBranch("fatjet_puppi_tau4" );
+
+  // N-jettiness
   addBranch("fatjet_chs_tau1"   );
   addBranch("fatjet_chs_tau2"   );
   addBranch("fatjet_chs_tau3"   );
   addBranch("fatjet_chs_tau4"   );
-  addBranch("fatjet_puppi_n2b1" );
-  addBranch("fatjet_puppi_n3b1" );
-  addBranch("fatjet_puppi_n2b2" );
-  addBranch("fatjet_puppi_n3b2" );
-  addBranch("fatjet_puppi_softdrop_mass");
-  addBranch("fatjet_chs_softdrop_mass"  );
-  addBranch("fatjet_chs_pruned_mass"    );
 
   // b Tagger
   addBranch("fatjet_DeepCSV_b"            );
@@ -84,7 +74,8 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("fatjet_DeepFlavour_c"        );
   addBranch("fatjet_DeepFlavour_uds"      );
   addBranch("fatjet_DeepFlavour_g"        );
-  addBranch("fatjet_DeepFlavour_btag"     );
+  addBranch("fatjet_DeepFlavour_bTag"     );
+  addBranch("fatjet_DeepFlavour_bTagLepb" );
 
   addBranch("fatjet_bTag_CMVA"            );
   addBranch("fatjet_bTag_CSVV2"           );
@@ -200,7 +191,6 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   for ( unsigned int i = 0; i <FatJetHandle_->size(); ++i) {
     Ptr<pat::Jet> fatjet = FatJetHandle_->ptrAt(i);
     if(fatjet->pt() < ETThreshold_) continue ;
-
     store("fatjet_px"    ,fatjet->px()      );
     store("fatjet_py"    ,fatjet->py()      );
     store("fatjet_pz"    ,fatjet->pz()      );
@@ -218,49 +208,36 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("fatjet_energy_raw",fatjet->energy() * fatjet->jecFactor("Uncorrected") );
 
     // N-subjettiness
-    store("fatjet_puppi_tau1",fatjet->userFloat("NjettinessAK8Puppi:tau1") );
-    store("fatjet_puppi_tau2",fatjet->userFloat("NjettinessAK8Puppi:tau2") );
-    store("fatjet_puppi_tau3",fatjet->userFloat("NjettinessAK8Puppi:tau3") );
-    store("fatjet_puppi_tau4",fatjet->userFloat("NjettinessAK8Puppi:tau4") );
-    store("fatjet_chs_tau1"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1") );
-    store("fatjet_chs_tau2"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2") );
-    store("fatjet_chs_tau3"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3") );
-    store("fatjet_chs_tau4"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau4") );
-
-    // Energy correlation function variables with PUPPI N2 (for W/Z/H-tagging) and N3 (for top-tagging) with beta=1 and beta=2
-    store("fatjet_puppi_n2b1",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2") );
-    store("fatjet_puppi_n3b1",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3") );
-    store("fatjet_puppi_n2b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN2") );
-    store("fatjet_puppi_n3b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN3") );
-
-    // Mass
-    store("fatjet_puppi_softdrop_mass",fatjet->userFloat("ak8PFJetsPuppiSoftDropMass")                    );
-    store("fatjet_chs_softdrop_mass"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass") );
-    store("fatjet_chs_pruned_mass"    ,fatjet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass")   );
+    store("fatjet_chs_tau1"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau1") );
+    store("fatjet_chs_tau2"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau2") );
+    store("fatjet_chs_tau3"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau3") );
+    store("fatjet_chs_tau4"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau4") );
 
 
     // ------------------------------
     // Flavor Tagging
+    store("fatjet_bTag_CMVA"            ,fatjet->bDiscriminator("pfCombinedMVAV2BJetTags")                      );
+    store("fatjet_bTag_CSVV2"           ,fatjet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+    store("fatjet_bTag_Hbb"             ,fatjet->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags")    );
 
-    store("fatjet_DeepCSV_b"        ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probb")     );
-    store("fatjet_DeepCSV_bb"       ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probbb")    );
-    store("fatjet_DeepCSV_c"        ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probc")     );
-    store("fatjet_DeepCSV_udsg"     ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probudsg")  );
-    store("fatjet_DeepCSV_bTag"     ,fatjet ->bDiscriminator("pfDeepCSVJetTags:probb")
-                                    +fatjet ->bDiscriminator("pfDeepCSVJetTags:probbb")    );
+    store("fatjet_DeepCSV_b"            ,fatjet->bDiscriminator("pfDeepCSVJetTags:probb")         );
+    store("fatjet_DeepCSV_bb"           ,fatjet->bDiscriminator("pfDeepCSVJetTags:probbb")        );
+    store("fatjet_DeepCSV_c"            ,fatjet->bDiscriminator("pfDeepCSVJetTags:probc")         );
+    store("fatjet_DeepCSV_udsg"         ,fatjet->bDiscriminator("pfDeepCSVJetTags:probudsg")      );
+    store("fatjet_DeepCSV_bTag"         ,fatjet->bDiscriminator("pfDeepCSVJetTags:probb")
+                                        +fatjet->bDiscriminator("pfDeepCSVJetTags:probbb")        );
 
-    store("fatjet_DeepFlavour_b"    ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probb")    );
-    store("fatjet_DeepFlavour_bb"   ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probbb")   );
-    store("fatjet_DeepFlavour_lepb" ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:problepb") );
-    store("fatjet_DeepFlavour_c"    ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probc")    );
-    store("fatjet_DeepFlavour_uds"  ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probuds")  );
-    store("fatjet_DeepFlavour_g"    ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probg")    );
-    store("fatjet_DeepFlavour_btag" ,fatjet ->bDiscriminator("pfDeepFlavourJetTags:probb")
-                                    +fatjet ->bDiscriminator("pfDeepFlavourJetTags:probbb")   );
-
-    store("fatjet_bTag_CMVA"        ,fatjet->bDiscriminator("pfCombinedMVAV2BJetTags")                      );
-    store("fatjet_bTag_CSVV2"       ,fatjet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
-    store("fatjet_bTag_Hbb"         ,fatjet->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags")    );
+    store("fatjet_DeepFlavour_b"        ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probb")     );
+    store("fatjet_DeepFlavour_bb"       ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probbb")    );
+    store("fatjet_DeepFlavour_lepb"     ,fatjet->bDiscriminator("pfDeepFlavourJetTags:problepb")  );
+    store("fatjet_DeepFlavour_c"        ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probc")     );
+    store("fatjet_DeepFlavour_uds"      ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probuds")   );
+    store("fatjet_DeepFlavour_g"        ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probg")     );
+    store("fatjet_DeepFlavour_bTag"     ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probb")
+                                        +fatjet->bDiscriminator("pfDeepFlavourJetTags:probbb")    );
+    store("fatjet_DeepFlavour_bTagLepb" ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probb")
+                                        +fatjet->bDiscriminator("pfDeepFlavourJetTags:probbb")
+                                        +fatjet->bDiscriminator("pfDeepFlavourJetTags:problepb")  );
 
     store("fatjet_DeepDouble_BvL_QCD"   ,fatjet->bDiscriminator("pfDeepDoubleBvLJetTags:probQCD") );
     store("fatjet_DeepDouble_BvL_Hbb"   ,fatjet->bDiscriminator("pfDeepDoubleBvLJetTags:probHbb") );

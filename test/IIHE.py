@@ -117,10 +117,10 @@ process.source = cms.Source("PoolSource",
 )
 #process.source.fileNames.append( "file:SingleElectron_Run2016C_17Jul2018_numEvent100.root")
 #process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv2/ZToEE_NNPDF30_13TeV-powheg_M_800_1400/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/B63D4452-D4C7-E611-AD7F-D48564593F64.root")
-#process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")###
-process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/DCDFFE10-8042-E811-A396-001E673D2261.root")
+#process.source.fileNames.append( "/store/data/Run2018C/EGamma/MINIAOD/17Sep2018-v1/00000/A8ABFC2B-C5AA-3F49-8D74-B58BF3B38BA8.root")
+#process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/DCDFFE10-8042-E811-A396-001E673D2261.root")
 #process.source.fileNames.append( "/store/mc/RunIISummer16MiniAODv3/TT_FCNC-aTtoHJ_Tleptonic_HTobb_eta_hct-MadGraph5-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/60000/F0C91747-5C36-E911-ABC0-001F29089F7E.root")
-#process.source.fileNames.append( "/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/90000/FE13E873-0237-E811-ACE8-008CFAE4528C.root")
+process.source.fileNames.append( "/store/data/Run2017B/MET/MINIAOD/31Mar2018-v1/90000/FE13E873-0237-E811-ACE8-008CFAE4528C.root")
 #process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/DYJetsToEE_M-50_LTbinned_0To75_5f_LO_13TeV-madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/EA025783-DD43-E811-B85F-0CC47A7C3434.root")
 #process.source.fileNames.append( "file:pickevents.root")
 filename_out = "outfile.root"
@@ -245,51 +245,34 @@ _btagDiscriminators += _pfDeepBoostedJetTagsAll
 ############################################################
 # FatJet Collection with Deep Tags
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-jetToolbox( process, 'ak8', 'jetSequence', 'noOutput',
-    PUMethod           = 'CHS',
-    updateCollection   = 'slimmedJetsAK8',
-    dataTier           = 'miniAOD',
-    JETCorrPayload     = 'AK8PFchs',
-    JETCorrLevels      = ['L2Relative', 'L3Absolute', 'L2L3Residual'],
-    bTagDiscriminators = _btagDiscriminators,
-    postFix            = 'Deep',
-    verbosity          = 0  # 0 = none, 1 = warnings, 2 = warnings+info, 3 = warnings+info+debug
-)
+if "mc" in options.DataProcessing:
+    jetToolbox( process, 'ak8', 'AK8PFCHSDeepJetSequence', 'noOutput',
+        postFix            = 'Deep',
+        PUMethod           = 'CHS',
+        updateCollection   = 'slimmedJetsAK8',
+        dataTier           = 'miniAOD',
+        JETCorrPayload     = 'AK8PFchs',
+        JETCorrLevels      = ['L2Relative', 'L3Absolute', 'L2L3Residual'],
+        bTagDiscriminators = _btagDiscriminators,
+        addNsub            = True,
+        runOnMC            = True,
+        verbosity          = 0
+    )
+else:
+    jetToolbox( process, 'ak8', 'AK8PFCHSDeepJetSequence', 'noOutput',
+        postFix            = 'Deep',
+        PUMethod           = 'CHS',
+        updateCollection   = 'slimmedJetsAK8',
+        dataTier           = 'miniAOD',
+        JETCorrPayload     = 'AK8PFchs',
+        JETCorrLevels      = ['L2Relative', 'L3Absolute', 'L2L3Residual'],
+        bTagDiscriminators = _btagDiscriminators,
+        addNsub            = True,
+        runOnMC            = False,
+        verbosity          = 0
+    )
 
-# Tag Sequence for AK8 Jets
-process.DeepTagSequence = cms.Sequence(
-    process.pfImpactParameterTagInfosAK8PFCHSDeep    *
-    process.pfImpactParameterAK8TagInfosAK8PFCHSDeep *
-    process.pfInclusiveSecondaryVertexFinderTagInfosAK8PFCHSDeep    *
-    process.pfInclusiveSecondaryVertexFinderAK8TagInfosAK8PFCHSDeep *
-    process.pfBoostedDoubleSVAK8TagInfosAK8PFCHSDeep *
-    process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK8PFCHSDeep   *
-    process.pfDeepCSVTagInfosAK8PFCHSDeep *
-    process.pfDeepCSVJetTagsAK8PFCHSDeep  *
-    process.pfDeepDoubleXTagInfosAK8PFCHSDeep  *
-    process.pfDeepDoubleBvLJetTagsAK8PFCHSDeep *
-    process.pfDeepDoubleCvLJetTagsAK8PFCHSDeep *
-    process.pfDeepDoubleCvBJetTagsAK8PFCHSDeep *
-    process.pfMassIndependentDeepDoubleBvLJetTagsAK8PFCHSDeep *
-    process.pfMassIndependentDeepDoubleCvLJetTagsAK8PFCHSDeep *
-    process.pfMassIndependentDeepDoubleCvBJetTagsAK8PFCHSDeep *
-    process.pfDeepBoostedJetTagInfosAK8PFCHSDeep *
-    process.pfDeepBoostedJetTagsAK8PFCHSDeep     *
-    process.pfDeepBoostedDiscriminatorsJetTagsAK8PFCHSDeep   *
-    process.pfMassDecorrelatedDeepBoostedJetTagsAK8PFCHSDeep *
-    process.pfMassDecorrelatedDeepBoostedDiscriminatorsJetTagsAK8PFCHSDeep
-)
-# DeepAK8 Full Sequence
-process.DeepAK8Sequence = cms.Sequence(
-    process.patJetCorrFactorsAK8PFCHSDeep *
-    process.updatedPatJetsAK8PFCHSDeep    *
-    process.patJetCorrFactorsTransientCorrectedAK8PFCHSDeep *
-    process.DeepTagSequence *
-    process.updatedPatJetsTransientCorrectedAK8PFCHSDeep    *
-    process.selectedPatJetsAK8PFCHSDeep
-    #process.selectedUpdatedPatJetsAK8PFCHSDeep
-)
-
+############################################################
 ############################################################
 # Smeared DeepAK8 Jets
 process.mySmearedDeepAK8Jets = cms.EDProducer("SmearedPATJetProducer",
@@ -473,7 +456,7 @@ if "mc" in options.DataProcessing:
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC    *
     process.fullPatMetSequence *
-    process.DeepAK8Sequence    *
+    process.AK8PFCHSDeepJetSequence *
     process.ecalBadCalibReducedMINIAODFilter*
     process.mySmearedJets     *
     process.mySmearedJetsUP   *
@@ -490,7 +473,7 @@ else:
     process.NewTauIDsEmbedded *
     process.patJetCorrFactorsUpdatedJEC *
     process.updatedPatJetsUpdatedJEC    *
-    process.DeepAK8Sequence    *
+    process.AK8PFCHSDeepJetSequence *
     process.fullPatMetSequence *
     process.ecalBadCalibReducedMINIAODFilter *
     process.IIHEAnalysis
