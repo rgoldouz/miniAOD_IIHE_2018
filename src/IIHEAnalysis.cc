@@ -21,6 +21,7 @@
 #include "UserCode/IIHETree/interface/IIHEModuleLHEWeight.h"
 #include "UserCode/IIHETree/interface/IIHEModuleMET.h"
 #include "UserCode/IIHETree/interface/IIHEModuleJet.h"
+#include "UserCode/IIHETree/interface/IIHEModulePuppiJet.h"
 #include "UserCode/IIHETree/interface/IIHEModuleTau.h"
 #include "UserCode/IIHETree/interface/IIHEModuleL1.h"
 #include "UserCode/IIHETree/interface/IIHEModuleParticleLevelObjects.h"
@@ -44,55 +45,57 @@ IIHEAnalysis::IIHEAnalysis(const edm::ParameterSet& iConfig)
   nEvents_ = 0 ;
   nEventsStored_ = 0 ;
   acceptEvent_ = false ;
-  
+
   edm::Service<TFileService> fs ;
   fs->file().cd() ;
-  
+
   //mainFile_ = TFile("outfile.root", "RECREATE") ;
   dataTree_ = new TTree("IIHEAnalysis", "IIHEAnalysis") ;
   metaTree_ = new TTree("meta", "Information about globalTag etc") ;
   metaTree_->Branch("globalTag", &globalTag_) ;
-  
+
   MCTruthModule_ = 0 ;
-  
-  includeSkimEventsModule_   = iConfig.getUntrackedParameter<bool>("includeSkimEventsModule" ) ;
-  includeTriggerModule_         = iConfig.getUntrackedParameter<bool>("includeTriggerModule"       ) ;
-  includeEventModule_           = iConfig.getUntrackedParameter<bool>("includeEventModule"         ) ;
-  includeVertexModule_          = iConfig.getUntrackedParameter<bool>("includeVertexModule"        ) ;
-  includeSuperClusterModule_    = iConfig.getUntrackedParameter<bool>("includeSuperClusterModule"  ) ;
-  includePhotonModule_          = iConfig.getUntrackedParameter<bool>("includePhotonModule"        ) ;
-  includeElectronModule_        = iConfig.getUntrackedParameter<bool>("includeElectronModule"      ) ;
-  includeMuonModule_            = iConfig.getUntrackedParameter<bool>("includeMuonModule"          ) ;
-  includeMETModule_             = iConfig.getUntrackedParameter<bool>("includeMETModule"           ) ;
-  includeJetModule_             = iConfig.getUntrackedParameter<bool>("includeJetModule"           ) ;
-  includeFatJetModule_          = iConfig.getUntrackedParameter<bool>("includeFatJetModule"         ) ;
-  includeTauModule_             = iConfig.getUntrackedParameter<bool>("includeTauModule"           ) ;
-  includeL1Module_              = iConfig.getUntrackedParameter<bool>("includeL1Module"            ) ;
-  includeParticleLevelObjectsModule_  = iConfig.getUntrackedParameter<bool>("includeParticleLevelObjectsModule"            ) ;
-  includeDataModule_            = iConfig.getUntrackedParameter<bool>("includeDataModule"          ) ;
-  includeMCTruthModule_         = iConfig.getUntrackedParameter<bool>("includeMCTruthModule"       ) ;
-  includeLHEWeightModule_         = iConfig.getUntrackedParameter<bool>("includeLHEWeightModule"       ) ;
-  includeZBosonModule_          = iConfig.getUntrackedParameter<bool>("includeZBosonModule"        ) ;
-  includeAutoAcceptEventModule_ = iConfig.getUntrackedParameter<bool>("includeAutoAcceptEventModule") ;
-  
-  if(includeSkimEventsModule_  ) childModules_.push_back(new IIHEModuleSkimEvents(iConfig ,consumesCollector())  ) ;   
-  if(includeEventModule_          ) childModules_.push_back(new IIHEModuleEvent(iConfig   ,consumesCollector())        ) ;
-  if(includeLHEWeightModule_      ) childModules_.push_back(new IIHEModuleLHEWeight(iConfig ,consumesCollector())      ) ;
-  if(includeMCTruthModule_        ) childModules_.push_back(new IIHEModuleMCTruth(iConfig ,consumesCollector())        ) ;
-  if(includeVertexModule_         ) childModules_.push_back(new IIHEModuleVertex(iConfig ,consumesCollector())         ) ;
-  if(includeSuperClusterModule_   ) childModules_.push_back(new IIHEModuleSuperCluster(iConfig ,consumesCollector())   ) ;
-  if(includePhotonModule_         ) childModules_.push_back(new IIHEModulePhoton(iConfig ,consumesCollector())         ) ;
-  if(includeElectronModule_       ) childModules_.push_back(new IIHEModuleGedGsfElectron(iConfig ,consumesCollector()) ) ;
-  if(includeMuonModule_           ) childModules_.push_back(new IIHEModuleMuon(iConfig ,consumesCollector())           ) ;
-  if(includeJetModule_            ) childModules_.push_back(new IIHEModuleJet(iConfig ,consumesCollector())            ) ;
-  if(includeFatJetModule_         ) childModules_.push_back(new IIHEModuleFatJet(iConfig ,consumesCollector())         ) ;
-  if(includeMETModule_            ) childModules_.push_back(new IIHEModuleMET(iConfig ,consumesCollector())            ) ;
-  if(includeTauModule_            ) childModules_.push_back(new IIHEModuleTau(iConfig ,consumesCollector())            ) ;
-  if(includeL1Module_             ) childModules_.push_back(new IIHEModuleL1(iConfig ,consumesCollector())             ) ;
-  if(includeDataModule_           ) childModules_.push_back(new IIHEModuleData(iConfig ,consumesCollector())           ) ;
-  if(includeZBosonModule_         ) childModules_.push_back(new IIHEModuleZBoson(iConfig ,consumesCollector())         ) ;  
-  if(includeAutoAcceptEventModule_) childModules_.push_back(new IIHEModuleAutoAcceptEvent(iConfig ,consumesCollector())) ; 
-  if(includeTriggerModule_        ) childModules_.push_back(new IIHEModuleTrigger(iConfig,consumesCollector())         ) ; 
+
+  includeSkimEventsModule_      = iConfig.getUntrackedParameter<bool>("includeSkimEventsModule"      );
+  includeTriggerModule_         = iConfig.getUntrackedParameter<bool>("includeTriggerModule"         );
+  includeEventModule_           = iConfig.getUntrackedParameter<bool>("includeEventModule"           );
+  includeVertexModule_          = iConfig.getUntrackedParameter<bool>("includeVertexModule"          );
+  includeSuperClusterModule_    = iConfig.getUntrackedParameter<bool>("includeSuperClusterModule"    );
+  includePhotonModule_          = iConfig.getUntrackedParameter<bool>("includePhotonModule"          );
+  includeElectronModule_        = iConfig.getUntrackedParameter<bool>("includeElectronModule"        );
+  includeMuonModule_            = iConfig.getUntrackedParameter<bool>("includeMuonModule"            );
+  includeMETModule_             = iConfig.getUntrackedParameter<bool>("includeMETModule"             );
+  includeJetModule_             = iConfig.getUntrackedParameter<bool>("includeJetModule"             );
+  includePuppiJetModule_        = iConfig.getUntrackedParameter<bool>("includePuppiJetModule"        );
+  includeFatJetModule_          = iConfig.getUntrackedParameter<bool>("includeFatJetModule"          );
+  includeTauModule_             = iConfig.getUntrackedParameter<bool>("includeTauModule"             );
+  includeL1Module_              = iConfig.getUntrackedParameter<bool>("includeL1Module"              );
+  includeDataModule_            = iConfig.getUntrackedParameter<bool>("includeDataModule"            );
+  includeMCTruthModule_         = iConfig.getUntrackedParameter<bool>("includeMCTruthModule"         );
+  includeLHEWeightModule_       = iConfig.getUntrackedParameter<bool>("includeLHEWeightModule"       );
+  includeZBosonModule_          = iConfig.getUntrackedParameter<bool>("includeZBosonModule"          );
+  includeAutoAcceptEventModule_ = iConfig.getUntrackedParameter<bool>("includeAutoAcceptEventModule" );
+  includeParticleLevelObjectsModule_  = iConfig.getUntrackedParameter<bool>("includeParticleLevelObjectsModule" );
+
+  if(includeSkimEventsModule_          ) childModules_.push_back(new IIHEModuleSkimEvents(          iConfig ,consumesCollector()) );
+  if(includeEventModule_               ) childModules_.push_back(new IIHEModuleEvent(               iConfig ,consumesCollector()) );
+  if(includeLHEWeightModule_           ) childModules_.push_back(new IIHEModuleLHEWeight(           iConfig ,consumesCollector()) );
+  if(includeMCTruthModule_             ) childModules_.push_back(new IIHEModuleMCTruth(             iConfig ,consumesCollector()) );
+  if(includeVertexModule_              ) childModules_.push_back(new IIHEModuleVertex(              iConfig ,consumesCollector()) );
+  if(includeSuperClusterModule_        ) childModules_.push_back(new IIHEModuleSuperCluster(        iConfig ,consumesCollector()) );
+  if(includePhotonModule_              ) childModules_.push_back(new IIHEModulePhoton(              iConfig ,consumesCollector()) );
+  if(includeElectronModule_            ) childModules_.push_back(new IIHEModuleGedGsfElectron(      iConfig ,consumesCollector()) );
+  if(includeMuonModule_                ) childModules_.push_back(new IIHEModuleMuon(                iConfig ,consumesCollector()) );
+  if(includeJetModule_                 ) childModules_.push_back(new IIHEModuleJet(                 iConfig ,consumesCollector()) );
+  if(includePuppiJetModule_            ) childModules_.push_back(new IIHEModulePuppiJet(            iConfig ,consumesCollector()) );
+  if(includeFatJetModule_              ) childModules_.push_back(new IIHEModuleFatJet(              iConfig ,consumesCollector()) );
+  if(includeMETModule_                 ) childModules_.push_back(new IIHEModuleMET(                 iConfig ,consumesCollector()) );
+  if(includeTauModule_                 ) childModules_.push_back(new IIHEModuleTau(                 iConfig ,consumesCollector()) );
+  if(includeL1Module_                  ) childModules_.push_back(new IIHEModuleL1(                  iConfig ,consumesCollector()) );
+  if(includeDataModule_                ) childModules_.push_back(new IIHEModuleData(                iConfig ,consumesCollector()) );
+  if(includeZBosonModule_              ) childModules_.push_back(new IIHEModuleZBoson(              iConfig ,consumesCollector()) );
+  if(includeAutoAcceptEventModule_     ) childModules_.push_back(new IIHEModuleAutoAcceptEvent(     iConfig ,consumesCollector()) );
+  if(includeTriggerModule_             ) childModules_.push_back(new IIHEModuleTrigger(             iConfig ,consumesCollector()) );
   if(includeParticleLevelObjectsModule_) childModules_.push_back(new IIHEModuleParticleLevelObjects(iConfig ,consumesCollector())) ;
 }
 
@@ -296,12 +299,12 @@ void IIHEAnalysis::beginJob(){
     childModules_.at(i)->config(this) ;
     childModules_.at(i)->pubBeginJob() ;
   }
-  
+
   // We have to call this last because other modules can add particles to the whitelist.
   // However the other modules must follow MCTruthModule to use the whitelist.  Here is
   // where we break the chicken and egg problem.
   if(MCTruthModule_) MCTruthModule_->setWhitelist() ;
-  
+
   configureBranches() ;
 }
 
@@ -387,12 +390,12 @@ void IIHEAnalysis::endJob(){
       }
     }
   }
-  
+
   addValueToMetaTree("nEventsRaw"   , nEvents_      ) ;
   addValueToMetaTree("nEventsStored", nEventsStored_) ;
   addFVValueToMetaTree("nRuns", nRuns_) ;
   metaTree_->Fill() ;
-  
+
   std::cout << "There were " << nEvents_ << " total events of which " << nEventsStored_ << " were stored to file." << std::endl ;
 
 }
@@ -547,13 +550,13 @@ bool IIHEAnalysis::store(std::string name, unsigned int value){
   return false ;
 }
 
-bool IIHEAnalysis::store(std::string name, unsigned long int value){ 
+bool IIHEAnalysis::store(std::string name, unsigned long int value){
   for(unsigned int i=0 ; i<vars_UL_.size() ; ++i){
     if(vars_UL_.at(i)->name()==name){
       vars_UL_ .at(i)->set(value) ;
       return true ;
     }
-  } 
+  }
   for(unsigned int i=0 ; i<vars_ULV_.size() ; ++i){
     if(vars_ULV_.at(i)->name()==name){
       vars_ULV_ .at(i)->push(value) ;

@@ -26,6 +26,7 @@ void IIHEModulePhoton::beginJob(){
   setBranchType(kVectorFloat) ;
   addBranch("ph_pt") ;
   addBranch("ph_eta") ;
+  addBranch("ph_superCluster_eta") ;
   addBranch("ph_theta") ;
   addBranch("ph_phi") ;
   addBranch("ph_energy") ;
@@ -52,6 +53,7 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_hadTowOverEm") ;
   addBranch("ph_hadTowDepth1OverEm") ;
   addBranch("ph_hadTowDepth2OverEm") ;
+  addBranch("ph_full5x5_sigmaIetaIeta") ;
 
   addBranch("ph_phoChargedIsolation") ;
   addBranch("ph_phoNeutralHadronIsolation") ;
@@ -70,6 +72,7 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_cutBasedPhotonID_Fall17_94X_V2_tight") ;
   addBranch("ph_hasPixelSeed") ;
   addBranch("ph_isPFlowPhoton") ;
+  addBranch("ph_passElectronVeto") ;
   addBranch("ph_isEB") ;
   addBranch("ph_isEE") ;
 
@@ -87,6 +90,7 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     if(phiter->pt() < ETThreshold_) continue ;
     store("ph_pt"    , phiter->pt()) ;
     store("ph_eta"   , phiter->eta()) ;
+    store("ph_superCluster_eta"   , phiter->superCluster()->eta()) ;
     store("ph_theta" , phiter->theta()) ;
     store("ph_phi"   , phiter->phi()) ;
     store("ph_energy", phiter->energy()) ;
@@ -102,8 +106,10 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("ph_r1x5"                          , phiter->r1x5()                            ) ;
     store("ph_r2x5"                          , phiter->r2x5()                            ) ;
     store("ph_r9"                            , phiter->r9()                              ) ;
+    store("ph_full5x5_sigmaIetaIeta"         , phiter->full5x5_sigmaIetaIeta()           ) ;
 
     store("ph_hasPixelSeed"                  , int(phiter->hasPixelSeed())               ) ;
+    store("ph_passElectronVeto"              , int(phiter->passElectronVeto())            ) ;
     store("ph_isPFlowPhoton"                 , int(phiter->isPFlowPhoton())              ) ;
     store("ph_hasConversionTracks"           , int(phiter->hasConversionTracks())        ) ;
     store("ph_isEB"                          , int(phiter->isEB())                       ) ;

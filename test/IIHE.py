@@ -147,186 +147,76 @@ na.runTauID()
 
 
 ##########################################################################################
-#                                  Jet Energy corrections.                               #
+#                                     Jet Collections                                    #
 ##########################################################################################
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+process.load("UserCode.IIHETree.JetProcessing")
+from UserCode.IIHETree.JetProcessing import *
+from PhysicsTools.PatAlgos.tools.jetTools import *
+
+##############################
+# AK4 CHS Jets with Corrections
 updateJetCollection(
    process,
    jetSource = cms.InputTag('slimmedJets'),
    labelName = 'UpdatedJEC',
-   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')  # Update: Safe to always add 'L2L3Residual' as MC contains dummy L2L3Residual corrections (always set to 1)
+   jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')
+)
+process.AK4CHSJetSequence = cms.Sequence(
+    process.patJetCorrFactorsUpdatedJEC *
+    process.updatedPatJetsUpdatedJEC
 )
 
-#see https://github.com/cms-sw/cmssw/blob/CMSSW_8_0_25/PhysicsTools/PatUtils/python/patPFMETCorrections_cff.py#L102
-from RecoMET.METProducers.METSigParams_cfi import *
-process.mySmearedJets = cms.EDProducer("SmearedPATJetProducer",
-    src             = cms.InputTag("updatedPatJetsUpdatedJEC"),
-    enabled         = cms.bool(True),  # If False, no smearing is performed
-    rho             = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    # Read from GT
-    algopt          = cms.string('AK4PFchs_pt'),
-    algo            = cms.string('AK4PFchs'),
-    # Gen jet matching
-    genJets         = cms.InputTag("slimmedGenJets"),
-    dRMax           = cms.double(0.2),  # = cone size (0.4) / 2
-    dPtMaxFactor    = cms.double(3),  # dPt < 3 * resolution
-    variation       = cms.int32(0),  # If not specified, default to 0
-    seed            = cms.uint32(37428479),  # If not specified, default to 37428479
-    debug           = cms.untracked.bool(False)
+##############################
+# AK4 Puppi Jets with Corrections
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJetsPuppi'),
+   labelName = 'PuppiJEC',
+   jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')
 )
-process.mySmearedJetsUP = cms.EDProducer("SmearedPATJetProducer",
-    src             = cms.InputTag("updatedPatJetsUpdatedJEC"),
-    enabled         = cms.bool(True),  # If False, no smearing is performed
-    rho             = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    # Read from GT
-    algopt          = cms.string('AK4PFchs_pt'),
-    algo            = cms.string('AK4PFchs'),
-    # Gen jet matching
-    genJets         = cms.InputTag("slimmedGenJets"),
-    dRMax           = cms.double(0.2),  # = cone size (0.4) / 2
-    dPtMaxFactor    = cms.double(3),  # dPt < 3 * resolution
-    variation       = cms.int32(+1),  # If not specified, default to 0
-    seed            = cms.uint32(37428479),  # If not specified, default to 37428479
-    debug           = cms.untracked.bool(False)
-)
-process.mySmearedJetsDown = cms.EDProducer("SmearedPATJetProducer",
-    src             = cms.InputTag("updatedPatJetsUpdatedJEC"),
-    enabled         = cms.bool(True),  # If False, no smearing is performed
-    rho             = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),  # If True, always skip gen jet matching and smear jet with a random gaussian
-    # Read from GT
-    algopt          = cms.string('AK4PFchs_pt'),
-    algo            = cms.string('AK4PFchs'),
-    # Gen jet matching
-    genJets         = cms.InputTag("slimmedGenJets"),
-    dRMax           = cms.double(0.2),  # = cone size (0.4) / 2
-    dPtMaxFactor    = cms.double(3),  # dPt < 3 * resolution
-    variation       = cms.int32(-1),  # If not specified, default to 0
-    seed            = cms.uint32(37428479),  # If not specified, default to 37428479
-    debug           = cms.untracked.bool(False)
+process.AK4PuppiJetSequence = cms.Sequence(
+    process.patJetCorrFactorsPuppiJEC *
+    process.updatedPatJetsPuppiJEC
 )
 
+##############################
+# AK8 Jets with Corrections and Tags
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJetsAK8'),
+    pvSource  = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource  = cms.InputTag('slimmedSecondaryVertices'),
+    rParam    = 0.8,
+    btagDiscriminators = tagDiscriminatorsDeepAK8,
+    jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
+    postfix        = 'DeepAK8',
+    printWarning   = False
+)
+process.DeepAK8Sequence = cms.Sequence(
+    process.patJetCorrFactorsDeepAK8   *
+    process.updatedPatJetsDeepAK8      *
+    process.patJetCorrFactorsTransientCorrectedDeepAK8 *
+    process.updatedPatJetsTransientCorrectedDeepAK8    *
+    process.selectedUpdatedPatJetsDeepAK8
+)
 
 ##########################################################################################
-#                                   Deep AK8 Jet Tagging                                 #
+#                                       Jet Smearing                                     #
 ##########################################################################################
-# https://twiki.cern.ch/twiki/bin/viewauth/CMS/DeepAKXTagging
-_btagDiscriminators = [
-    'pfBoostedDoubleSecondaryVertexAK8BJetTags',
-    'pfDeepCSVJetTags:probb',
-    'pfDeepCSVJetTags:probbb',
-    'pfDeepCSVJetTags:probc',
-    'pfDeepCSVJetTags:probudsg',
-    'pfDeepFlavourJetTags:probb',
-    'pfDeepFlavourJetTags:probbb',
-    'pfDeepFlavourJetTags:problepb',
-    'pfDeepFlavourJetTags:probc',
-    'pfDeepFlavourJetTags:probuds',
-    'pfDeepFlavourJetTags:probg',
-    'pfDeepDoubleBvLJetTags:probQCD',
-    'pfDeepDoubleBvLJetTags:probHbb',
-    'pfDeepDoubleCvLJetTags:probQCD',
-    'pfDeepDoubleCvLJetTags:probHcc',
-    'pfDeepDoubleCvBJetTags:probHbb',
-    'pfDeepDoubleCvBJetTags:probHcc',
-    'pfMassIndependentDeepDoubleBvLJetTags:probQCD',
-    'pfMassIndependentDeepDoubleBvLJetTags:probHbb',
-    'pfMassIndependentDeepDoubleCvLJetTags:probQCD',
-    'pfMassIndependentDeepDoubleCvLJetTags:probHcc',
-    'pfMassIndependentDeepDoubleCvBJetTags:probHbb',
-    'pfMassIndependentDeepDoubleCvBJetTags:probHcc',
-]
-
-from RecoBTag.MXNet.pfDeepBoostedJet_cff   import _pfDeepBoostedJetTagsAll
-_btagDiscriminators += _pfDeepBoostedJetTagsAll
-
-############################################################
-# FatJet Collection with Deep Tags
-from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-if "mc" in options.DataProcessing:
-    jetToolbox( process, 'ak8', 'AK8PFCHSDeepJetSequence', 'noOutput',
-        postFix            = 'Deep',
-        PUMethod           = 'CHS',
-        updateCollection   = 'slimmedJetsAK8',
-        dataTier           = 'miniAOD',
-        JETCorrPayload     = 'AK8PFchs',
-        JETCorrLevels      = ['L2Relative', 'L3Absolute', 'L2L3Residual'],
-        bTagDiscriminators = _btagDiscriminators,
-        addNsub            = True,
-        runOnMC            = True,
-        verbosity          = 0
-    )
-else:
-    jetToolbox( process, 'ak8', 'AK8PFCHSDeepJetSequence', 'noOutput',
-        postFix            = 'Deep',
-        PUMethod           = 'CHS',
-        updateCollection   = 'slimmedJetsAK8',
-        dataTier           = 'miniAOD',
-        JETCorrPayload     = 'AK8PFchs',
-        JETCorrLevels      = ['L2Relative', 'L3Absolute', 'L2L3Residual'],
-        bTagDiscriminators = _btagDiscriminators,
-        addNsub            = True,
-        runOnMC            = False,
-        verbosity          = 0
-    )
-
-############################################################
-############################################################
-# Smeared DeepAK8 Jets
-process.mySmearedDeepAK8Jets = cms.EDProducer("SmearedPATJetProducer",
-    src             = cms.InputTag("selectedPatJetsAK8PFCHSDeep"),
-    enabled         = cms.bool(True),         # If False, no smearing is performed
-    rho             = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),        # If True, always skip gen jet matching and smear jet with a random gaussian
-    # Read from GT
-    algopt          = cms.string('AK8PFchs_pt'),
-    algo            = cms.string('AK8PFchs'),
-    # Gen jet matching
-    genJets         = cms.InputTag("slimmedGenJetsAK8"),
-    dRMax           = cms.double(0.4),        # = cone size (0.8) / 2
-    dPtMaxFactor    = cms.double(3),          # dPt < 3 * resolution
-    variation       = cms.int32(0),           # If not specified, default to 0
-    seed            = cms.uint32(37428479),   # If not specified, default to 37428479
-    debug           = cms.untracked.bool(False)
+process.SmearedJetsSequence = cms.Sequence(
+    mySmearedJets     *
+    mySmearedJetsUp   *
+    mySmearedJetsDown
 )
-process.mySmearedDeepAK8JetsUp = cms.EDProducer("SmearedPATJetProducer",
-    src             = cms.InputTag("selectedPatJetsAK8PFCHSDeep"),
-    enabled         = cms.bool(True),         # If False, no smearing is performed
-    rho             = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),        # If True, always skip gen jet matching and smear jet with a random gaussian
-    # Read from GT
-    algopt          = cms.string('AK8PFchs_pt'),
-    algo            = cms.string('AK8PFchs'),
-    # Gen jet matching
-    genJets         = cms.InputTag("slimmedGenJetsAK8"),
-    dRMax           = cms.double(0.4),        # = cone size (0.8) / 2
-    dPtMaxFactor    = cms.double(3),          # dPt < 3 * resolution
-    variation       = cms.int32(+1),          # If not specified, default to 0
-    seed            = cms.uint32(37428479),   # If not specified, default to 37428479
-    debug           = cms.untracked.bool(False)
-)
-process.mySmearedDeepAK8JetsDown = cms.EDProducer("SmearedPATJetProducer",
-    src             = cms.InputTag("selectedPatJetsAK8PFCHSDeep"),
-    enabled         = cms.bool(True),         # If False, no smearing is performed
-    rho             = cms.InputTag("fixedGridRhoFastjetAll"),
-    skipGenMatching = cms.bool(False),        # If True, always skip gen jet matching and smear jet with a random gaussian
-    # Read from GT
-    algopt          = cms.string('AK8PFchs_pt'),
-    algo            = cms.string('AK8PFchs'),
-    # Gen jet matching
-    genJets         = cms.InputTag("slimmedGenJetsAK8"),
-    dRMax           = cms.double(0.4),        # = cone size (0.8) / 2
-    dPtMaxFactor    = cms.double(3),          # dPt < 3 * resolution
-    variation       = cms.int32(-1),          # If not specified, default to 0
-    seed            = cms.uint32(37428479),   # If not specified, default to 37428479
-    debug           = cms.untracked.bool(False)
+process.SmearedPuppiJetsSequence = cms.Sequence(
+    mySmearedPuppiJets     *
+    mySmearedPuppiJetsUp   *
+    mySmearedPuppiJetsDown
 )
 process.SmearedDeepAK8Sequence = cms.Sequence(
-    process.mySmearedDeepAK8Jets     *
-    process.mySmearedDeepAK8JetsUp   *
-    process.mySmearedDeepAK8JetsDown
+    mySmearedDeepAK8Jets     *
+    mySmearedDeepAK8JetsUp   *
+    mySmearedDeepAK8JetsDown
 )
 
 
@@ -393,42 +283,47 @@ process.IIHEAnalysis.isData     = cms.untracked.bool("data" in options.DataProce
 process.IIHEAnalysis.isMC       = cms.untracked.bool("mc"   in options.DataProcessing)
 #effectivearea file
 process.IIHEAnalysis.EAFile = cms.FileInPath("UserCode/IIHETree/test/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt")
-#****Collections added before the analysis
-process.IIHEAnalysis.particleFlowEGammaGSFixedCollection     = cms.InputTag("particleFlowEGammaGSFixed"     ,"dupECALClusters"              )
-process.IIHEAnalysis.ecalMultiAndGSGlobalRecHitEBCollection  = cms.InputTag("ecalMultiAndGSGlobalRecHitEB"  ,"dupESClusters"          ,"PAT")
-process.IIHEAnalysis.METsMuEGCleanCollection                 = cms.InputTag("slimmedMETsMuEGClean"                                          )
-process.IIHEAnalysis.discardedMuonCollection                 = cms.InputTag("packedPFCandidatesDiscarded"                                   )
-
-#jet collections
-process.IIHEAnalysis.JetCollectionPrecor                     = cms.InputTag("slimmedJets"                                                  )
-process.IIHEAnalysis.JetCollection                           = cms.InputTag("updatedPatJetsUpdatedJEC"                                     )
-process.IIHEAnalysis.JetCollectionSmeared                    = cms.InputTag("mySmearedJets"             ,""                 ,"IIHEAnalysis")
-process.IIHEAnalysis.JetCollectionSmearedJetResUp            = cms.InputTag("mySmearedJetsUP"           ,""                 ,"IIHEAnalysis")
-process.IIHEAnalysis.JetCollectionSmearedJetResDown          = cms.InputTag("mySmearedJetsDown"         ,""                 ,"IIHEAnalysis")
-# FatJet collections
-process.IIHEAnalysis.DeepAK8JetCollection                    = cms.InputTag("selectedPatJetsAK8PFCHSDeep"                                  )
-process.IIHEAnalysis.DeepAK8JetCollectionSmeared             = cms.InputTag("mySmearedDeepAK8Jets"      ,""                 ,"IIHEAnalysis")
-process.IIHEAnalysis.DeepAK8JetCollectionSmearedJetResUp     = cms.InputTag("mySmearedDeepAK8JetsUp"    ,""                 ,"IIHEAnalysis")
-process.IIHEAnalysis.DeepAK8JetCollectionSmearedJetResDown   = cms.InputTag("mySmearedDeepAK8JetsDown"  ,""                 ,"IIHEAnalysis")
-#MET collections
-process.IIHEAnalysis.patPFMetCollection                      = cms.InputTag("patPFMet"                  , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1Collection                    = cms.InputTag("patPFMetT1"                , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1JetEnDownCollection           = cms.InputTag("patPFMetT1JetEnDown"       , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1JetEnUpCollection             = cms.InputTag("patPFMetT1JetEnUp"         , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1SmearCollection               = cms.InputTag("patPFMetT1Smear"           , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1SmearJetEnDownCollection      = cms.InputTag("patPFMetT1SmearJetEnDown"  , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1SmearJetEnUpCollection        = cms.InputTag("patPFMetT1SmearJetEnUp"    , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1SmearJetResDownCollection     = cms.InputTag("patPFMetT1SmearJetResDown" , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1SmearJetResUpCollection       = cms.InputTag("patPFMetT1SmearJetResUp"   , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetT1TxyCollection                 = cms.InputTag("patPFMetT1Txy"             , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.patPFMetFinalCollection                 = cms.InputTag("slimmedMETs"               , ""                ,"IIHEAnalysis")
-#particle level fiducial collections
-process.IIHEAnalysis.particleLevelJetsCollection             = cms.InputTag("pseudoTop"                 , "jets"            ,"IIHEAnalysis")
-process.IIHEAnalysis.particleLevelak1DressedLeptonCollection = cms.InputTag("pseudoTop"                 , "leptons"         ,"IIHEAnalysis")
-process.IIHEAnalysis.particleLevelMETCollection              = cms.InputTag("pseudoTop"                 , "mets"            ,"IIHEAnalysis")
-#corrected electron collection
-process.IIHEAnalysis.electronCollection                      = cms.InputTag("slimmedElectrons"          , ""                ,"IIHEAnalysis")
-process.IIHEAnalysis.photonCollection                        = cms.InputTag("slimmedPhotons"            , ""                ,"IIHEAnalysis")
+# Collections added before the analysis
+process.IIHEAnalysis.particleFlowEGammaGSFixedCollection     = cms.InputTag("particleFlowEGammaGSFixed"     ,"dupECALClusters"                )
+process.IIHEAnalysis.ecalMultiAndGSGlobalRecHitEBCollection  = cms.InputTag("ecalMultiAndGSGlobalRecHitEB"  ,"dupESClusters"   ,"PAT"         )
+process.IIHEAnalysis.METsMuEGCleanCollection                 = cms.InputTag("slimmedMETsMuEGClean"                                            )
+process.IIHEAnalysis.discardedMuonCollection                 = cms.InputTag("packedPFCandidatesDiscarded"                                     )
+# AK4 CHS Jet Collections
+process.IIHEAnalysis.JetCollectionPrecor                     = cms.InputTag("slimmedJets"                                                     )
+process.IIHEAnalysis.JetCollection                           = cms.InputTag("updatedPatJetsUpdatedJEC"                                        )
+process.IIHEAnalysis.JetCollectionSmeared                    = cms.InputTag("mySmearedJets"                 ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.JetCollectionSmearedJetResUp            = cms.InputTag("mySmearedJetsUp"               ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.JetCollectionSmearedJetResDown          = cms.InputTag("mySmearedJetsDown"             ,""                ,"IIHEAnalysis")
+# AK4 Puppi Jet Collections
+process.IIHEAnalysis.PuppiJetCollectionPrecor                = cms.InputTag("slimmedJetsPuppi"                                                )
+process.IIHEAnalysis.PuppiJetCollection                      = cms.InputTag("updatedPatJetsPuppiJEC"                                          )
+process.IIHEAnalysis.PuppiJetCollectionSmeared               = cms.InputTag("mySmearedPuppiJets"            ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.PuppiJetCollectionSmearedJetResUp       = cms.InputTag("mySmearedPuppiJetsUp"          ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.PuppiJetCollectionSmearedJetResDown     = cms.InputTag("mySmearedPuppiJetsDown"        ,""                ,"IIHEAnalysis")
+# FatJet Collections
+process.IIHEAnalysis.DeepAK8JetCollection                    = cms.InputTag("selectedUpdatedPatJetsDeepAK8"                                   )
+process.IIHEAnalysis.DeepAK8JetCollectionSmeared             = cms.InputTag("mySmearedDeepAK8Jets"          ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.DeepAK8JetCollectionSmearedJetResUp     = cms.InputTag("mySmearedDeepAK8JetsUp"        ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.DeepAK8JetCollectionSmearedJetResDown   = cms.InputTag("mySmearedDeepAK8JetsDown"      ,""                ,"IIHEAnalysis")
+# MET Collections
+process.IIHEAnalysis.patPFMetCollection                      = cms.InputTag("patPFMet"                      ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1Collection                    = cms.InputTag("patPFMetT1"                    ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1JetEnDownCollection           = cms.InputTag("patPFMetT1JetEnDown"           ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1JetEnUpCollection             = cms.InputTag("patPFMetT1JetEnUp"             ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1SmearCollection               = cms.InputTag("patPFMetT1Smear"               ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1SmearJetEnDownCollection      = cms.InputTag("patPFMetT1SmearJetEnDown"      ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1SmearJetEnUpCollection        = cms.InputTag("patPFMetT1SmearJetEnUp"        ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1SmearJetResDownCollection     = cms.InputTag("patPFMetT1SmearJetResDown"     ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1SmearJetResUpCollection       = cms.InputTag("patPFMetT1SmearJetResUp"       ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetT1TxyCollection                 = cms.InputTag("patPFMetT1Txy"                 ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.patPFMetFinalCollection                 = cms.InputTag("slimmedMETs"                   ,""                ,"IIHEAnalysis")
+# Particle Level Fiducial Collections
+process.IIHEAnalysis.particleLevelJetsCollection             = cms.InputTag("pseudoTop"                     ,"jets"            ,"IIHEAnalysis")
+process.IIHEAnalysis.particleLevelak1DressedLeptonCollection = cms.InputTag("pseudoTop"                     ,"leptons"         ,"IIHEAnalysis")
+process.IIHEAnalysis.particleLevelMETCollection              = cms.InputTag("pseudoTop"                     ,"mets"            ,"IIHEAnalysis")
+# Corrected Electron Collection
+process.IIHEAnalysis.electronCollection                      = cms.InputTag("slimmedElectrons"              ,""                ,"IIHEAnalysis")
+process.IIHEAnalysis.photonCollection                        = cms.InputTag("slimmedPhotons"                ,""                ,"IIHEAnalysis")
 #
 process.IIHEAnalysis.includeSkimEventsModule      = cms.untracked.bool(True)
 process.IIHEAnalysis.includeTriggerModule         = cms.untracked.bool(True)
@@ -438,8 +333,9 @@ process.IIHEAnalysis.includeElectronModule        = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMuonModule            = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMETModule             = cms.untracked.bool(True)
 process.IIHEAnalysis.includeJetModule             = cms.untracked.bool(True)
+process.IIHEAnalysis.includePuppiJetModule        = cms.untracked.bool(True)
 process.IIHEAnalysis.includeFatJetModule          = cms.untracked.bool(True)
-process.IIHEAnalysis.includeTauModule             = cms.untracked.bool(False)
+# process.IIHEAnalysis.includeTauModule             = cms.untracked.bool(True)
 process.IIHEAnalysis.includePhotonModule          = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule         = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule       = cms.untracked.bool("mc" in options.DataProcessing)
@@ -449,37 +345,35 @@ process.IIHEAnalysis.includeAutoAcceptEventModule = cms.untracked.bool(False)
 ##########################################################################################
 if "mc" in options.DataProcessing:
     process.IIHE = cms.Sequence(
-    process.egammaPostRecoSeq *
-    process.prefiringweight   *
+    process.egammaPostRecoSeq   *
+    process.prefiringweight     *
     process.rerunMvaIsolationSequence *
-    process.NewTauIDsEmbedded *
-    process.patJetCorrFactorsUpdatedJEC *
-    process.updatedPatJetsUpdatedJEC    *
-    process.fullPatMetSequence *
-    process.AK8PFCHSDeepJetSequence *
-    process.ecalBadCalibReducedMINIAODFilter*
-    process.mySmearedJets     *
-    process.mySmearedJetsUP   *
-    process.mySmearedJetsDown *
-    process.mySmearedDeepAK8Jets     *
-    process.mySmearedDeepAK8JetsUp   *
-    process.mySmearedDeepAK8JetsDown *
+    process.NewTauIDsEmbedded   *
+    process.AK4CHSJetSequence   *
+    process.AK4PuppiJetSequence *
+    process.DeepAK8Sequence     *
+    process.fullPatMetSequence  *
+    process.ecalBadCalibReducedMINIAODFilter *
+    process.SmearedJetsSequence      *
+    process.SmearedPuppiJetsSequence *
+    process.SmearedDeepAK8Sequence   *
     process.IIHEAnalysis
     )
 else:
     process.IIHE = cms.Sequence(
-    process.egammaPostRecoSeq *
+    process.egammaPostRecoSeq   *
     process.rerunMvaIsolationSequence *
-    process.NewTauIDsEmbedded *
-    process.patJetCorrFactorsUpdatedJEC *
-    process.updatedPatJetsUpdatedJEC    *
-    process.AK8PFCHSDeepJetSequence *
-    process.fullPatMetSequence *
+    process.NewTauIDsEmbedded   *
+    process.AK4CHSJetSequence   *
+    process.AK4PuppiJetSequence *
+    process.DeepAK8Sequence     *
+    process.fullPatMetSequence  *
     process.ecalBadCalibReducedMINIAODFilter *
     process.IIHEAnalysis
     )
 
 process.p1 = cms.Path(process.IIHE)
+process.p1.associate(process.patAlgosToolsTask)
 
 #process.out = cms.OutputModule(
 #    "PoolOutputModule",

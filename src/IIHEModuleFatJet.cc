@@ -56,10 +56,25 @@ void IIHEModuleFatJet::beginJob(){
   }
 
   // N-jettiness
+  addBranch("fatjet_puppi_tau1" );
+  addBranch("fatjet_puppi_tau2" );
+  addBranch("fatjet_puppi_tau3" );
+  addBranch("fatjet_puppi_tau4" );
   addBranch("fatjet_chs_tau1"   );
   addBranch("fatjet_chs_tau2"   );
   addBranch("fatjet_chs_tau3"   );
   addBranch("fatjet_chs_tau4"   );
+
+  // Energy correlation function variables
+  addBranch("fatjet_puppi_n2b1" );
+  addBranch("fatjet_puppi_n3b1" );
+  addBranch("fatjet_puppi_n2b2" );
+  addBranch("fatjet_puppi_n3b2" );
+
+  // Softdrop and pruned masses
+  addBranch("fatjet_puppi_softdrop_mass");
+  addBranch("fatjet_chs_softdrop_mass"  );
+  addBranch("fatjet_chs_pruned_mass"    );
 
   // b Tagger
   addBranch("fatjet_DeepCSV_b"            );
@@ -182,7 +197,7 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   // ------------------------------
   // Corrections
     ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-    iSetup.get<JetCorrectionsRecord>().get("AK8PFchs", JetCorParColl);
+    iSetup.get<JetCorrectionsRecord>().get("AK8PFPuppi", JetCorParColl);
     JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
     JetCorrectionUncertainty jecUnc(JetCorPar);
 
@@ -207,11 +222,26 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("fatjet_mass_raw"  ,fatjet->mass()   * fatjet->jecFactor("Uncorrected") );
     store("fatjet_energy_raw",fatjet->energy() * fatjet->jecFactor("Uncorrected") );
 
-    // N-subjettiness
-    store("fatjet_chs_tau1"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau1") );
-    store("fatjet_chs_tau2"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau2") );
-    store("fatjet_chs_tau3"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau3") );
-    store("fatjet_chs_tau4"   ,fatjet->userFloat("NjettinessAK8CHSDeep:tau4") );
+    // N-jettiness
+    store("fatjet_puppi_tau1",fatjet->userFloat("NjettinessAK8Puppi:tau1") );
+    store("fatjet_puppi_tau2",fatjet->userFloat("NjettinessAK8Puppi:tau2") );
+    store("fatjet_puppi_tau3",fatjet->userFloat("NjettinessAK8Puppi:tau3") );
+    store("fatjet_puppi_tau4",fatjet->userFloat("NjettinessAK8Puppi:tau4") );
+    store("fatjet_chs_tau1"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1") );
+    store("fatjet_chs_tau2"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2") );
+    store("fatjet_chs_tau3"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3") );
+    store("fatjet_chs_tau4"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau4") );
+
+    // Energy correlation function variables with PUPPI N2 (for W/Z/H-tagging) and N3 (for top-tagging) with beta=1 and beta=2
+    store("fatjet_puppi_n2b1",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2") );
+    store("fatjet_puppi_n3b1",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3") );
+    store("fatjet_puppi_n2b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN2") );
+    store("fatjet_puppi_n3b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN3") );
+
+    // Softdrop and pruned Mass
+    store("fatjet_puppi_softdrop_mass",fatjet->userFloat("ak8PFJetsPuppiSoftDropMass")                    );
+    store("fatjet_chs_softdrop_mass"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass") );
+    store("fatjet_chs_pruned_mass"    ,fatjet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass")   );
 
 
     // ------------------------------
