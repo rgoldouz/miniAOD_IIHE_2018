@@ -77,9 +77,9 @@ IIHEAnalysis = cms.EDAnalyzer("IIHEAnalysis",
     tauPtTThreshold                         = cms.untracked.double(18),
 
     # IMPORTANT         ****SKIM EVENT****
-    skimEvents_nEle                         = cms.untracked.int32(2),
-    skimEvents_nEleMu                       = cms.untracked.int32(2),
-    skimEvents_nMu                          = cms.untracked.int32(2),
+    skimEvents_nEle                         = cms.untracked.int32(999),
+    skimEvents_nEleMu                       = cms.untracked.int32(999),
+    skimEvents_nMu                          = cms.untracked.int32(999),
     skimEvents_nPh                          = cms.untracked.int32(1),
     skimEvents_nEleTau                      = cms.untracked.int32(999),
     skimEvents_nMuTau                       = cms.untracked.int32(999),
