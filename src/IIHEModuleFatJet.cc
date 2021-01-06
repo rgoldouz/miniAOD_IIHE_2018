@@ -31,6 +31,11 @@ IIHEModuleFatJet::~IIHEModuleFatJet(){}
 
 // ------------ method called once each job just before starting event loop  ------------
 void IIHEModuleFatJet::beginJob(){
+
+  setBranchType(kVectorInt) ;
+  addBranch("fatjet_tightId"    );
+  addBranch("fatjet_tightIdLepVeto"    );
+  addBranch("fatjet_looseId"    );
   setBranchType(kVectorFloat);
   // kinematics
   addBranch("fatjet_px"    );
@@ -60,10 +65,6 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("fatjet_puppi_tau2" );
   addBranch("fatjet_puppi_tau3" );
   addBranch("fatjet_puppi_tau4" );
-  addBranch("fatjet_chs_tau1"   );
-  addBranch("fatjet_chs_tau2"   );
-  addBranch("fatjet_chs_tau3"   );
-  addBranch("fatjet_chs_tau4"   );
 
   // Energy correlation function variables
   addBranch("fatjet_puppi_n2b1" );
@@ -73,8 +74,6 @@ void IIHEModuleFatJet::beginJob(){
 
   // Softdrop and pruned masses
   addBranch("fatjet_puppi_softdrop_mass");
-  addBranch("fatjet_chs_softdrop_mass"  );
-  addBranch("fatjet_chs_pruned_mass"    );
 
   // b Tagger
   addBranch("fatjet_DeepCSV_b"            );
@@ -82,7 +81,6 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("fatjet_DeepCSV_c"            );
   addBranch("fatjet_DeepCSV_udsg"         );
   addBranch("fatjet_DeepCSV_bTag"         );
-
   addBranch("fatjet_DeepFlavour_b"        );
   addBranch("fatjet_DeepFlavour_bb"       );
   addBranch("fatjet_DeepFlavour_lepb"     );
@@ -91,11 +89,9 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("fatjet_DeepFlavour_g"        );
   addBranch("fatjet_DeepFlavour_bTag"     );
   addBranch("fatjet_DeepFlavour_bTagLepb" );
-
   addBranch("fatjet_bTag_CMVA"            );
   addBranch("fatjet_bTag_CSVV2"           );
   addBranch("fatjet_bTag_Hbb"             );
-
   addBranch("fatjet_DeepDouble_BvL_QCD"   );
   addBranch("fatjet_DeepDouble_BvL_Hbb"   );
   addBranch("fatjet_DeepDouble_CvL_QCD"   );
@@ -178,6 +174,23 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("fatjet_DeepBoostedMD_Z"         );
   addBranch("fatjet_DeepBoostedMD_H"         );
   addBranch("fatjet_DeepBoostedMD_QCD"       );
+
+  setBranchType(kVectorVectorFloat) ;
+  addBranch("subjet_correctedpt"    ) ;
+  addBranch("subjet_pt"    ) ;
+  addBranch("subjet_eta"    ) ;
+  addBranch("subjet_phi"    ) ;
+  addBranch("subjet_mass"    ) ;
+  addBranch("subjet_btagCSVV2"    ) ;
+  addBranch("subjet_btagDeepB"    ) ;
+  addBranch("subjet_n2b1"    ) ;
+  addBranch("subjet_n3b1"    ) ;
+  addBranch("subjet_tau1"    ) ;
+  addBranch("subjet_tau2"    ) ;
+  addBranch("subjet_tau3"    ) ;
+  setBranchType(kVectorVectorInt) ;
+  addBranch("subjet_partonFlavour"    ) ;
+  addBranch("subjet_hadronFlavour"    );
 }
 
 // ------------ method called to for each event  ------------
@@ -202,10 +215,94 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     JetCorrectionUncertainty jecUnc(JetCorPar);
 
   // ------------------------------------------------------------
+
   // Loop over Fat Jets
   for ( unsigned int i = 0; i <FatJetHandle_->size(); ++i) {
     Ptr<pat::Jet> fatjet = FatJetHandle_->ptrAt(i);
     if(fatjet->pt() < ETThreshold_) continue ;
+    store("fatjet_tightId"   , fatjet->userInt("tightId") );
+    store("fatjet_tightIdLepVeto" , fatjet->userInt("tightIdLepVeto")   );
+    store("fatjet_looseId"   , fatjet->userInt("looseId") );
+//Subjet information
+
+    std::vector<float> *subjet_correctedpt;
+    std::vector<float> *subjet_pt;
+    std::vector<float> *subjet_eta;
+    std::vector<float> *subjet_phi;
+    std::vector<float> *subjet_mass;
+    std::vector<float> *subjet_btagCSVV2;
+    std::vector<float> *subjet_btagDeepB;
+    std::vector<float> *subjet_n2b1;
+    std::vector<float> *subjet_n3b1;
+    std::vector<float> *subjet_tau1;
+    std::vector<float> *subjet_tau2;
+    std::vector<float> *subjet_tau3;
+    std::vector<int> *subjet_partonFlavour;
+    std::vector<int> *subjet_hadronFlavour;
+
+    subjet_correctedpt = new std::vector<float>();
+    subjet_pt = new std::vector<float>();
+    subjet_eta = new std::vector<float>();
+    subjet_phi = new std::vector<float>();
+    subjet_mass = new std::vector<float>();
+    subjet_btagCSVV2 = new std::vector<float>();
+    subjet_btagDeepB = new std::vector<float>();
+    subjet_n2b1 = new std::vector<float>();
+    subjet_n3b1 = new std::vector<float>();
+    subjet_tau1 = new std::vector<float>();
+    subjet_tau2 = new std::vector<float>();
+    subjet_tau3 = new std::vector<float>();
+    subjet_partonFlavour = new std::vector<int>();
+    subjet_hadronFlavour = new std::vector<int>();
+
+    auto const & sdSubjetsPuppi = fatjet->subjets("SoftDrop");
+    for ( auto const & it : sdSubjetsPuppi ) {
+      subjet_correctedpt->push_back(it->correctedP4(0).pt());
+      subjet_pt->push_back(it->pt());
+      subjet_eta->push_back(it->eta());
+      subjet_phi->push_back(it->phi());
+      subjet_mass->push_back(it->mass());
+      subjet_btagCSVV2->push_back(it->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+      subjet_btagDeepB->push_back(it->bDiscriminator("pfDeepCSVJetTags:probb")+it->bDiscriminator("pfDeepCSVJetTags:probbb"));
+      subjet_n2b1->push_back(it->userFloat("nb1AK8PuppiSoftDropSubjets:ecfN2"));
+      subjet_n3b1->push_back(it->userFloat("nb1AK8PuppiSoftDropSubjets:ecfN3"));
+      subjet_tau1->push_back(it->userFloat("NsubjettinessAK8PFPuppiSoftDropSubjets:tau1"));
+      subjet_tau2->push_back(it->userFloat("NsubjettinessAK8PFPuppiSoftDropSubjets:tau2"));
+      subjet_tau3->push_back(it->userFloat("NsubjettinessAK8PFPuppiSoftDropSubjets:tau3"));
+      subjet_partonFlavour->push_back(it->partonFlavour());
+      subjet_hadronFlavour->push_back(it->hadronFlavour());
+    }
+
+    store("subjet_correctedpt", *subjet_correctedpt    ) ;
+    store("subjet_pt" , *subjet_pt    ) ;
+    store("subjet_eta" , *subjet_eta   ) ;
+    store("subjet_phi" , *subjet_phi   ) ;
+    store("subjet_mass" , *subjet_mass    ) ;
+    store("subjet_btagCSVV2" , *subjet_btagCSVV2   ) ;
+    store("subjet_btagDeepB" , *subjet_btagDeepB   ) ;
+    store("subjet_n2b1" , *subjet_n2b1   ) ;
+    store("subjet_n3b1" , *subjet_n3b1   ) ;
+    store("subjet_tau1" , *subjet_tau1   ) ;
+    store("subjet_tau2" , *subjet_tau2   ) ;
+    store("subjet_tau3" , *subjet_tau3   ) ;
+    store("subjet_partonFlavour" , *subjet_partonFlavour   ) ;
+    store("subjet_hadronFlavour" , *subjet_hadronFlavour   );
+
+    delete subjet_correctedpt;
+    delete subjet_pt;
+    delete subjet_eta;
+    delete subjet_phi;
+    delete subjet_mass;
+    delete subjet_btagCSVV2;
+    delete subjet_btagDeepB;
+    delete subjet_n2b1;
+    delete subjet_n3b1;
+    delete subjet_tau1;
+    delete subjet_tau2;
+    delete subjet_tau3;
+    delete subjet_partonFlavour;
+    delete subjet_hadronFlavour;
+
     store("fatjet_px"    ,fatjet->px()      );
     store("fatjet_py"    ,fatjet->py()      );
     store("fatjet_pz"    ,fatjet->pz()      );
@@ -227,21 +324,15 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("fatjet_puppi_tau2",fatjet->userFloat("NjettinessAK8Puppi:tau2") );
     store("fatjet_puppi_tau3",fatjet->userFloat("NjettinessAK8Puppi:tau3") );
     store("fatjet_puppi_tau4",fatjet->userFloat("NjettinessAK8Puppi:tau4") );
-    store("fatjet_chs_tau1"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1") );
-    store("fatjet_chs_tau2"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2") );
-    store("fatjet_chs_tau3"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3") );
-    store("fatjet_chs_tau4"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau4") );
 
     // Energy correlation function variables with PUPPI N2 (for W/Z/H-tagging) and N3 (for top-tagging) with beta=1 and beta=2
     store("fatjet_puppi_n2b1",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2") );
     store("fatjet_puppi_n3b1",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3") );
-    store("fatjet_puppi_n2b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN2") );
-    store("fatjet_puppi_n3b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN3") );
+//    store("fatjet_puppi_n2b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN2") );
+//    store("fatjet_puppi_n3b2",fatjet->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN3") );
 
     // Softdrop and pruned Mass
     store("fatjet_puppi_softdrop_mass",fatjet->userFloat("ak8PFJetsPuppiSoftDropMass")                    );
-    store("fatjet_chs_softdrop_mass"  ,fatjet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSSoftDropMass") );
-    store("fatjet_chs_pruned_mass"    ,fatjet->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass")   );
 
 
     // ------------------------------
@@ -254,8 +345,7 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("fatjet_DeepCSV_bb"           ,fatjet->bDiscriminator("pfDeepCSVJetTags:probbb")        );
     store("fatjet_DeepCSV_c"            ,fatjet->bDiscriminator("pfDeepCSVJetTags:probc")         );
     store("fatjet_DeepCSV_udsg"         ,fatjet->bDiscriminator("pfDeepCSVJetTags:probudsg")      );
-    store("fatjet_DeepCSV_bTag"         ,fatjet->bDiscriminator("pfDeepCSVJetTags:probb")
-                                        +fatjet->bDiscriminator("pfDeepCSVJetTags:probbb")        );
+    store("fatjet_DeepCSV_bTag"         ,fatjet->bDiscriminator("pfDeepCSVJetTags:probb"));
 
     store("fatjet_DeepFlavour_b"        ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probb")     );
     store("fatjet_DeepFlavour_bb"       ,fatjet->bDiscriminator("pfDeepFlavourJetTags:probbb")    );

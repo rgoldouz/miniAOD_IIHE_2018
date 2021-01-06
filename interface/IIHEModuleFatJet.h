@@ -33,11 +33,13 @@ private:
   edm::InputTag   FatJetSmearedLabel_          ;
   edm::InputTag   FatJetSmearedJetResUpLabel_  ;
   edm::InputTag   FatJetSmearedJetResDownLabel_;
+  edm::InputTag   FatJetLabelSJ_;
 
   edm::EDGetTokenT<edm::View<pat::Jet> >  FatJetToken_;
   edm::EDGetTokenT<edm::View<pat::Jet> >  FatJetSmearedToken_          ;
   edm::EDGetTokenT<edm::View<pat::Jet> >  FatJetSmearedJetResUpToken_  ;
   edm::EDGetTokenT<edm::View<pat::Jet> >  FatJetSmearedJetResDownToken_;
+  edm::EDGetTokenT<edm::View<pat::Jet> >  FatJetTokenSJ_;
 
   float ETThreshold_;
   bool  isMC_ ;

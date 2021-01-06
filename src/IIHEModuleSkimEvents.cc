@@ -13,24 +13,30 @@ IIHEModuleSkimEvents::IIHEModuleSkimEvents(const edm::ParameterSet& iConfig, edm
   ptThresholdmu_       = iConfig.getUntrackedParameter<double>("muonPtThreshold") ;
   ptThresholdTau_      = iConfig.getUntrackedParameter<double>("tauPtTThreshold") ;
   ptThresholdPh_       = iConfig.getUntrackedParameter<double>("photonPtThreshold") ;
+  ptThresholdFatJet_       = iConfig.getUntrackedParameter<double>("fatjetPtThreshold") ;
 
-  nEleThreshold_       = iConfig.getUntrackedParameter<int>("skimEvents_nEle"     ) ;
-  nEleMuThreshold_     = iConfig.getUntrackedParameter<int>("skimEvents_nEleMu"   ) ;
-  nEleTauThreshold_    = iConfig.getUntrackedParameter<int>("skimEvents_nEleTau"  ) ;
-  nMuThreshold_        = iConfig.getUntrackedParameter<int>("skimEvents_nMu"      ) ;
-  nMuTauThreshold_     = iConfig.getUntrackedParameter<int>("skimEvents_nMuTau"   ) ;
-  nTauThreshold_       = iConfig.getUntrackedParameter<int>("skimEvents_nTau"     ) ;
-  nPhThreshold_        = iConfig.getUntrackedParameter<int>("skimEvents_nPh"      ) ;
+  EleAccept_       = iConfig.getUntrackedParameter<bool>("skimEvents_Ele"     ) ;
+  EleMuAccept_     = iConfig.getUntrackedParameter<bool>("skimEvents_EleMu"   ) ;
+  EleTauAccept_    = iConfig.getUntrackedParameter<bool>("skimEvents_EleTau"  ) ;
+  MuAccept_        = iConfig.getUntrackedParameter<bool>("skimEvents_Mu"      ) ;
+  MuTauAccept_     = iConfig.getUntrackedParameter<bool>("skimEvents_MuTau"   ) ;
+  TauAccept_       = iConfig.getUntrackedParameter<bool>("skimEvents_Tau"     ) ;
+  PhAccept_        = iConfig.getUntrackedParameter<bool>("skimEvents_Ph"      ) ;
+  FatJetAccept_    = iConfig.getUntrackedParameter<bool>("skimEvents_FatJet"      ) ;
+  FatJetMuAccept_  = iConfig.getUntrackedParameter<bool>("skimEvents_FatJetMu"      ) ;
+  FatJetPhAccept_  = iConfig.getUntrackedParameter<bool>("skimEvents_FatJetPh"      ) ;
 
   electronCollectionLabel_     = iConfig.getParameter<edm::InputTag>("electronCollection"      ) ;
   muonCollectionLabel_         = iConfig.getParameter<edm::InputTag>("muonCollection"          ) ;
   tauCollectionLabel_          = iConfig.getParameter<edm::InputTag>("tauCollection");
   photonCollectionLabel_       = iConfig.getParameter<edm::InputTag>("photonCollection"        ) ;
+  FatJetLabel_                  = iConfig.getParameter<edm::InputTag>("DeepAK8JetCollection"                 );
 
   electronCollectionToken_ =  iC.consumes<View<pat::Electron> > (electronCollectionLabel_);
   muonCollectionToken_     =  iC.consumes<View<pat::Muon> > (muonCollectionLabel_);
   tauCollectionToken_      =  iC.consumes<View<pat::Tau>> (tauCollectionLabel_);
   photonCollectionToken_   =  iC.consumes<View<pat::Photon> > (photonCollectionLabel_);
+  FatJetToken_                  = iC.consumes<View<pat::Jet> >       ( FatJetLabel_                      );
 }
 IIHEModuleSkimEvents::~IIHEModuleSkimEvents(){}
 
@@ -54,6 +60,9 @@ void IIHEModuleSkimEvents::analyze(const edm::Event& iEvent, const edm::EventSet
   edm::Handle<edm::View<pat::Photon> > photonCollection_;
   iEvent.getByToken( photonCollectionToken_, photonCollection_) ;
 
+  edm::Handle<edm::View<pat::Jet> > FatJetHandle_;
+    iEvent.getByToken(FatJetToken_ ,FatJetHandle_);
+
   int nEl = 0 ;
   int nMu = 0 ;
   int nTau = 0 ;
@@ -61,6 +70,7 @@ void IIHEModuleSkimEvents::analyze(const edm::Event& iEvent, const edm::EventSet
   int nEmu = 0;
   int nETau = 0;
   int nMuTau = 0;
+  int nFatJet  = 0;
   
   for( unsigned int i = 0 ; i < electronCollection_->size() ; i++ ) {
     Ptr<pat::Electron> gsfiter = electronCollection_->ptrAt( i );
@@ -86,11 +96,32 @@ void IIHEModuleSkimEvents::analyze(const edm::Event& iEvent, const edm::EventSet
     if(phiter->pt() > ptThresholdPh_) nPh++ ;
   }
 
+  for ( unsigned int i = 0; i <FatJetHandle_->size(); ++i) {
+    Ptr<pat::Jet> fatjet = FatJetHandle_->ptrAt(i);
+    if(fatjet->pt() > ptThresholdFatJet_) nFatJet++;
+  }
+
   nEmu = nEl + nMu;
   nETau = nEl + nTau;
   nMuTau = nMu + nTau;
 
-  bool acceptThisEvent = (nEl >= nEleThreshold_ || nMu >= nMuThreshold_ || nTau >= nTauThreshold_ || nPh >= nPhThreshold_ || (nEmu >= nEleMuThreshold_ && nEl >0 &&  nMu>0) || (nETau>= nEleTauThreshold_  && nEl >0 && nTau>0) || (nMuTau>= nMuTauThreshold_  && nMu>0 && nTau>0));
+  bool acceptThisEvent=false;
+  if(EleAccept_      && nEl >0      ) acceptThisEvent=true; 
+  if(EleMuAccept_    && nEmu >0     ) acceptThisEvent=true;
+  if(EleTauAccept_   && nETau >0    ) acceptThisEvent=true; 
+  if(MuAccept_       && nMu>0       ) acceptThisEvent=true;
+  if(MuTauAccept_    && nMuTau>0    ) acceptThisEvent=true;
+  if(TauAccept_      && nTau>0      ) acceptThisEvent=true;
+  if(PhAccept_       && nPh>0       ) acceptThisEvent=true;
+  if(FatJetAccept_   && nFatJet>0   ) acceptThisEvent=true;
+  if(FatJetAccept_   && nFatJet>0   ) acceptThisEvent=true;
+  if(FatJetMuAccept_   && nFatJet>1 && nMu>0) acceptThisEvent=true;
+  if(FatJetPhAccept_   && nFatJet>0 && nPh>0) acceptThisEvent=true;
+
+//  acceptThisEvent = (nEl >= nEleAccept_ || nMu >= nMuAccept_ || nTau >= nTauAccept_ || nPh >= nPhAccept_ || (nEmu >= nEleMuAccept_ && nEl >0 &&  nMu>0) || (nETau>= nEleTauAccept_  && nEl >0 && nTau>0) || (nMuTau>= nMuTauAccept_  && nMu>0 && nTau>0) || nFatJet >= nFatJetAccept_);
+  
+  
+
   // Save the event if we see something we like
   if(acceptThisEvent){
     acceptEvent() ;

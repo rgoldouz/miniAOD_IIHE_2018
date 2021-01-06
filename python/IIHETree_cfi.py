@@ -77,13 +77,16 @@ IIHEAnalysis = cms.EDAnalyzer("IIHEAnalysis",
     tauPtTThreshold                         = cms.untracked.double(18),
 
     # IMPORTANT         ****SKIM EVENT****
-    skimEvents_nEle                         = cms.untracked.int32(999),
-    skimEvents_nEleMu                       = cms.untracked.int32(999),
-    skimEvents_nMu                          = cms.untracked.int32(999),
-    skimEvents_nPh                          = cms.untracked.int32(1),
-    skimEvents_nEleTau                      = cms.untracked.int32(999),
-    skimEvents_nMuTau                       = cms.untracked.int32(999),
-    skimEvents_nTau                         = cms.untracked.int32(999),
+    skimEvents_Ele                         = cms.untracked.bool(False),
+    skimEvents_EleMu                       = cms.untracked.bool(False),
+    skimEvents_Mu                          = cms.untracked.bool(False),
+    skimEvents_Ph                          = cms.untracked.bool(False),
+    skimEvents_EleTau                      = cms.untracked.bool(False),
+    skimEvents_MuTau                       = cms.untracked.bool(False),
+    skimEvents_Tau                         = cms.untracked.bool(False),
+    skimEvents_FatJet                      = cms.untracked.bool(False),
+    skimEvents_FatJetPh                    = cms.untracked.bool(True),
+    skimEvents_FatJetMu                    = cms.untracked.bool(True),
     #***********************************************************************
     #tell the code if you are running on data or MC
     isData                                  = cms.untracked.bool(False),

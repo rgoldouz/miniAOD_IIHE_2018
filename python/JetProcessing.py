@@ -1,64 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from RecoBTag.MXNet.pfDeepBoostedJet_cff   import _pfDeepBoostedJetTagsAll
 
-##########################################################################################
-#                                   Deep AK8 Jet Tagging                                 #
-##########################################################################################
-# https://twiki.cern.ch/twiki/bin/viewauth/CMS/DeepAKXTagging
-
-tagDiscriminatorsDeepAK8 = [
-    'pfBoostedDoubleSecondaryVertexAK8BJetTags',
-    'pfDeepCSVJetTags:probb',
-    'pfDeepCSVJetTags:probbb',
-    'pfDeepCSVJetTags:probc',
-    'pfDeepCSVJetTags:probudsg',
-    'pfDeepFlavourJetTags:probb',
-    'pfDeepFlavourJetTags:probbb',
-    'pfDeepFlavourJetTags:problepb',
-    'pfDeepFlavourJetTags:probc',
-    'pfDeepFlavourJetTags:probuds',
-    'pfDeepFlavourJetTags:probg',
-    'pfDeepDoubleBvLJetTags:probQCD',
-    'pfDeepDoubleBvLJetTags:probHbb',
-    'pfDeepDoubleCvLJetTags:probQCD',
-    'pfDeepDoubleCvLJetTags:probHcc',
-    'pfDeepDoubleCvBJetTags:probHbb',
-    'pfDeepDoubleCvBJetTags:probHcc',
-    'pfMassIndependentDeepDoubleBvLJetTags:probQCD',
-    'pfMassIndependentDeepDoubleBvLJetTags:probHbb',
-    'pfMassIndependentDeepDoubleCvLJetTags:probQCD',
-    'pfMassIndependentDeepDoubleCvLJetTags:probHcc',
-    'pfMassIndependentDeepDoubleCvBJetTags:probHbb',
-    'pfMassIndependentDeepDoubleCvBJetTags:probHcc',
-]
-tagDiscriminatorsDeepAK8+=_pfDeepBoostedJetTagsAll
-
-# Tag Task for AK8 Jets
-# DeepAK8TagTask = cms.Task(
-#     pfImpactParameterTagInfosDeepAK8,
-#     pfImpactParameterAK8TagInfosDeepAK8,
-#     pfInclusiveSecondaryVertexFinderTagInfosDeepAK8,
-#     pfInclusiveSecondaryVertexFinderAK8TagInfosDeepAK8,
-#     pfBoostedDoubleSVAK8TagInfosDeepAK8,
-#     pfBoostedDoubleSecondaryVertexAK8BJetTagsDeepAK8,
-#     pfDeepCSVTagInfosDeepAK8,
-#     pfDeepCSVJetTagsDeepAK8,
-#     pfDeepFlavourTagInfosDeepAK8,
-#     pfDeepFlavourJetTagsDeepAK8,
-#     pfDeepDoubleXTagInfosDeepAK8,
-#     pfDeepDoubleBvLJetTagsDeepAK8,
-#     pfDeepDoubleCvLJetTagsDeepAK8,
-#     pfDeepDoubleCvBJetTagsDeepAK8,
-#     pfMassIndependentDeepDoubleBvLJetTagsDeepAK8,
-#     pfMassIndependentDeepDoubleCvLJetTagsDeepAK8,
-#     pfMassIndependentDeepDoubleCvBJetTagsDeepAK8,
-#     pfDeepBoostedJetTagInfosDeepAK8,
-#     pfDeepBoostedJetTagsDeepAK8,
-#     pfDeepBoostedDiscriminatorsJetTagsDeepAK8,
-#     pfMassDecorrelatedDeepBoostedJetTagsDeepAK8,
-#     pfMassDecorrelatedDeepBoostedDiscriminatorsJetTagsDeepAK8
-# )
-
 
 ##########################################################################################
 #                                       Jet Smearing                                     #
@@ -112,7 +54,7 @@ mySmearedPuppiJetsDown = mySmearedPuppiJets.clone(
 ##############################
 # DeepAK8 Jets
 mySmearedDeepAK8Jets = JetSmearing.clone(
-    src       = cms.InputTag("selectedUpdatedPatJetsDeepAK8"),
+    src       = cms.InputTag("selectedUpdatedPatJetsDeepAK8WithUserData"),
     algopt    = cms.string('AK8PFPuppi_pt'),
     algo      = cms.string('AK8PFPuppi'),
     genJets   = cms.InputTag("slimmedGenJetsAK8"),
