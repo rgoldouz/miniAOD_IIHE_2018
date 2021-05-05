@@ -58,21 +58,22 @@ options.parseArguments()
 globalTag = "80"
 
 if options.DataProcessing == "data2016":
-  globalTag = "94X_dataRun2_v10"
+    globalTag = "94X_dataRun2_v10"
 if options.DataProcessing == "mc2016":
-  globalTag = "94X_mcRun2_asymptotic_v3"
+    globalTag = "94X_mcRun2_asymptotic_v3"
 
 if options.DataProcessing == "data2017":
-  globalTag = "94X_dataRun2_v11"
+    globalTag = "102X_dataRun2_v13"
+#    globalTag = "94X_dataRun2_v11"
 if options.DataProcessing == "mc2017":
-  globalTag = "94X_mc2017_realistic_v17"
+    globalTag = "94X_mc2017_realistic_v17"
 
 if options.DataProcessing == "data2018ABC":
-  globalTag = "102X_dataRun2_v12"
+    globalTag = "102X_dataRun2_v12"
 if options.DataProcessing == "data2018D":
-  globalTag = "102X_dataRun2_Prompt_v15"
+    globalTag = "102X_dataRun2_Prompt_v15"
 if options.DataProcessing == "mc2018":
-  globalTag = "102X_upgrade2018_realistic_v20"
+    globalTag = "102X_upgrade2018_realistic_v20"
 
 if globalTag == "80":
     print '*****ERROR**** you are using wrong global tag so lets stop running'
@@ -80,7 +81,6 @@ if globalTag == "80":
 ##########################################################################################
 #                                  Start the sequences                                   #
 ##########################################################################################
-
 process = cms.Process("IIHEAnalysis")
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
@@ -90,11 +90,12 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.load('Configuration.StandardSequences.Services_cff')
+process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi")
 
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
-#process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+##process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",
@@ -112,12 +113,18 @@ if options.DataFormat == "data":
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(),
 #    lumisToProcess = cms.untracked.VLuminosityBlockRange('319756:1567','319337:56'),
-#    eventsToProcess = cms.untracked.VEventRange('1:19792:3958249')
+#    lumisToProcess = cms.untracked.VLuminosityBlockRange('1:427', '1:428'),
+#    eventsToProcess = cms.untracked.VEventRange('297483:182:250326304')
 #    skipEvents=cms.untracked.uint32(8000)
 )
 #process.source.fileNames.append( "process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/TprimeBToBW_M-1200_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/30000/CA1B02AB-4433-E911-8B8E-FA163E27F7AC.root")
 #process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/ZprimeToTTJet_M1000_TuneCP2_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/80000/3C2F88E6-572E-E911-80DD-0242AC130002.root")
-process.source.fileNames.append( "file:3C2F88E6-572E-E911-80DD-0242AC130002.root")
+#process.source.fileNames.append( "file:3C2F88E6-572E-E911-80DD-0242AC130002.root")
+#process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/120000/5047A56F-B9EB-E811-8CAE-D067E5F91B8A.root")
+#process.source.fileNames.append("/store/mc/RunIIFall17MiniAODv2/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/110000/885ECDE7-10B9-E811-B764-549F35AD8C0A.root")
+
+process.source.fileNames.append("file:pickevents.root")
+
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
 #  filename_out = "file:/tmp/output_%s" % (options.sample + "_" + options.file)
@@ -154,6 +161,8 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 updateJetCollection(
    process,
    jetSource = cms.InputTag('slimmedJets'),
+    pvSource  = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource  = cms.InputTag('slimmedSecondaryVertices'),
    labelName = 'UpdatedJEC',
    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
 )
@@ -167,6 +176,8 @@ process.AK4CHSJetSequence = cms.Sequence(
 updateJetCollection(
    process,
    jetSource = cms.InputTag('slimmedJetsPuppi'),
+    pvSource  = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    svSource  = cms.InputTag('slimmedSecondaryVertices'),
    labelName = 'PuppiJEC',
    jetCorrections = ('AK4PFPuppi', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None'),
 #   outputModules = 'noOutput'
@@ -224,43 +235,52 @@ subjetBTagDiscriminators = [
     'pfDeepCSVJetTags:probb',
     'pfDeepCSVJetTags:probbb',
 ]
-# AK8 Jets with Corrections and Tags
-jetToolbox( process, 'ak8', 'ak8JetSubs', 'kar',
-  dataTier="miniAOD",
-  PUMethod='Puppi',
-  Cut="pt>170 && abs(eta)<2.5",
-  bTagDiscriminators= bTagDiscriminators,
-  subjetBTagDiscriminators=subjetBTagDiscriminators,
-  addPruning=True, addSoftDrop=True ,           # add basic grooming
-  addTrimming=True, addFiltering=True,
-  addSoftDropSubjets=True,
-  addPrunedSubjets=True,
-  addNsub=True, maxTau=4,                       # add Nsubjettiness tau1, tau2, tau3, tau4
-  addEnergyCorrFunc=True,
-  addNsubSubjets=True,
-  addEnergyCorrFuncSubjets=True,
-)
+
 
 updateJetCollection(
     process,
-    jetSource = cms.InputTag('packedPatJetsAK8PFPuppiSoftDrop'),
+    jetSource = cms.InputTag('slimmedJetsAK8'),
     pvSource  = cms.InputTag('offlineSlimmedPrimaryVertices'),
     svSource  = cms.InputTag('slimmedSecondaryVertices'),
     rParam    = 0.8,
-    jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
+    jetCorrections = ('AK8PFPuppi', cms.vstring(['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual']), 'None'),
     btagDiscriminators = tagDiscriminatorsDeepAK8,
     postfix        = 'DeepAK8',
     printWarning   = False,
 )
 
-from PhysicsTools.NanoAOD.jets_cff import *
-process.mylooseJetIdAK8 = looseJetIdAK8.clone(
+
+
+jetVer = ''
+if '2016' in options.DataProcessing:
+    jetVer = 'WINTER16'
+if '2017' in options.DataProcessing:
+    jetVer = 'WINTER17PUPPI'
+if '2018' in options.DataProcessing:
+    jetVer = 'SUMMER18PUPPI'
+
+process.mylooseJetIdAK8 = cms.EDProducer("PatJetIDValueMapProducer",
+        filterParams=cms.PSet(
+        version = cms.string(jetVer),
+        quality = cms.string('LOOSE'),
+    ),
     src = cms.InputTag("selectedUpdatedPatJetsDeepAK8")
 )
-process.mytightJetIdAK8 = tightJetIdAK8.clone(
+
+process.mytightJetIdAK8 = cms.EDProducer("PatJetIDValueMapProducer",
+        filterParams=cms.PSet(
+        version = cms.string(jetVer),
+        quality = cms.string('TIGHT'),
+    ),
     src = cms.InputTag("selectedUpdatedPatJetsDeepAK8")
+#    src = cms.InputTag("selectedUpdatedPatJetsDeepAK8")
 )
-process.mytightJetIdLepVetoAK8 = tightJetIdLepVetoAK8.clone(
+
+process.mytightJetIdLepVetoAK8 = cms.EDProducer("PatJetIDValueMapProducer",
+        filterParams=cms.PSet(
+        version = cms.string(jetVer),
+        quality = cms.string('TIGHTLEPVETO'),
+    ),
     src = cms.InputTag("selectedUpdatedPatJetsDeepAK8")
 )
 
@@ -278,7 +298,8 @@ process.p10 = cms.Path(
 process.mylooseJetIdAK8 *
 process.mytightJetIdAK8 *
 process.mytightJetIdLepVetoAK8 *
-process.selectedUpdatedPatJetsDeepAK8WithUserData)
+process.selectedUpdatedPatJetsDeepAK8WithUserData
+)
 
 ##########################################################################################
 #                                       Jet Smearing                                     #
@@ -368,7 +389,7 @@ process.IIHEAnalysis.METsMuEGCleanCollection                 = cms.InputTag("sli
 process.IIHEAnalysis.discardedMuonCollection                 = cms.InputTag("packedPFCandidatesDiscarded"                                     )
 # AK4 CHS Jet Collections
 process.IIHEAnalysis.JetCollectionPrecor                     = cms.InputTag("slimmedJets"                                                     )
-process.IIHEAnalysis.JetCollection                           = cms.InputTag("updatedPatJetsUpdatedJEC"                                        )
+process.IIHEAnalysis.JetCollection                           = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"                                        )
 process.IIHEAnalysis.JetCollectionSmeared                    = cms.InputTag("mySmearedJets"                 ,""                ,"IIHEAnalysis")
 process.IIHEAnalysis.JetCollectionSmearedJetResUp            = cms.InputTag("mySmearedJetsUp"               ,""                ,"IIHEAnalysis")
 process.IIHEAnalysis.JetCollectionSmearedJetResDown          = cms.InputTag("mySmearedJetsDown"             ,""                ,"IIHEAnalysis")
@@ -441,14 +462,13 @@ else:
     process.rerunMvaIsolationSequence *
     process.NewTauIDsEmbedded   *
     process.AK4CHSJetSequence   *
-    process.DeepAK8Sequence     *
     process.fullPatMetSequence  *
     process.ecalBadCalibReducedMINIAODFilter *
     process.IIHEAnalysis
     )
 
 process.p1 = cms.Path(process.IIHE)
-#process.p1.associate(process.patAlgosToolsTask)
+process.p1.associate(process.patAlgosToolsTask)
 
 process.out = cms.OutputModule(
     "PoolOutputModule",

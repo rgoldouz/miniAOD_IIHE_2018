@@ -1,9 +1,9 @@
 data2017_samples = {}
 #data2017_samples["2017_B_SinglePhoton"]=[    ["/SinglePhoton/Run2017B-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_C_SinglePhoton"]=[    ["/SinglePhoton/Run2017C-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_D_SinglePhoton"]=[    ["/SinglePhoton/Run2017D-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_E_SinglePhoton"]=[    ["/SinglePhoton/Run2017E-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_F_SinglePhoton"]=[    ["/SinglePhoton/Run2017F-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_C_SinglePhoton"]=[    ["/SinglePhoton/Run2017C-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_D_SinglePhoton"]=[    ["/SinglePhoton/Run2017D-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_E_SinglePhoton"]=[    ["/SinglePhoton/Run2017E-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_F_SinglePhoton"]=[    ["/SinglePhoton/Run2017F-31Mar2018-v1/MINIAOD"],    "data2017"]
 
 data2017_samples["2017_B_SingleMuon"]=[    ["/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD"],    "data2017"]
 data2017_samples["2017_C_SingleMuon"]=[    ["/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD"],    "data2017"]
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     from CRABClient.UserUtilities import config
     config = config()
 
-    name = 'ExitedTopSamplesData'
+    name = 'ExitedTopSamplesDataJan2021'
     config.General.workArea = 'crab_'+name
     config.General.transferLogs = False
     config.General.transferOutputs = True

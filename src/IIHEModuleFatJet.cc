@@ -189,8 +189,8 @@ void IIHEModuleFatJet::beginJob(){
   addBranch("subjet_tau2"    ) ;
   addBranch("subjet_tau3"    ) ;
   setBranchType(kVectorVectorInt) ;
-  addBranch("subjet_partonFlavour"    ) ;
-  addBranch("subjet_hadronFlavour"    );
+  if (isMC_) addBranch("subjet_partonFlavour"    ) ;
+  if (isMC_) addBranch("subjet_hadronFlavour"    );
 }
 
 // ------------ method called to for each event  ------------
@@ -220,6 +220,7 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
   for ( unsigned int i = 0; i <FatJetHandle_->size(); ++i) {
     Ptr<pat::Jet> fatjet = FatJetHandle_->ptrAt(i);
     if(fatjet->pt() < ETThreshold_) continue ;
+    
     store("fatjet_tightId"   , fatjet->userInt("tightId") );
     store("fatjet_tightIdLepVeto" , fatjet->userInt("tightIdLepVeto")   );
     store("fatjet_looseId"   , fatjet->userInt("looseId") );
@@ -255,7 +256,8 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     subjet_partonFlavour = new std::vector<int>();
     subjet_hadronFlavour = new std::vector<int>();
 
-    auto const & sdSubjetsPuppi = fatjet->subjets("SoftDrop");
+//    auto const & sdSubjetsPuppi = fatjet->subjets("SoftDrop");
+    auto const & sdSubjetsPuppi = fatjet->subjets("SoftDropPuppi");
     for ( auto const & it : sdSubjetsPuppi ) {
       subjet_correctedpt->push_back(it->correctedP4(0).pt());
       subjet_pt->push_back(it->pt());
@@ -266,11 +268,11 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
       subjet_btagDeepB->push_back(it->bDiscriminator("pfDeepCSVJetTags:probb")+it->bDiscriminator("pfDeepCSVJetTags:probbb"));
       subjet_n2b1->push_back(it->userFloat("nb1AK8PuppiSoftDropSubjets:ecfN2"));
       subjet_n3b1->push_back(it->userFloat("nb1AK8PuppiSoftDropSubjets:ecfN3"));
-      subjet_tau1->push_back(it->userFloat("NsubjettinessAK8PFPuppiSoftDropSubjets:tau1"));
-      subjet_tau2->push_back(it->userFloat("NsubjettinessAK8PFPuppiSoftDropSubjets:tau2"));
-      subjet_tau3->push_back(it->userFloat("NsubjettinessAK8PFPuppiSoftDropSubjets:tau3"));
-      subjet_partonFlavour->push_back(it->partonFlavour());
-      subjet_hadronFlavour->push_back(it->hadronFlavour());
+      subjet_tau1->push_back(it->userFloat("NjettinessAK8Subjets:tau1"));
+      subjet_tau2->push_back(it->userFloat("NjettinessAK8Subjets:tau2"));
+      subjet_tau3->push_back(it->userFloat("NjettinessAK8Subjets:tau3"));
+      if (isMC_) subjet_partonFlavour->push_back(it->partonFlavour());
+      if (isMC_) subjet_hadronFlavour->push_back(it->hadronFlavour());
     }
 
     store("subjet_correctedpt", *subjet_correctedpt    ) ;
@@ -285,8 +287,8 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("subjet_tau1" , *subjet_tau1   ) ;
     store("subjet_tau2" , *subjet_tau2   ) ;
     store("subjet_tau3" , *subjet_tau3   ) ;
-    store("subjet_partonFlavour" , *subjet_partonFlavour   ) ;
-    store("subjet_hadronFlavour" , *subjet_hadronFlavour   );
+    if (isMC_) store("subjet_partonFlavour" , *subjet_partonFlavour   ) ;
+    if (isMC_) store("subjet_hadronFlavour" , *subjet_hadronFlavour   );
 
     delete subjet_correctedpt;
     delete subjet_pt;
@@ -494,8 +496,7 @@ void IIHEModuleFatJet::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDc")
         +fatjet->bDiscriminator("pfMassDecorrelatedDeepBoostedJetTags:probQCDothers")
       );
-
-
+//    cout<<FatJetSmearedHandle_          ->at(i).pt()<<","<<FatJetSmearedHandle_          ->at(i).eta()<<endl;
     if (isMC_) {
       // ------------------------------
       // Smearing

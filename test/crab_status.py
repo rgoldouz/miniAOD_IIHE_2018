@@ -33,11 +33,11 @@ mc2017_samples["2017_STtwchtop"]=[    ["/ST_tW_top_5f_inclusiveDecays_TuneCP5_PS
 mc2017_samples["2017_STtwchatop"]=[    ["/ST_tW_antitop_5f_inclusiveDecays_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
 
 data2017_samples = {}
-#data2017_samples["2017_B_SinglePhoton"]=[    ["/SinglePhoton/Run2017B-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_C_SinglePhoton"]=[    ["/SinglePhoton/Run2017C-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_D_SinglePhoton"]=[    ["/SinglePhoton/Run2017D-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_E_SinglePhoton"]=[    ["/SinglePhoton/Run2017E-31Mar2018-v1/MINIAOD"],    "data2017"]
-#data2017_samples["2017_F_SinglePhoton"]=[    ["/SinglePhoton/Run2017F-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_B_SinglePhoton"]=[    ["/SinglePhoton/Run2017B-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_C_SinglePhoton"]=[    ["/SinglePhoton/Run2017C-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_D_SinglePhoton"]=[    ["/SinglePhoton/Run2017D-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_E_SinglePhoton"]=[    ["/SinglePhoton/Run2017E-31Mar2018-v1/MINIAOD"],    "data2017"]
+data2017_samples["2017_F_SinglePhoton"]=[    ["/SinglePhoton/Run2017F-31Mar2018-v1/MINIAOD"],    "data2017"]
 
 data2017_samples["2017_B_SingleMuon"]=[    ["/SingleMuon/Run2017B-31Mar2018-v1/MINIAOD"],    "data2017"]
 data2017_samples["2017_C_SingleMuon"]=[    ["/SingleMuon/Run2017C-31Mar2018-v1/MINIAOD"],    "data2017"]
@@ -45,10 +45,10 @@ data2017_samples["2017_D_SingleMuon"]=[    ["/SingleMuon/Run2017D-31Mar2018-v1/M
 data2017_samples["2017_E_SingleMuon"]=[    ["/SingleMuon/Run2017E-31Mar2018-v1/MINIAOD"],    "data2017"]
 data2017_samples["2017_F_SingleMuon"]=[    ["/SingleMuon/Run2017F-31Mar2018-v1/MINIAOD"],    "data2017"]
 
-for key, value in mc2017_samples.items():
-#    os.system("crab status -d crab_ExitedTopSamplesMC/crab_" + key)
-    os.system("crab kill -d crab_ExitedTopSamplesMC/crab_" + key)
-#for key, value in data2017_samples.items():
-#    os.system("crab status -d crab_ExitedTopSamplesData/crab_" + key)
-
+#for key, value in mc2017_samples.items():
+#    os.system("crab status -d crab_ExitedTopSamplesMCJan2021/crab_" + key)
+#    os.system("crab kill -d crab_ExitedTopSamplesMCJan2021/crab_" + key)
+for key, value in data2017_samples.items():
+    os.system("crab status -d crab_ExitedTopSamplesDataJan2021/crab_" + key)
+#    os.system("crab resubmit -d crab_ExitedTopSamplesDataJan2021/crab_" + key)
 

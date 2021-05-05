@@ -137,7 +137,6 @@ void IIHEModulePhoton::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     store("ph_phoNeutralHadronIsolation"   , phiter->userFloat("phoNeutralHadronIsolation" )) ;
     store("ph_phoPhotonIsolation"          , phiter->userFloat("phoPhotonIsolation"        )) ;
 
-
     
     // Now apply truth matching.
     int index = MCTruth_matchEtaPhi_getIndex(phiter->eta(), phiter->phi()) ;

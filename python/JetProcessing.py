@@ -25,7 +25,7 @@ JetSmearing = cms.EDProducer("SmearedPATJetProducer",
 ##############################
 # AK4 CHS Jets
 mySmearedJets = JetSmearing.clone(
-    src       = cms.InputTag("updatedPatJetsUpdatedJEC"),
+    src       = cms.InputTag("selectedUpdatedPatJetsUpdatedJEC"),
     variation = cms.int32(0)
 )
 mySmearedJetsUp = mySmearedJets.clone(
