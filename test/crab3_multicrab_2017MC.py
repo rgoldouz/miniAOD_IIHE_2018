@@ -6,7 +6,7 @@ mc2017_samples = {}
 #        
 #mc2017_samples["2017_QCDHT100to200_1"]=[    ["/QCD_HT100to200_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM"],    "mc2017"]
 #mc2017_samples["2017_QCDHT100to200_2"]=[    ["/QCD_HT100to200_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"],    "mc2017"]
-mc2017_samples["2017_QCDHT200to300"]=[    ["/QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
+#mc2017_samples["2017_QCDHT200to300"]=[    ["/QCD_HT200to300_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
 #mc2017_samples["2017_QCDHT300to500"]=[    ["/QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
 #mc2017_samples["2017_QCDHT500to700"]=[    ["/QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"],    "mc2017"]
 #mc2017_samples["2017_QCDHT700to1000"]=[    ["/QCD_HT700to1000_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
@@ -18,8 +18,8 @@ mc2017_samples["2017_QCDHT200to300"]=[    ["/QCD_HT200to300_TuneCP5_13TeV-madgra
 #mc2017_samples["2017_DYJetsToLLM10to50"]=[    ["/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
 #mc2017_samples["2017_WJetsToLNu"]=[    ["/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM"],    "mc2017"]
 #        
-#mc2017_samples["2017_WGPtG40to130"]=[    ["/WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM"],    "mc2017"]
-mc2017_samples["2017_WGPtG130"]=[    ["/WGJets_MonoPhoton_PtG-130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
+mc2017_samples["2017_WGPtG40to130"]=[    ["/WGJets_MonoPhoton_PtG-40to130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM"],    "mc2017"]
+#mc2017_samples["2017_WGPtG130"]=[    ["/WGJets_MonoPhoton_PtG-130_TuneCP5_13TeV-madgraph/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
 #       
 #mc2017_samples["2017_tt"]=[    ["/TTToHadronic_TuneCP5_PSweights_13TeV-powheg-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
 #mc2017_samples["2017_ttG"]=[    ["/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM"],    "mc2017"]
