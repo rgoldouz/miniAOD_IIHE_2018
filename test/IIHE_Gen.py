@@ -266,5 +266,5 @@ process.out = cms.OutputModule(
     fileName = cms.untracked.string("EDMiii.root")
     )
 
-process.outpath = cms.EndPath(process.out)
+#process.outpath = cms.EndPath(process.out)
 ##
