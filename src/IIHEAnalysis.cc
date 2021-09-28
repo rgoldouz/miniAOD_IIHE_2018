@@ -80,7 +80,10 @@ IIHEAnalysis::IIHEAnalysis(const edm::ParameterSet& iConfig)
   if(includeSkimEventsModule_          ) childModules_.push_back(new IIHEModuleSkimEvents(          iConfig ,consumesCollector()) );
   if(includeEventModule_               ) childModules_.push_back(new IIHEModuleEvent(               iConfig ,consumesCollector()) );
   if(includeLHEWeightModule_           ) childModules_.push_back(new IIHEModuleLHEWeight(           iConfig ,consumesCollector()) );
-  if(includeMCTruthModule_             ) childModules_.push_back(new IIHEModuleMCTruth(             iConfig ,consumesCollector()) );
+  if(includeMCTruthModule_             ) {
+    MCTruthModule_ = new IIHEModuleMCTruth(iConfig ,consumesCollector()) ;
+    childModules_.push_back(MCTruthModule_) ;  
+  }
   if(includeVertexModule_              ) childModules_.push_back(new IIHEModuleVertex(              iConfig ,consumesCollector()) );
   if(includeSuperClusterModule_        ) childModules_.push_back(new IIHEModuleSuperCluster(        iConfig ,consumesCollector()) );
   if(includePhotonModule_              ) childModules_.push_back(new IIHEModulePhoton(              iConfig ,consumesCollector()) );
@@ -304,7 +307,6 @@ void IIHEAnalysis::beginJob(){
   // However the other modules must follow MCTruthModule to use the whitelist.  Here is
   // where we break the chicken and egg problem.
   if(MCTruthModule_) MCTruthModule_->setWhitelist() ;
-
   configureBranches() ;
 }
 

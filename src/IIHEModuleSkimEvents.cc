@@ -82,7 +82,9 @@ void IIHEModuleSkimEvents::analyze(const edm::Event& iEvent, const edm::EventSet
   for( unsigned int i = 0 ; i < muonCollection_->size() ; i++ ) {
     Ptr<pat::Muon> muiter = muonCollection_->ptrAt( i );
     float pt = muiter->pt() ;
-    if(pt>ptThresholdmu_) nMu++ ;
+    if(pt>ptThresholdmu_ && muiter->isGlobalMuon()) {
+      nMu++ ;
+    }
   }
 
   for ( unsigned int i = 0; i <tauCollection_->size(); ++i) {
@@ -93,7 +95,9 @@ void IIHEModuleSkimEvents::analyze(const edm::Event& iEvent, const edm::EventSet
 
   for( unsigned int i = 0 ; i < photonCollection_->size() ; i++ ) {
     Ptr<pat::Photon> phiter = photonCollection_->ptrAt( i );
-    if(phiter->pt() > ptThresholdPh_) nPh++ ;
+    if(phiter->pt() > ptThresholdPh_ && phiter->hadTowOverEm()<0.05) {
+      nPh++ ;
+    }
   }
 
   for ( unsigned int i = 0; i <FatJetHandle_->size(); ++i) {
@@ -118,6 +122,7 @@ void IIHEModuleSkimEvents::analyze(const edm::Event& iEvent, const edm::EventSet
   if(FatJetMuAccept_   && nFatJet>1 && nMu>0) acceptThisEvent=true;
   if(FatJetPhAccept_   && nFatJet>0 && nPh>0) acceptThisEvent=true;
 
+//cout<<"nFatJet="<<nFatJet<<",nMu="<<nMu<<",nPh="<<nPh<<endl;
 //  acceptThisEvent = (nEl >= nEleAccept_ || nMu >= nMuAccept_ || nTau >= nTauAccept_ || nPh >= nPhAccept_ || (nEmu >= nEleMuAccept_ && nEl >0 &&  nMu>0) || (nETau>= nEleTauAccept_  && nEl >0 && nTau>0) || (nMuTau>= nMuTauAccept_  && nMu>0 && nTau>0) || nFatJet >= nFatJetAccept_);
   
   

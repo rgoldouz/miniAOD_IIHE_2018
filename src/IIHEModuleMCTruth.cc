@@ -31,20 +31,13 @@ void IIHEModuleMCTruth::beginJob(){
 	MCPdgIdsToSave.push_back(14) ; // Neutrino muon
 	MCPdgIdsToSave.push_back(15) ; // Tau
 	MCPdgIdsToSave.push_back(16) ; // Neutrino tau
-	MCPdgIdsToSave.push_back(21) ; // gluon
-	MCPdgIdsToSave.push_back( 1) ; // d quark
-	MCPdgIdsToSave.push_back( 2) ; // u quark
-	MCPdgIdsToSave.push_back( 3) ; // s quark
-	MCPdgIdsToSave.push_back( 4) ; // c quark
-	MCPdgIdsToSave.push_back( 5) ; // b quark
-	MCPdgIdsToSave.push_back( 6) ; // t quark
-	MCPdgIdsToSave.push_back(22) ; // Photon
 	MCPdgIdsToSave.push_back(23) ; // Z boson
 	MCPdgIdsToSave.push_back(24) ; // W boson
 	MCPdgIdsToSave.push_back(25) ; // BEH boson
 	MCPdgIdsToSave.push_back(32) ; // Z'  boson
 	MCPdgIdsToSave.push_back(33) ; // Z'' boson
 	MCPdgIdsToSave.push_back(34) ; // W'  boson
+        MCPdgIdsToSave.push_back(37) ;
 	MCPdgIdsToSave.push_back(1000016) ; // tau-sneutrino 
         MCPdgIdsToSave.push_back(600) ; // Excited top
 	addToMCTruthWhitelist(MCPdgIdsToSave) ;
@@ -68,13 +61,13 @@ void IIHEModuleMCTruth::beginJob(){
 	addBranch("mc_status") ;
 	addBranch("mc_status_flags");
 	// new additions
-	addBranch("mc_status_tau_flags");
-	addBranch("mc_tau_charge");
-	addBranch("mc_tau_pdgId");
-	addBranch("mc_tau_decay");
-	addBranch("mc_tau_had_status");
-	addBranch("mc_tau_had_charge");
-	addBranch("mc_tau_had_pdgId");
+//	addBranch("mc_status_tau_flags");
+//	addBranch("mc_tau_charge");
+//	addBranch("mc_tau_pdgId");
+//	addBranch("mc_tau_decay");
+//	addBranch("mc_tau_had_status");
+//	addBranch("mc_tau_had_charge");
+//	addBranch("mc_tau_had_pdgId");
 
 	setBranchType(kVectorFloat) ;
 	addBranch("mc_mass") ;
@@ -87,15 +80,15 @@ void IIHEModuleMCTruth::beginJob(){
 	addBranch("mc_energy") ;
 	// new additions
 
-	addBranch("mc_tau_pt");
-	addBranch("mc_tau_eta");
-	addBranch("mc_tau_phi");
-	addBranch("mc_tau_energy");
-
-	addBranch("mc_tau_had_pt");
-	addBranch("mc_tau_had_eta");
-	addBranch("mc_tau_had_phi");
-	addBranch("mc_tau_had_energy");
+//	addBranch("mc_tau_pt");
+//	addBranch("mc_tau_eta");
+//	addBranch("mc_tau_phi");
+//	addBranch("mc_tau_energy");
+//
+//	addBranch("mc_tau_had_pt");
+//	addBranch("mc_tau_had_eta");
+//	addBranch("mc_tau_had_phi");
+//	addBranch("mc_tau_had_energy");
 	////
 
 	setBranchType(kVectorUInt) ;
@@ -225,7 +218,7 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	GenParticleCollection genParticles(pGenParticles->begin(),pGenParticles->end()) ;
 	// tau variables
 
-	unsigned int NGenSel = genParticles.size();
+	/*unsigned int NGenSel = genParticles.size();
 	for (unsigned int iGen = 0; iGen < NGenSel; iGen++)
 	{
 		const reco::Candidate* genP = &genParticles.at(iGen);
@@ -265,7 +258,7 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 
 		store("mc_status_tau_flags" , flags);
 	}
-
+*/
 	// These variables are used to match up mothers to daughters at the end.
 	int counter = 0 ;
 
@@ -274,29 +267,11 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	MCTruthObject* MCTruth ;
 	//  const Candidate* parent ;
 	const Candidate* child ;
-	//we should save all outgoing particle from hard interaction
-	for(GenParticleCollection::const_iterator mc_iter = genParticles.begin() ; mc_iter!=genParticles.end() ; ++mc_iter){
-		if(mc_iter->status()<20 || mc_iter->status()>30) continue;
-		//    if(mc_iter->status()!=23) continue;
-		//    cout<< mc_iter->status()<<"                "<<mc_iter->pdgId()<<endl;
-		child  = mc_iter->clone()  ;
-		// Create a truth record instance.
-		MCTruth = new MCTruthObject((reco::Candidate*)&*mc_iter) ;
-		//
-		// Add all the mothers
-		for(unsigned int mother_iter=0 ; mother_iter<child->numberOfMothers() ; ++mother_iter){
-			MCTruth->addMother(child->mother(mother_iter)) ;
-		}    
-
-		MCTruthRecord_.push_back(MCTruth) ;
-		counter++ ;
-	}
-
 
 	for(GenParticleCollection::const_iterator mc_iter = genParticles.begin() ; mc_iter!=genParticles.end() ; ++mc_iter){
-		if(mc_iter->status()==23) continue;
 		int pdgId = mc_iter->pdgId() ;
 		float pt  = mc_iter->pt()    ;
+                int status = mc_iter->status();
 		// First check the whitelist.
 		bool whitelist_accept = false ;
 		for(unsigned int i=0 ; i<whitelist_.size() ; ++i){
@@ -306,8 +281,6 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 			}
 		}
 
-		// Ignore particles with exactly one daughter (X => X => X etc)
-		bool daughters_accept = (mc_iter->numberOfDaughters()!=1) ;
 
 		// Remove objects with zero pT.
 		bool nonZeroPt_accept = (pt>1e-3) ;
@@ -319,7 +292,11 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		if(mc_iter->mass()> m_threshold_) thresholds_accept = true  ;
 
 		// Now combine them all.
-		bool accept = (whitelist_accept && daughters_accept && thresholds_accept && nonZeroPt_accept) ;
+		bool accept = (whitelist_accept && thresholds_accept && nonZeroPt_accept) ;
+                if(status == 3 || (status > 20 && status < 30)) accept=true; //keep matrix element summary
+                if(pdgId == 22 && status == 1 && (pt > 10 || mc_iter->isPromptFinalState())) accept=true; // keep gamma above 10 GeV (or all prompt) 
+                if(mc_iter->isHardProcess() ||  mc_iter->fromHardProcessDecayed()  || mc_iter->fromHardProcessFinalState() || (mc_iter->statusFlags().fromHardProcess() && mc_iter->statusFlags().isLastCopy())) accept=true; //keep event summary based on status flags
+//                if(status > 70 && status < 80 && pt > 15) accept=true; //keep high pt partons right before hadronization
 		if(false==accept) continue ;
 		// Now go up the ancestry until we find the real parent
 		//    parent = mc_iter->mother() ;
@@ -354,7 +331,7 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		counter++ ;
 	}
 	for(unsigned int i=0 ; i<MCTruthRecord_.size() ; ++i){
-		MCTruthObject* ob = MCTruthRecord_.at(i) ;
+                MCTruthObject* ob = MCTruthRecord_.at(i) ;
 		std::vector<int  > mc_mother_index ;
 		std::vector<int  > mc_mother_pdgId ;
 		std::vector<float> mc_mother_px ;
@@ -366,6 +343,7 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 		std::vector<float> mc_mother_energy ;
 		std::vector<float> mc_mother_mass ;
 		for(unsigned int j=0 ; j<ob->nMothers() ; ++j){
+//                        if (j>2) continue;
 			const reco::Candidate* mother = ob->getMother(j) ;
 			if(mother){
 				int mother_index_tmp = ob->matchMother(MCTruthRecord_, j) ;

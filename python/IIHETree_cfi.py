@@ -35,7 +35,8 @@ IIHEAnalysis = cms.EDAnalyzer("IIHEAnalysis",
 
     # Trigger paths that we want to save
     # triggers = cms.untracked.string("singleElectron;doubleElectron;singleMuon;singlePhoton;singleElectronSingleMuon;doubleMuon"),
-    triggers                                = cms.untracked.string("singleElectron;doubleElectron;singleMuon;singlePhoton;singleElectronSingleMuon;doubleMuon;MET;singleTau"),
+#    triggers                                = cms.untracked.string("singleElectron;doubleElectron;singleMuon;singlePhoton;singleElectronSingleMuon;doubleMuon;MET;singleTau"),
+    triggers                                = cms.untracked.string("singleMuon;singlePhoton"),
     globalTag                               = cms.string(""),
 
     # Trigger matching stuff.  0.5 should be sufficient.
@@ -64,7 +65,7 @@ IIHEAnalysis = cms.EDAnalyzer("IIHEAnalysis",
 
     # Set pt or mass thresholds for the truth module here
     # Setting thresholds reduces the size of the output files significantly
-    MCTruth_ptThreshold                     = cms.untracked.double(10.0),
+    MCTruth_ptThreshold                     = cms.untracked.double(20.0),
     MCTruth_mThreshold                      = cms.untracked.double(20.0),
     MCTruth_DeltaROverlapThreshold          = cms.untracked.double(0.001),
     # IMPORTANT         ****SKIM OBJECT****
@@ -75,7 +76,7 @@ IIHEAnalysis = cms.EDAnalyzer("IIHEAnalysis",
     puppiJetPtThreshold                     = cms.untracked.double(20), # min=20
     fatjetPtThreshold                       = cms.untracked.double(200),
     tauPtTThreshold                         = cms.untracked.double(18),
-
+    addSysLHE_                              = cms.untracked.bool(False),
     # IMPORTANT         ****SKIM EVENT****
     skimEvents_Ele                         = cms.untracked.bool(False),
     skimEvents_EleMu                       = cms.untracked.bool(False),

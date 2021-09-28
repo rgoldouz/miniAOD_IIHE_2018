@@ -15,6 +15,7 @@ using namespace edm ;
 
 IIHEModuleLHEWeight::IIHEModuleLHEWeight(const edm::ParameterSet& iConfig, edm::ConsumesCollector && iC): IIHEModule(iConfig){
 	lheEventLabel_ = iC.consumes<LHEEventProduct> (iConfig.getParameter<InputTag>("LHELabel"));
+        addSysLHE_       = iConfig.getUntrackedParameter<bool>("addSysLHE_"     ) ;
 }
 IIHEModuleLHEWeight::~IIHEModuleLHEWeight(){}
 
@@ -59,14 +60,16 @@ void IIHEModuleLHEWeight::analyze(const edm::Event& iEvent, const edm::EventSetu
 
 		if(!(lhe_handle->weights().empty())) {
 			store("LHE_weight_nominal",(float) lhe_handle->weights().at(0).wgt);
-			for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
-				string target(lhe_handle->weights().at(i).id.data());
-				if(sumofLHEWeights_.size() != lhe_handle->weights().size()) {
-					sumofLHEWeights_.push_back(0);
-					LHEweightsId_.push_back(target);
-				}
-				store("LHE_weight_sys",(float) lhe_handle->weights().at(i).wgt);
-				sumofLHEWeights_[i] += (float) lhe_handle->weights().at(i).wgt;     
+                        if(addSysLHE_){
+	  	        	for (unsigned i = 0; i < lhe_handle->weights().size(); ++i) {
+	  	          		string target(lhe_handle->weights().at(i).id.data());
+	  		 		if(sumofLHEWeights_.size() != lhe_handle->weights().size()) {
+	  					sumofLHEWeights_.push_back(0);
+	  					LHEweightsId_.push_back(target);
+	  				}
+	  				store("LHE_weight_sys",(float) lhe_handle->weights().at(i).wgt);
+	  				sumofLHEWeights_[i] += (float) lhe_handle->weights().at(i).wgt;     
+	  			}
 			}
 		} else {
 			store("LHE_weight_nominal",1);

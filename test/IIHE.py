@@ -95,7 +95,7 @@ process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi")
 process.GlobalTag.globaltag = globalTag
 print "Global Tag is ", process.GlobalTag.globaltag
 ##process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(20) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 #process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",
@@ -121,9 +121,11 @@ process.source = cms.Source("PoolSource",
 #process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/ZprimeToTTJet_M1000_TuneCP2_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/80000/3C2F88E6-572E-E911-80DD-0242AC130002.root")
 #process.source.fileNames.append( "file:3C2F88E6-572E-E911-80DD-0242AC130002.root")
 #process.source.fileNames.append( "/store/mc/RunIIFall17MiniAODv2/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/120000/5047A56F-B9EB-E811-8CAE-D067E5F91B8A.root")
-#process.source.fileNames.append("/store/mc/RunIIFall17MiniAODv2/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/110000/885ECDE7-10B9-E811-B764-549F35AD8C0A.root")
+#process.source.fileNames.append("/store/mc/RunIIFall17MiniAODv2/QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/100000/1EF6C9F2-2D5D-E811-9D2A-1C6A7A263523.root")
+process.source.fileNames.append("/store/mc/RunIIFall17MiniAODv2/QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/100000/1EF6C9F2-2D5D-E811-9D2A-1C6A7A263523.root")
+#/store/mc/RunIIFall17MiniAODv2/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/110000/885ECDE7-10B9-E811-B764-549F35AD8C0A.root")
 
-process.source.fileNames.append("file:pickevents.root")
+#process.source.fileNames.append("file:pickevents.root")
 
 filename_out = "outfile.root"
 if options.DataFormat == "mc" and not options.grid:
@@ -187,7 +189,7 @@ process.AK4PuppiJetSequence = cms.Sequence(
     process.updatedPatJetsPuppiJEC
 )
 
-##############################
+###############################
 #AK8 Puppi Jets with Corrections
 from JMEAnalysis.JetToolbox.jetToolbox_cff import *
 from RecoBTag.MXNet.pfDeepBoostedJet_cff   import _pfDeepBoostedJetTagsAll
@@ -301,9 +303,9 @@ process.mytightJetIdLepVetoAK8 *
 process.selectedUpdatedPatJetsDeepAK8WithUserData
 )
 
-##########################################################################################
-#                                       Jet Smearing                                     #
-##########################################################################################
+###########################################################################################
+##                                       Jet Smearing                                     #
+###########################################################################################
 process.SmearedJetsSequence = cms.Sequence(
     mySmearedJets     *
     mySmearedJetsUp   *
@@ -439,7 +441,6 @@ process.IIHEAnalysis.includePhotonModule          = cms.untracked.bool(True)
 process.IIHEAnalysis.includeMCTruthModule         = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeLHEWeightModule       = cms.untracked.bool("mc" in options.DataProcessing)
 process.IIHEAnalysis.includeAutoAcceptEventModule = cms.untracked.bool(False)
-#process.IIHEAnalysis.includeAutoAcceptEventModule = cms.untracked.bool(True)
 ##########################################################################################
 #                            Woohoo!  We"re ready to start!                              #
 ##########################################################################################
@@ -470,10 +471,10 @@ else:
 process.p1 = cms.Path(process.IIHE)
 process.p1.associate(process.patAlgosToolsTask)
 
-process.out = cms.OutputModule(
-    "PoolOutputModule",
-    fileName = cms.untracked.string("EDMiii.root")
-    )
+#process.out = cms.OutputModule(
+#    "PoolOutputModule",
+#    fileName = cms.untracked.string("EDMiii.root")
+#    )
 
 #process.outpath = cms.EndPath(process.out)
 ##

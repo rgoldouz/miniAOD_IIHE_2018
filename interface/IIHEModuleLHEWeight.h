@@ -31,5 +31,6 @@ private:
   edm::EDGetTokenT<LHEEventProduct> lheEventLabel_;
   std::vector<float> sumofLHEWeights_;
   std::vector<std::string> LHEweightsId_;
+  bool addSysLHE_; 
 };
 #endif

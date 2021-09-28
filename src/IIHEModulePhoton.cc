@@ -34,7 +34,6 @@ void IIHEModulePhoton::beginJob(){
   addBranch("ph_hadronicOverEm") ;
   addBranch("ph_hadronicDepth1OverEm") ;
   addBranch("ph_hadronicDepth2OverEm") ;
-  addBranch("ph_hadTowOverEm") ;
   addBranch("ph_hadTowDepth1OverEm") ;
   addBranch("ph_hadTowDepth2OverEm") ; 
   addBranch("ph_e1x5") ;

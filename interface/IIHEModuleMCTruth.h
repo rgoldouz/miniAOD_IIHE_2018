@@ -47,7 +47,7 @@ class IIHEModuleMCTruth : public IIHEModule {
 		reco::GenParticle GetTauHad (const reco::Candidate* part);
 		reco::GenParticle GetTauHadNeutrals (const reco::Candidate* part); 
 
-		void setWhitelist(){ whitelist_ = whitelist_ = parent_->getMCTruthWhitelist() ; }
+		void setWhitelist(){ whitelist_ = parent_->getMCTruthWhitelist() ; }
 	private:
 		std::vector<int> whitelist_ ;
 		double pt_threshold_ ;
