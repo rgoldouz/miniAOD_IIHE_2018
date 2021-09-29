@@ -29,6 +29,8 @@ void IIHEModuleLHEWeight::beginJob(){
 	setBranchType(kVectorInt) ;
 	addBranch("LHE_pdgid");
 	addBranch("LHE_status");
+        addBranch("LHE_motherIndex1");
+        addBranch("LHE_motherIndex2");
 
 	setBranchType(kFloat) ;
 	addBranch("LHE_weight_nominal");
@@ -56,6 +58,8 @@ void IIHEModuleLHEWeight::analyze(const edm::Event& iEvent, const edm::EventSetu
 			store("LHE_E",(cand_).E());
 			store("LHE_pdgid",lhe_handle->hepeup().IDUP[i]);
 			store("LHE_status",lhe_handle->hepeup().ISTUP[i]);
+                        store("LHE_motherIndex1",lhe_handle->hepeup().MOTHUP[i].first);
+                        store("LHE_motherIndex2",lhe_handle->hepeup().MOTHUP[i].second);
 		}
 
 		if(!(lhe_handle->weights().empty())) {

@@ -24,23 +24,6 @@ IIHEModuleMCTruth::~IIHEModuleMCTruth(){}
 
 // ------------ method called once each job just before starting event loop  ------------
 void IIHEModuleMCTruth::beginJob(){
-	std::vector<int> MCPdgIdsToSave ;
-	MCPdgIdsToSave.push_back(11) ; // Electron
-	MCPdgIdsToSave.push_back(12) ; // Neutrino electron
-	MCPdgIdsToSave.push_back(13) ; // Muon
-	MCPdgIdsToSave.push_back(14) ; // Neutrino muon
-	MCPdgIdsToSave.push_back(15) ; // Tau
-	MCPdgIdsToSave.push_back(16) ; // Neutrino tau
-	MCPdgIdsToSave.push_back(23) ; // Z boson
-	MCPdgIdsToSave.push_back(24) ; // W boson
-	MCPdgIdsToSave.push_back(25) ; // BEH boson
-	MCPdgIdsToSave.push_back(32) ; // Z'  boson
-	MCPdgIdsToSave.push_back(33) ; // Z'' boson
-	MCPdgIdsToSave.push_back(34) ; // W'  boson
-        MCPdgIdsToSave.push_back(37) ;
-	MCPdgIdsToSave.push_back(1000016) ; // tau-sneutrino 
-        MCPdgIdsToSave.push_back(600) ; // Excited top
-	addToMCTruthWhitelist(MCPdgIdsToSave) ;
 	addBranch("mc_n", kUInt) ;
         addBranch("mc_nMEPartons", kInt) ;
         addBranch("mc_nMEPartonsFiltered", kInt) ;
@@ -55,57 +38,17 @@ void IIHEModuleMCTruth::beginJob(){
 	addBranch("mc_xPDF_second", kFloat) ;
 	addBranch("mc_scalePDF", kFloat) ;
 	setBranchType(kVectorInt) ;
-	addBranch("mc_index") ;
-	addBranch("mc_pdgId") ;
-	addBranch("mc_charge") ;
-	addBranch("mc_status") ;
-	addBranch("mc_status_flags");
-	// new additions
-//	addBranch("mc_status_tau_flags");
-//	addBranch("mc_tau_charge");
-//	addBranch("mc_tau_pdgId");
-//	addBranch("mc_tau_decay");
-//	addBranch("mc_tau_had_status");
-//	addBranch("mc_tau_had_charge");
-//	addBranch("mc_tau_had_pdgId");
+	addBranch("GenPart_pdgId") ;
+	addBranch("GenPart_status") ;
+	addBranch("GenPart_statusFlags");
+        addBranch("GenPart_genPartIdxMother") ;
 
 	setBranchType(kVectorFloat) ;
-	addBranch("mc_mass") ;
-	addBranch("mc_px") ;
-	addBranch("mc_py") ;
-	addBranch("mc_pz") ;
-	addBranch("mc_pt") ;
-	addBranch("mc_eta") ;
-	addBranch("mc_phi") ;
-	addBranch("mc_energy") ;
-	// new additions
-
-//	addBranch("mc_tau_pt");
-//	addBranch("mc_tau_eta");
-//	addBranch("mc_tau_phi");
-//	addBranch("mc_tau_energy");
-//
-//	addBranch("mc_tau_had_pt");
-//	addBranch("mc_tau_had_eta");
-//	addBranch("mc_tau_had_phi");
-//	addBranch("mc_tau_had_energy");
-	////
-
-	setBranchType(kVectorUInt) ;
-	addBranch("mc_numberOfDaughters") ;
-	addBranch("mc_numberOfMothers"  ) ;
-	setBranchType(kVectorVectorInt) ;
-	addBranch("mc_mother_index") ;
-	addBranch("mc_mother_pdgId") ;
-	setBranchType(kVectorVectorFloat) ;
-	addBranch("mc_mother_px"    ) ;
-	addBranch("mc_mother_py"    ) ;
-	addBranch("mc_mother_pz"    ) ;
-	addBranch("mc_mother_pt"    ) ;
-	addBranch("mc_mother_eta"   ) ;
-	addBranch("mc_mother_phi"   ) ;
-	addBranch("mc_mother_energy") ;
-	addBranch("mc_mother_mass"  ) ;
+	addBranch("GenPart_mass") ;
+	addBranch("GenPart_pt") ;
+	addBranch("GenPart_eta") ;
+	addBranch("GenPart_phi") ;
+	addBranch("GenPart_energy") ;
 
 	setBranchType(kInt) ;
 	addBranch("mc_trueNumInteractions") ;
@@ -218,194 +161,36 @@ void IIHEModuleMCTruth::analyze(const edm::Event& iEvent, const edm::EventSetup&
 	GenParticleCollection genParticles(pGenParticles->begin(),pGenParticles->end()) ;
 	// tau variables
 
-	/*unsigned int NGenSel = genParticles.size();
-	for (unsigned int iGen = 0; iGen < NGenSel; iGen++)
-	{
-		const reco::Candidate* genP = &genParticles.at(iGen);
-		const GenParticle* genPClone = (GenParticle*) &genParticles.at(iGen);
-		if (fabs(genP->pdgId()) != 15) continue;
-		store("mc_tau_pt", genP->pt());
-		store("mc_tau_eta", genP->eta());
-		store("mc_tau_phi", genP->phi());
-		store("mc_tau_energy",genP->energy());
-		store("mc_tau_charge",genP->charge());
-		store("mc_tau_pdgId",genP->pdgId());
-		store("mc_tau_decay",(GetTauDecay(genP)));
-		if(GetTauDecay(genP) == 2) {
-			store("mc_tau_had_pt",(GetTauHad(genP).pt()));
-			store("mc_tau_had_eta",(GetTauHad(genP).eta()));
-			store("mc_tau_had_phi",(GetTauHad(genP).phi()));
-			store("mc_tau_had_energy",(GetTauHad(genP).energy()));
-			store("mc_tau_had_status",(GetTauHad(genP).status()));
-			store("mc_tau_had_charge",(GetTauHad(genP).charge()));
-			store("mc_tau_had_pdgId",(GetTauHad(genP).pdgId()));
-
-		}
-		int flags = 0;
-		if (genPClone->statusFlags().isPrompt())                  flags |= (1 << 0);
-		if (genPClone->statusFlags().isDecayedLeptonHadron())     flags |= (1 << 1);
-		if (genPClone->statusFlags().isTauDecayProduct())         flags |= (1 << 2);
-		if (genPClone->statusFlags().isPromptTauDecayProduct())   flags |= (1 << 3);
-		if (genPClone->statusFlags().isDirectTauDecayProduct())   flags |= (1 << 4);
-		if (genPClone->statusFlags().isDirectPromptTauDecayProduct())       flags |= (1 << 5);
-		if (genPClone->statusFlags().isDirectHadronDecayProduct())          flags |= (1 << 6);
-		if (genPClone->statusFlags().isHardProcess())             flags |= (1 << 7);
-		if (genPClone->statusFlags().fromHardProcess())           flags |= (1 << 8);
-		if (genPClone->statusFlags().isHardProcessTauDecayProduct())       flags |= (1 << 9);
-		if (genPClone->statusFlags().isDirectHardProcessTauDecayProduct()) flags |= (1 << 10);
-		if (genPClone->statusFlags().fromHardProcessBeforeFSR())  flags |= (1 << 11);
-		if (genPClone->statusFlags().isLastCopyBeforeFSR())       flags |= (1 << 12);
-
-		store("mc_status_tau_flags" , flags);
-	}
-*/
-	// These variables are used to match up mothers to daughters at the end.
-	int counter = 0 ;
-
-	MCTruthRecord_.clear() ;
-
-	MCTruthObject* MCTruth ;
-	//  const Candidate* parent ;
-	const Candidate* child ;
-
 	for(GenParticleCollection::const_iterator mc_iter = genParticles.begin() ; mc_iter!=genParticles.end() ; ++mc_iter){
-		int pdgId = mc_iter->pdgId() ;
-		float pt  = mc_iter->pt()    ;
-                int status = mc_iter->status();
-		// First check the whitelist.
-		bool whitelist_accept = false ;
-		for(unsigned int i=0 ; i<whitelist_.size() ; ++i){
-			if(abs(pdgId)==abs(whitelist_.at(i))){
-				whitelist_accept = true ;
-				break ;
-			}
-		}
-
-
-		// Remove objects with zero pT.
-		bool nonZeroPt_accept = (pt>1e-3) ;
-
-		// Now check the thresholds.
-		bool thresholds_accept = false ;
-		float pt_threshold = (pdgId==21 || abs(pdgId)<5) ? 10 : pt_threshold_ ;
-		if(             pt>pt_threshold ) thresholds_accept = true  ;
-		if(mc_iter->mass()> m_threshold_) thresholds_accept = true  ;
-
-		// Now combine them all.
-		bool accept = (whitelist_accept && thresholds_accept && nonZeroPt_accept) ;
-                if(status == 3 || (status > 20 && status < 30)) accept=true; //keep matrix element summary
-                if(pdgId == 22 && status == 1 && (pt > 10 || mc_iter->isPromptFinalState())) accept=true; // keep gamma above 10 GeV (or all prompt) 
-                if(mc_iter->isHardProcess() ||  mc_iter->fromHardProcessDecayed()  || mc_iter->fromHardProcessFinalState() || (mc_iter->statusFlags().fromHardProcess() && mc_iter->statusFlags().isLastCopy())) accept=true; //keep event summary based on status flags
-//                if(status > 70 && status < 80 && pt > 15) accept=true; //keep high pt partons right before hadronization
-		if(false==accept) continue ;
-		// Now go up the ancestry until we find the real parent
-		//    parent = mc_iter->mother() ;
-		child  = mc_iter->clone()  ;
-		//    while(parent->pdgId()==pdgId){
-		//      child  = parent ;
-		//      parent = parent->mother() ;
-		//    }
-
-		// Create a truth record instance.
-		MCTruth = new MCTruthObject((reco::Candidate*)&*mc_iter) ;
-
-		// Add all the mothers
-		for(unsigned int mother_iter=0 ; mother_iter<child->numberOfMothers() ; ++mother_iter){
-			MCTruth->addMother(child->mother(mother_iter)) ;
-		}
-
-		// Finally check to see if this overlaps with an existing truth particle.
-		bool overlap = false ;
-		for(unsigned int i=0 ; i<MCTruthRecord_.size() ; ++i){
-			const reco::Candidate* comp = MCTruthRecord_.at(i)->getCandidate() ;
-			float DR = deltaR(comp->eta(),comp->phi(),MCTruth->getCandidate()->eta(),MCTruth->getCandidate()->phi()) ;
-			if(DR<DeltaROverlapThreshold_){
-				overlap = true ;
-				break ;
-			}
-		}
-		if(true==overlap) continue ;
-
-		// Then push back the MC truth information
-		MCTruthRecord_.push_back(MCTruth) ;
-		counter++ ;
-	}
-	for(unsigned int i=0 ; i<MCTruthRecord_.size() ; ++i){
-                MCTruthObject* ob = MCTruthRecord_.at(i) ;
-		std::vector<int  > mc_mother_index ;
-		std::vector<int  > mc_mother_pdgId ;
-		std::vector<float> mc_mother_px ;
-		std::vector<float> mc_mother_py ;
-		std::vector<float> mc_mother_pz ;
-		std::vector<float> mc_mother_pt ;
-		std::vector<float> mc_mother_eta ;
-		std::vector<float> mc_mother_phi ;
-		std::vector<float> mc_mother_energy ;
-		std::vector<float> mc_mother_mass ;
-		for(unsigned int j=0 ; j<ob->nMothers() ; ++j){
-//                        if (j>2) continue;
-			const reco::Candidate* mother = ob->getMother(j) ;
-			if(mother){
-				int mother_index_tmp = ob->matchMother(MCTruthRecord_, j) ;
-				mc_mother_index .push_back(mother_index_tmp) ;
-				mc_mother_pdgId .push_back(mother->pdgId() ) ;
-				mc_mother_px    .push_back(mother->px()    ) ;
-				mc_mother_py    .push_back(mother->py()    ) ;
-				mc_mother_pz    .push_back(mother->pz()    ) ;
-				mc_mother_pt    .push_back(mother->pt()    ) ;
-				mc_mother_eta   .push_back(mother->eta()   ) ;
-				mc_mother_phi   .push_back(mother->phi()   ) ;
-				mc_mother_energy.push_back(mother->energy()) ;
-				mc_mother_mass  .push_back(mother->mass()  ) ;
-			}
-		}
-		if(mc_mother_index.size()==0) mc_mother_index.push_back(0) ;
-		store("mc_mother_index" , mc_mother_index ) ;
-		store("mc_mother_pdgId" , mc_mother_pdgId ) ;
-		store("mc_mother_px"    , mc_mother_px    ) ;
-		store("mc_mother_py"    , mc_mother_py    ) ;
-		store("mc_mother_pz"    , mc_mother_pz    ) ;
-		store("mc_mother_pt"    , mc_mother_pt    ) ;
-		store("mc_mother_eta"   , mc_mother_eta   ) ;
-		store("mc_mother_phi"   , mc_mother_phi   ) ;
-		store("mc_mother_energy", mc_mother_energy) ;
-		store("mc_mother_mass"  , mc_mother_mass  ) ;
-
-		store("mc_numberOfDaughters", (unsigned int)(ob->getCandidate()->numberOfDaughters())) ;
-		store("mc_numberOfMothers"  , (unsigned int)(ob->nMothers())) ;
-
-		store("mc_px"     , ob->getCandidate()->px()    ) ;
-		store("mc_py"     , ob->getCandidate()->py()    ) ;
-		store("mc_pz"     , ob->getCandidate()->pz()    ) ;
-		store("mc_pt"     , ob->getCandidate()->pt()    ) ;
-		store("mc_eta"    , ob->getCandidate()->eta()   ) ;
-		store("mc_phi"    , ob->getCandidate()->phi()   ) ;
-		store("mc_energy" , ob->getCandidate()->energy()) ;
-		store("mc_mass"   , ob->getCandidate()->mass()  ) ;
-
-		store("mc_index"  , i ) ;
-		store("mc_pdgId"  , ob->getCandidate()->pdgId() ) ;
-		store("mc_charge" , ob->getCandidate()->charge()) ;
-		store("mc_status" , ob->getCandidate()->status()) ;
+                store("GenPart_pt"     , mc_iter->pt()    ) ;
+                store("GenPart_eta"    , mc_iter->eta()   ) ;
+                store("GenPart_phi"    , mc_iter->phi()   ) ;
+                store("GenPart_energy" , mc_iter->energy()) ;
+                store("GenPart_mass"   , mc_iter->mass()  ) ;
+                store("GenPart_pdgId"  , mc_iter->pdgId() ) ;
+                store("GenPart_status" , mc_iter->status()) ;
+                if (mc_iter->numberOfMothers()>0) store("GenPart_genPartIdxMother" ,mc_iter->motherRef(0).key()) ;
+                else store("GenPart_genPartIdxMother" ,-1);
 		// storing flags of a gen particle
 		int flags = 0;
-		const reco::GenParticle* p = (GenParticle*) ob->getCandidate();
 
-		if (p->statusFlags().isPrompt())                  flags |= (1 << 0);
-		if (p->statusFlags().isDecayedLeptonHadron())     flags |= (1 << 1);
-		if (p->statusFlags().isTauDecayProduct())         flags |= (1 << 2);
-		if (p->statusFlags().isPromptTauDecayProduct())   flags |= (1 << 3);
-		if (p->statusFlags().isDirectTauDecayProduct())   flags |= (1 << 4);
-		if (p->statusFlags().isDirectPromptTauDecayProduct())       flags |= (1 << 5);
-		if (p->statusFlags().isDirectHadronDecayProduct())          flags |= (1 << 6);
-		if (p->statusFlags().isHardProcess())             flags |= (1 << 7);
-		if (p->statusFlags().fromHardProcess())           flags |= (1 << 8);
-		if (p->statusFlags().isHardProcessTauDecayProduct())       flags |= (1 << 9);
-		if (p->statusFlags().isDirectHardProcessTauDecayProduct()) flags |= (1 << 10);
-		if (p->statusFlags().fromHardProcessBeforeFSR())  flags |= (1 << 11);
-		if (p->statusFlags().isLastCopyBeforeFSR())       flags |= (1 << 12);
+		if (mc_iter->statusFlags().isPrompt())                  flags |= (1 << 0);
+		if (mc_iter->statusFlags().isDecayedLeptonHadron())     flags |= (1 << 1);
+		if (mc_iter->statusFlags().isTauDecayProduct())         flags |= (1 << 2);
+		if (mc_iter->statusFlags().isPromptTauDecayProduct())   flags |= (1 << 3);
+		if (mc_iter->statusFlags().isDirectTauDecayProduct())   flags |= (1 << 4);
+		if (mc_iter->statusFlags().isDirectPromptTauDecayProduct())       flags |= (1 << 5);
+		if (mc_iter->statusFlags().isDirectHadronDecayProduct())          flags |= (1 << 6);
+		if (mc_iter->statusFlags().isHardProcess())             flags |= (1 << 7);
+		if (mc_iter->statusFlags().fromHardProcess())           flags |= (1 << 8);
+		if (mc_iter->statusFlags().isHardProcessTauDecayProduct())       flags |= (1 << 9);
+		if (mc_iter->statusFlags().isDirectHardProcessTauDecayProduct()) flags |= (1 << 10);
+		if (mc_iter->statusFlags().fromHardProcessBeforeFSR())  flags |= (1 << 11);
+                if (mc_iter->statusFlags().isFirstCopy())  flags |= (1 << 12);
+                if (mc_iter->statusFlags().isLastCopy())  flags |= (1 << 13);
+		if (mc_iter->statusFlags().isLastCopyBeforeFSR())       flags |= (1 << 14);
 
-		store("mc_status_flags" , flags);
+		store("GenPart_statusFlags" , flags);
 	}
 
 	store("mc_trueNumInteractions", trueNumInteractions) ;
